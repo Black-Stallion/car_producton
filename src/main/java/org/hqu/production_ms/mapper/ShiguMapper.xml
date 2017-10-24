@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.hqu.production_ms.mapper.ShiguMapper" >
+  <resultMap id="BaseResultMap" type="org.hqu.production_ms.domain.Shigu" >
+    <id column="shigu_id" property="shiguId" jdbcType="INTEGER" />
+    <result column="shigucode" property="shigucode" jdbcType="VARCHAR" />
+    <result column="shigutime" property="shigutime" jdbcType="TIMESTAMP" />
+    <result column="place" property="place" jdbcType="VARCHAR" />
+    <result column="shigutype" property="shigutype" jdbcType="VARCHAR" />
+    <result column="zeren" property="zeren" jdbcType="VARCHAR" />
+    <result column="yuanyin" property="yuanyin" jdbcType="VARCHAR" />
+    <result column="sunshi" property="sunshi" jdbcType="VARCHAR" />
+    <result column="drivernum" property="drivernum" jdbcType="VARCHAR" />
+    <result column="drivername" property="drivername" jdbcType="INTEGER" />
+    <result column="carnumber" property="carnumber" jdbcType="VARCHAR" />
+    <association property="carDriver" javaType="carDriver">
+		<id column="driver_id" property="driverId" jdbcType="INTEGER" />
+	    <result column="drvierName" property="drviername" jdbcType="VARCHAR" />
+	</association>
+	<association property="department" javaType="department">
+		<id column="department_id" property="departmentId" jdbcType="VARCHAR" />
+	    <result column="department_name" property="departmentName" jdbcType="VARCHAR" />
+	    <result column="fatherdep" property="fatherdep" jdbcType="VARCHAR" />
+	    <result column="level" property="level" jdbcType="INTEGER" />
+	</association>
+  </resultMap>
+  <!-- 扩展的sql -->
+  <!-- 查询所有记录 -->
+	<select id="find" parameterType="shigu" resultMap="BaseResultMap">
+		SELECT
+			shigu_id,
+			shigucode,
+			shigutime,
+			place,
+			shigutype,
+			zeren,
+			yuanyin,
+			sunshi,
+			carnumber,
+			c_driver.driver_id,
+			c_driver.drvierName,
+			department.department_name
+		FROM 
+			c_shigu  
+		LEFT JOIN c_driver ON c_shigu.drivername = c_driver.driver_id
+		LEFT JOIN department ON c_driver.department_id = department.department_id
+			ORDER BY shigutime desc
+	</select>
+	<select id="find1" parameterType="String" resultMap="BaseResultMap">
+		SELECT
+			shigu_id,
+			shigucode,
+			shigutime,
+			place,
+			shigutype,
+			zeren,
+			yuanyin,
+			sunshi,
+			carnumber,
+			c_driver.driver_id,
+			c_driver.drvierName,
+			department.department_name
+		FROM 
+			c_shigu  
+		LEFT JOIN c_driver ON c_shigu.drivername = c_driver.driver_id
+		LEFT JOIN department ON c_driver.department_id = department.department_id
+			where
+			c_driver.department_id=#{departmentId}
+			ORDER BY shigutime desc
+	</select>
+	
+	<!-- 查询所单个记录 -->
+	<select id="selectSingleShigu" parameterType="INTEGER" resultMap="BaseResultMap">
+		SELECT
+			shigu_id,
+			shigucode,
+			shigutime,
+			place,
+			shigutype,
+			zeren,
+			yuanyin,
+			sunshi,
+			carnumber,
+			c_driver.driver_id,
+			c_driver.drvierName,
+			department.department_name
+		FROM 
+			c_shigu  
+		LEFT JOIN c_driver ON c_shigu.drivername = c_driver.driver_id
+		LEFT JOIN department ON c_driver.department_id = department.department_id
+			WHERE  shigu_id  = #{shiguId}
+			ORDER BY shigucode
+		
+	</select>
+	
+  <!-- 批量删除 -->
+	<delete id="deleteBatch">
+		DELETE
+		FROM
+			c_shigu
+		WHERE
+			shigu_id IN
+		<foreach collection="array" item="id" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</delete>
+  <select id="searchShiguBycode" parameterType="String" resultMap="BaseResultMap">
+		SELECT
+		*
+		FROM 
+			c_shigu 
+			WHERE  shigucode = #{shigucode}
+			
+	</select>
+	
+	<select id="searchShiguBycarnum" parameterType="String" resultMap="BaseResultMap">
+		SELECT
+			shigu_id,
+			shigucode,
+			shigutime,
+			place,
+			shigutype,
+			zeren,
+			yuanyin,
+			sunshi,
+			carnumber,
+			c_driver.driver_id,
+			c_driver.drvierName,
+			department.department_name
+		FROM 
+			c_shigu  
+		LEFT JOIN c_driver ON c_shigu.drivername = c_driver.driver_id
+		LEFT JOIN department ON c_driver.department_id = department.department_id
+			where
+			carnumber = #{carnumber}
+			ORDER BY shigutime desc
+	</select>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    shigu_id, shigucode, shigutime, place, shigutype, zeren, yuanyin, sunshi, drivernum, 
+    drivername, carnumber
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.hqu.production_ms.domain.ShiguExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from c_shigu
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from c_shigu
+    where shigu_id = #{shiguId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from c_shigu
+    where shigu_id = #{shiguId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.hqu.production_ms.domain.ShiguExample" >
+    delete from c_shigu
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.hqu.production_ms.domain.Shigu" >
+    insert into c_shigu (shigu_id, shigucode, shigutime, 
+      place, shigutype, zeren, 
+      yuanyin, sunshi, drivernum, 
+      drivername, carnumber)
+    values (#{shiguId,jdbcType=INTEGER}, #{shigucode,jdbcType=VARCHAR}, #{shigutime,jdbcType=TIMESTAMP}, 
+      #{place,jdbcType=VARCHAR}, #{shigutype,jdbcType=VARCHAR}, #{zeren,jdbcType=VARCHAR}, 
+      #{yuanyin,jdbcType=VARCHAR}, #{sunshi,jdbcType=VARCHAR}, #{drivernum,jdbcType=VARCHAR}, 
+      #{drivername,jdbcType=INTEGER}, #{carnumber,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="org.hqu.production_ms.domain.Shigu" >
+    insert into c_shigu
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="shiguId != null" >
+        shigu_id,
+      </if>
+      <if test="shigucode != null" >
+        shigucode,
+      </if>
+      <if test="shigutime != null" >
+        shigutime,
+      </if>
+      <if test="place != null" >
+        place,
+      </if>
+      <if test="shigutype != null" >
+        shigutype,
+      </if>
+      <if test="zeren != null" >
+        zeren,
+      </if>
+      <if test="yuanyin != null" >
+        yuanyin,
+      </if>
+      <if test="sunshi != null" >
+        sunshi,
+      </if>
+      <if test="drivernum != null" >
+        drivernum,
+      </if>
+      <if test="drivername != null" >
+        drivername,
+      </if>
+      <if test="carnumber != null" >
+        carnumber,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="shiguId != null" >
+        #{shiguId,jdbcType=INTEGER},
+      </if>
+      <if test="shigucode != null" >
+        #{shigucode,jdbcType=VARCHAR},
+      </if>
+      <if test="shigutime != null" >
+        #{shigutime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="place != null" >
+        #{place,jdbcType=VARCHAR},
+      </if>
+      <if test="shigutype != null" >
+        #{shigutype,jdbcType=VARCHAR},
+      </if>
+      <if test="zeren != null" >
+        #{zeren,jdbcType=VARCHAR},
+      </if>
+      <if test="yuanyin != null" >
+        #{yuanyin,jdbcType=VARCHAR},
+      </if>
+      <if test="sunshi != null" >
+        #{sunshi,jdbcType=VARCHAR},
+      </if>
+      <if test="drivernum != null" >
+        #{drivernum,jdbcType=VARCHAR},
+      </if>
+      <if test="drivername != null" >
+        #{drivername,jdbcType=INTEGER},
+      </if>
+      <if test="carnumber != null" >
+        #{carnumber,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.hqu.production_ms.domain.ShiguExample" resultType="java.lang.Integer" >
+    select count(*) from c_shigu
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update c_shigu
+    <set >
+      <if test="record.shiguId != null" >
+        shigu_id = #{record.shiguId,jdbcType=INTEGER},
+      </if>
+      <if test="record.shigucode != null" >
+        shigucode = #{record.shigucode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.shigutime != null" >
+        shigutime = #{record.shigutime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.place != null" >
+        place = #{record.place,jdbcType=VARCHAR},
+      </if>
+      <if test="record.shigutype != null" >
+        shigutype = #{record.shigutype,jdbcType=VARCHAR},
+      </if>
+      <if test="record.zeren != null" >
+        zeren = #{record.zeren,jdbcType=VARCHAR},
+      </if>
+      <if test="record.yuanyin != null" >
+        yuanyin = #{record.yuanyin,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sunshi != null" >
+        sunshi = #{record.sunshi,jdbcType=VARCHAR},
+      </if>
+      <if test="record.drivernum != null" >
+        drivernum = #{record.drivernum,jdbcType=VARCHAR},
+      </if>
+      <if test="record.drivername != null" >
+        drivername = #{record.drivername,jdbcType=INTEGER},
+      </if>
+      <if test="record.carnumber != null" >
+        carnumber = #{record.carnumber,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update c_shigu
+    set shigu_id = #{record.shiguId,jdbcType=INTEGER},
+      shigucode = #{record.shigucode,jdbcType=VARCHAR},
+      shigutime = #{record.shigutime,jdbcType=TIMESTAMP},
+      place = #{record.place,jdbcType=VARCHAR},
+      shigutype = #{record.shigutype,jdbcType=VARCHAR},
+      zeren = #{record.zeren,jdbcType=VARCHAR},
+      yuanyin = #{record.yuanyin,jdbcType=VARCHAR},
+      sunshi = #{record.sunshi,jdbcType=VARCHAR},
+      drivernum = #{record.drivernum,jdbcType=VARCHAR},
+      drivername = #{record.drivername,jdbcType=INTEGER},
+      carnumber = #{record.carnumber,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.hqu.production_ms.domain.Shigu" >
+    update c_shigu
+    <set >
+      <if test="shigucode != null" >
+        shigucode = #{shigucode,jdbcType=VARCHAR},
+      </if>
+      <if test="shigutime != null" >
+        shigutime = #{shigutime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="place != null" >
+        place = #{place,jdbcType=VARCHAR},
+      </if>
+      <if test="shigutype != null" >
+        shigutype = #{shigutype,jdbcType=VARCHAR},
+      </if>
+      <if test="zeren != null" >
+        zeren = #{zeren,jdbcType=VARCHAR},
+      </if>
+      <if test="yuanyin != null" >
+        yuanyin = #{yuanyin,jdbcType=VARCHAR},
+      </if>
+      <if test="sunshi != null" >
+        sunshi = #{sunshi,jdbcType=VARCHAR},
+      </if>
+      <if test="drivernum != null" >
+        drivernum = #{drivernum,jdbcType=VARCHAR},
+      </if>
+      <if test="drivername != null" >
+        drivername = #{drivername,jdbcType=INTEGER},
+      </if>
+      <if test="carnumber != null" >
+        carnumber = #{carnumber,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where shigu_id = #{shiguId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.hqu.production_ms.domain.Shigu" >
+    update c_shigu
+    set shigucode = #{shigucode,jdbcType=VARCHAR},
+      shigutime = #{shigutime,jdbcType=TIMESTAMP},
+      place = #{place,jdbcType=VARCHAR},
+      shigutype = #{shigutype,jdbcType=VARCHAR},
+      zeren = #{zeren,jdbcType=VARCHAR},
+      yuanyin = #{yuanyin,jdbcType=VARCHAR},
+      sunshi = #{sunshi,jdbcType=VARCHAR},
+      drivernum = #{drivernum,jdbcType=VARCHAR},
+      drivername = #{drivername,jdbcType=INTEGER},
+      carnumber = #{carnumber,jdbcType=VARCHAR}
+    where shigu_id = #{shiguId,jdbcType=INTEGER}
+  </update>
+</mapper>

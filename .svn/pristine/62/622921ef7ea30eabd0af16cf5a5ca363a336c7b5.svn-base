@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.hqu.production_ms.mapper.WeiguiMapper" >
+  <resultMap id="BaseResultMap" type="org.hqu.production_ms.domain.Weigui" >
+    <id column="weigui_id" property="weiguiId" jdbcType="INTEGER" />
+    <result column="carnumber" property="carnumber" jdbcType="VARCHAR" />
+    <result column="weiguitime" property="weiguitime" jdbcType="TIMESTAMP" />
+    <result column="place" property="place" jdbcType="VARCHAR" />
+    <result column="xingwei" property="xingwei" jdbcType="VARCHAR" />
+    <result column="score" property="score" jdbcType="VARCHAR" />
+    <result column="money" property="money" jdbcType="VARCHAR" />
+    <result column="isSend" property="issend" jdbcType="VARCHAR" />
+    <result column="drivernum" property="drivernum" jdbcType="VARCHAR" />
+    <result column="drivername" property="drivername" jdbcType="VARCHAR" />
+    <result column="chulitime" property="chulitime" jdbcType="TIMESTAMP" />
+    <result column="chuliname" property="chuliname" jdbcType="VARCHAR" />
+  </resultMap>
+  <!-- 扩展的sql -->
+  <!-- 查询所有记录 -->
+	<select id="find" parameterType="weigui" resultMap="BaseResultMap">
+		SELECT
+			weigui_id,
+			carnumber,
+			weiguitime,
+			place,
+			xingwei,
+			score,
+			money,
+			isSend,
+			c_weigui.drivername,
+		
+			chulitime,
+			chuliname
+			
+		FROM 
+			c_weigui  
+		
+			ORDER BY weiguitime
+	</select>
+	
+	<!-- 查询所单个记录 -->
+	<select id="selectSingleWeigui" parameterType="INTEGER" resultMap="BaseResultMap">
+		SELECT
+			weigui_id,
+			carnumber,
+			weiguitime,
+			place,
+			xingwei,
+			score,
+			money,
+			isSend,
+			c_weigui.drivername,
+			
+			chulitime,
+			chuliname
+			
+		FROM 
+			c_weigui  
+			
+			WHERE  weigui_id  = #{weiguiId}
+			ORDER BY weiguitime
+		
+	</select>
+	
+  <!-- 批量删除 -->
+	<delete id="deleteBatch">
+		DELETE
+		FROM
+			c_weigui
+		WHERE
+			weigui_id IN
+		<foreach collection="array" item="id" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</delete>
+  <select id="searchWeiguiBydrivernum" parameterType="String" resultMap="BaseResultMap">
+		SELECT
+		*
+		FROM 
+			c_weigui 
+			WHERE  drivernum  LIKE CONCAT( '%',#{drivernum},'%' ) 
+			
+	</select>
+	
+	<select id="searchWeiguiBycarnum" parameterType="String" resultMap="BaseResultMap">
+		SELECT
+			*
+		FROM 
+			c_weigui 
+			
+			WHERE  carnumber  LIKE CONCAT( '%',#{carnumber},'%' ) 
+			
+	</select>
+  
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    weigui_id, carnumber, weiguitime, place, xingwei, score, money, isSend, drivernum, 
+    drivername, chulitime, chuliname
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.hqu.production_ms.domain.WeiguiExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from c_weigui
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from c_weigui
+    where weigui_id = #{weiguiId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from c_weigui
+    where weigui_id = #{weiguiId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.hqu.production_ms.domain.WeiguiExample" >
+    delete from c_weigui
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.hqu.production_ms.domain.Weigui" >
+    insert into c_weigui (weigui_id, carnumber, weiguitime, 
+      place, xingwei, score, 
+      money, isSend, drivernum, 
+      drivername, chulitime, chuliname
+      )
+    values (#{weiguiId,jdbcType=INTEGER}, #{carnumber,jdbcType=VARCHAR}, #{weiguitime,jdbcType=TIMESTAMP}, 
+      #{place,jdbcType=VARCHAR}, #{xingwei,jdbcType=VARCHAR}, #{score,jdbcType=VARCHAR}, 
+      #{money,jdbcType=VARCHAR}, #{issend,jdbcType=VARCHAR}, #{drivernum,jdbcType=VARCHAR}, 
+      #{drivername,jdbcType=VARCHAR}, #{chulitime,jdbcType=TIMESTAMP}, #{chuliname,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="org.hqu.production_ms.domain.Weigui" >
+    insert into c_weigui
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="weiguiId != null" >
+        weigui_id,
+      </if>
+      <if test="carnumber != null" >
+        carnumber,
+      </if>
+      <if test="weiguitime != null" >
+        weiguitime,
+      </if>
+      <if test="place != null" >
+        place,
+      </if>
+      <if test="xingwei != null" >
+        xingwei,
+      </if>
+      <if test="score != null" >
+        score,
+      </if>
+      <if test="money != null" >
+        money,
+      </if>
+      <if test="issend != null" >
+        isSend,
+      </if>
+      <if test="drivernum != null" >
+        drivernum,
+      </if>
+      <if test="drivername != null" >
+        drivername,
+      </if>
+      <if test="chulitime != null" >
+        chulitime,
+      </if>
+      <if test="chuliname != null" >
+        chuliname,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="weiguiId != null" >
+        #{weiguiId,jdbcType=INTEGER},
+      </if>
+      <if test="carnumber != null" >
+        #{carnumber,jdbcType=VARCHAR},
+      </if>
+      <if test="weiguitime != null" >
+        #{weiguitime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="place != null" >
+        #{place,jdbcType=VARCHAR},
+      </if>
+      <if test="xingwei != null" >
+        #{xingwei,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null" >
+        #{score,jdbcType=VARCHAR},
+      </if>
+      <if test="money != null" >
+        #{money,jdbcType=VARCHAR},
+      </if>
+      <if test="issend != null" >
+        #{issend,jdbcType=VARCHAR},
+      </if>
+      <if test="drivernum != null" >
+        #{drivernum,jdbcType=VARCHAR},
+      </if>
+      <if test="drivername != null" >
+        #{drivername,jdbcType=VARCHAR},
+      </if>
+      <if test="chulitime != null" >
+        #{chulitime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="chuliname != null" >
+        #{chuliname,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.hqu.production_ms.domain.WeiguiExample" resultType="java.lang.Integer" >
+    select count(*) from c_weigui
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update c_weigui
+    <set >
+      <if test="record.weiguiId != null" >
+        weigui_id = #{record.weiguiId,jdbcType=INTEGER},
+      </if>
+      <if test="record.carnumber != null" >
+        carnumber = #{record.carnumber,jdbcType=VARCHAR},
+      </if>
+      <if test="record.weiguitime != null" >
+        weiguitime = #{record.weiguitime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.place != null" >
+        place = #{record.place,jdbcType=VARCHAR},
+      </if>
+      <if test="record.xingwei != null" >
+        xingwei = #{record.xingwei,jdbcType=VARCHAR},
+      </if>
+      <if test="record.score != null" >
+        score = #{record.score,jdbcType=VARCHAR},
+      </if>
+      <if test="record.money != null" >
+        money = #{record.money,jdbcType=VARCHAR},
+      </if>
+      <if test="record.issend != null" >
+        isSend = #{record.issend,jdbcType=VARCHAR},
+      </if>
+      <if test="record.drivernum != null" >
+        drivernum = #{record.drivernum,jdbcType=VARCHAR},
+      </if>
+      <if test="record.drivername != null" >
+        drivername = #{record.drivername,jdbcType=VARCHAR},
+      </if>
+      <if test="record.chulitime != null" >
+        chulitime = #{record.chulitime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.chuliname != null" >
+        chuliname = #{record.chuliname,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update c_weigui
+    set weigui_id = #{record.weiguiId,jdbcType=INTEGER},
+      carnumber = #{record.carnumber,jdbcType=VARCHAR},
+      weiguitime = #{record.weiguitime,jdbcType=TIMESTAMP},
+      place = #{record.place,jdbcType=VARCHAR},
+      xingwei = #{record.xingwei,jdbcType=VARCHAR},
+      score = #{record.score,jdbcType=VARCHAR},
+      money = #{record.money,jdbcType=VARCHAR},
+      isSend = #{record.issend,jdbcType=VARCHAR},
+      drivernum = #{record.drivernum,jdbcType=VARCHAR},
+      drivername = #{record.drivername,jdbcType=VARCHAR},
+      chulitime = #{record.chulitime,jdbcType=TIMESTAMP},
+      chuliname = #{record.chuliname,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.hqu.production_ms.domain.Weigui" >
+    update c_weigui
+    <set >
+      <if test="carnumber != null" >
+        carnumber = #{carnumber,jdbcType=VARCHAR},
+      </if>
+      <if test="weiguitime != null" >
+        weiguitime = #{weiguitime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="place != null" >
+        place = #{place,jdbcType=VARCHAR},
+      </if>
+      <if test="xingwei != null" >
+        xingwei = #{xingwei,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null" >
+        score = #{score,jdbcType=VARCHAR},
+      </if>
+      <if test="money != null" >
+        money = #{money,jdbcType=VARCHAR},
+      </if>
+      <if test="issend != null" >
+        isSend = #{issend,jdbcType=VARCHAR},
+      </if>
+      <if test="drivernum != null" >
+        drivernum = #{drivernum,jdbcType=VARCHAR},
+      </if>
+      <if test="drivername != null" >
+        drivername = #{drivername,jdbcType=VARCHAR},
+      </if>
+      <if test="chulitime != null" >
+        chulitime = #{chulitime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="chuliname != null" >
+        chuliname = #{chuliname,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where weigui_id = #{weiguiId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.hqu.production_ms.domain.Weigui" >
+    update c_weigui
+    set carnumber = #{carnumber,jdbcType=VARCHAR},
+      weiguitime = #{weiguitime,jdbcType=TIMESTAMP},
+      place = #{place,jdbcType=VARCHAR},
+      xingwei = #{xingwei,jdbcType=VARCHAR},
+      score = #{score,jdbcType=VARCHAR},
+      money = #{money,jdbcType=VARCHAR},
+      isSend = #{issend,jdbcType=VARCHAR},
+      drivernum = #{drivernum,jdbcType=VARCHAR},
+      drivername = #{drivername,jdbcType=VARCHAR},
+      chulitime = #{chulitime,jdbcType=TIMESTAMP},
+      chuliname = #{chuliname,jdbcType=VARCHAR}
+    where weigui_id = #{weiguiId,jdbcType=INTEGER}
+  </update>
+</mapper>

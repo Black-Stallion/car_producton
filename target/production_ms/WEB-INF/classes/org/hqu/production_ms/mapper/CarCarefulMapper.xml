@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.hqu.production_ms.mapper.CarCarefulMapper" >
+  <resultMap id="BaseResultMap" type="org.hqu.production_ms.domain.CarCareful" >
+    <id column="careful_id" property="carefulId" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="yong" property="yong" jdbcType="VARCHAR" />
+  </resultMap>
+  <select id="find" parameterType="carCareful" resultMap="BaseResultMap">
+		SELECT
+		  *
+		FROM 
+			c_careful
+			order by yong
+	</select>
+	 <select id="find1" parameterType="carCareful" resultMap="BaseResultMap">
+		SELECT
+		  *
+		FROM 
+			c_careful
+	</select>
+	<select id="selectSingleCarCareful" parameterType="INTEGER" resultMap="BaseResultMap">
+		SELECT
+		  *
+		FROM 
+			c_careful
+		WHERE
+		 careful_id = #{removeId}
+	</select>
+	
+  <!-- 批量删除 -->
+	<delete id="deleteBatch">
+		DELETE
+		FROM
+			c_careful
+		WHERE
+			careful_id IN
+		<foreach collection="array" item="id" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</delete>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    careful_id, name, yong
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.hqu.production_ms.domain.CarCarefulExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from c_careful
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from c_careful
+    where careful_id = #{carefulId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from c_careful
+    where careful_id = #{carefulId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.hqu.production_ms.domain.CarCarefulExample" >
+    delete from c_careful
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.hqu.production_ms.domain.CarCareful" >
+    insert into c_careful (careful_id, name, yong
+      )
+    values (#{carefulId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{yong,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="org.hqu.production_ms.domain.CarCareful" >
+    insert into c_careful
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="carefulId != null" >
+        careful_id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="yong != null" >
+        yong,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="carefulId != null" >
+        #{carefulId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="yong != null" >
+        #{yong,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.hqu.production_ms.domain.CarCarefulExample" resultType="java.lang.Integer" >
+    select count(*) from c_careful
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update c_careful
+    <set >
+      <if test="record.carefulId != null" >
+        careful_id = #{record.carefulId,jdbcType=INTEGER},
+      </if>
+      <if test="record.name != null" >
+        name = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.yong != null" >
+        yong = #{record.yong,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update c_careful
+    set careful_id = #{record.carefulId,jdbcType=INTEGER},
+      name = #{record.name,jdbcType=VARCHAR},
+      yong = #{record.yong,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.hqu.production_ms.domain.CarCareful" >
+    update c_careful
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="yong != null" >
+        yong = #{yong,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where careful_id = #{carefulId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.hqu.production_ms.domain.CarCareful" >
+    update c_careful
+    set name = #{name,jdbcType=VARCHAR},
+      yong = #{yong,jdbcType=VARCHAR}
+    where careful_id = #{carefulId,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.hqu.production_ms.mapper.CarMaintenanceMapper" >
+  <resultMap id="BaseResultMap" type="org.hqu.production_ms.domain.CarMaintenance" >
+    <id column="maintenance_id" property="maintenanceId" jdbcType="INTEGER" />
+    <result column="kilometre" property="kilometre" jdbcType="VARCHAR" />
+    <result column="mProject" property="mproject" jdbcType="VARCHAR" />
+    <result column="mname" property="mname" jdbcType="VARCHAR" />
+    <association property="carType" javaType="carType">
+		<result column="typeId" property="typeid" jdbcType="INTEGER" />
+	    <result column="typename" property="typename" jdbcType="VARCHAR" />
+	</association>
+  </resultMap>
+  <select id="find" parameterType="carMaintenance" resultMap="BaseResultMap">
+		SELECT
+			maintenance_id,
+			kilometre,
+			mname,
+			mProject,
+			c_maintenance.typeId,
+			typename
+		FROM 
+			c_maintenance
+			LEFT JOIN c_type ON c_maintenance.typeId = c_type.typeId
+			 ORDER BY maintenance_id
+	</select>
+	<!-- 查询所单个记录 -->
+	<select id="selectSingleCarMaintenance" parameterType="INTEGER" resultMap="BaseResultMap">
+		SELECT
+			maintenance_id,
+			kilometre,
+			mname,
+			mProject,
+			c_maintenance.typeId,
+			typename
+		FROM 
+			c_maintenance
+			LEFT JOIN c_type ON c_maintenance.typeId = c_type.typeId
+			WHERE  maintenance_id = #{maintenanceId}
+	</select>
+	 <!-- 批量删除 -->
+	<delete id="deleteBatch">
+		DELETE
+		FROM
+			c_maintenance
+		WHERE
+			maintenance_id IN
+		<foreach collection="array" item="id" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</delete>
+	<select id="searchCarMaintenanceByCarMaintenanceDriverfrom" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+		    maintenance_id,
+			kilometre,
+			mname,
+			mProject,
+			c_maintenance.typeId,
+			typename
+		FROM 
+			c_maintenance
+			LEFT JOIN c_type ON c_maintenance.typeId = c_type.typeId
+		WHERE
+			typename LIKE CONCAT( '%',#{typename},'%' ) 
+	</select>
+	<select id="searchCarMaintenanceByCarMaintenanceName" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+		    maintenance_id,
+			kilometre,
+			mname,
+			mProject,
+			c_maintenance.typeId,
+			typename
+		FROM 
+			c_maintenance
+			LEFT JOIN c_type ON c_maintenance.typeId = c_type.typeId
+		WHERE
+			mname LIKE CONCAT( '%',#{mname},'%' ) 
+	</select>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    maintenance_id, kilometre, mProject, typeId, mname
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.hqu.production_ms.domain.CarMaintenanceExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from c_maintenance
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from c_maintenance
+    where maintenance_id = #{maintenanceId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from c_maintenance
+    where maintenance_id = #{maintenanceId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.hqu.production_ms.domain.CarMaintenanceExample" >
+    delete from c_maintenance
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.hqu.production_ms.domain.CarMaintenance" >
+    insert into c_maintenance (maintenance_id, kilometre, mProject, 
+      typeId, mname)
+    values (#{maintenanceId,jdbcType=INTEGER}, #{kilometre,jdbcType=VARCHAR}, #{mproject,jdbcType=VARCHAR}, 
+      #{typeid,jdbcType=INTEGER}, #{mname,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="org.hqu.production_ms.domain.CarMaintenance" >
+    insert into c_maintenance
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="maintenanceId != null" >
+        maintenance_id,
+      </if>
+      <if test="kilometre != null" >
+        kilometre,
+      </if>
+      <if test="mproject != null" >
+        mProject,
+      </if>
+      <if test="typeid != null" >
+        typeId,
+      </if>
+      <if test="mname != null" >
+        mname,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="maintenanceId != null" >
+        #{maintenanceId,jdbcType=INTEGER},
+      </if>
+      <if test="kilometre != null" >
+        #{kilometre,jdbcType=VARCHAR},
+      </if>
+      <if test="mproject != null" >
+        #{mproject,jdbcType=VARCHAR},
+      </if>
+      <if test="typeid != null" >
+        #{typeid,jdbcType=INTEGER},
+      </if>
+      <if test="mname != null" >
+        #{mname,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.hqu.production_ms.domain.CarMaintenanceExample" resultType="java.lang.Integer" >
+    select count(*) from c_maintenance
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update c_maintenance
+    <set >
+      <if test="record.maintenanceId != null" >
+        maintenance_id = #{record.maintenanceId,jdbcType=INTEGER},
+      </if>
+      <if test="record.kilometre != null" >
+        kilometre = #{record.kilometre,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mproject != null" >
+        mProject = #{record.mproject,jdbcType=VARCHAR},
+      </if>
+      <if test="record.typeid != null" >
+        typeId = #{record.typeid,jdbcType=INTEGER},
+      </if>
+      <if test="record.mname != null" >
+        mname = #{record.mname,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update c_maintenance
+    set maintenance_id = #{record.maintenanceId,jdbcType=INTEGER},
+      kilometre = #{record.kilometre,jdbcType=VARCHAR},
+      mProject = #{record.mproject,jdbcType=VARCHAR},
+      typeId = #{record.typeid,jdbcType=INTEGER},
+      mname = #{record.mname,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.hqu.production_ms.domain.CarMaintenance" >
+    update c_maintenance
+    <set >
+      <if test="kilometre != null" >
+        kilometre = #{kilometre,jdbcType=VARCHAR},
+      </if>
+      <if test="mproject != null" >
+        mProject = #{mproject,jdbcType=VARCHAR},
+      </if>
+      <if test="typeid != null" >
+        typeId = #{typeid,jdbcType=INTEGER},
+      </if>
+      <if test="mname != null" >
+        mname = #{mname,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where maintenance_id = #{maintenanceId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.hqu.production_ms.domain.CarMaintenance" >
+    update c_maintenance
+    set kilometre = #{kilometre,jdbcType=VARCHAR},
+      mProject = #{mproject,jdbcType=VARCHAR},
+      typeId = #{typeid,jdbcType=INTEGER},
+      mname = #{mname,jdbcType=VARCHAR}
+    where maintenance_id = #{maintenanceId,jdbcType=INTEGER}
+  </update>
+</mapper>

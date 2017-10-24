@@ -1,0 +1,646 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.hqu.production_ms.mapper.CarWbtjMapper" >
+  <resultMap id="BaseResultMap" type="org.hqu.production_ms.domain.CarWbtj" >
+    <id column="keep_id" property="keepId" jdbcType="INTEGER" />
+    <result column="startDate" property="startdate" jdbcType="TIMESTAMP" />
+    <result column="endDate" property="enddate" jdbcType="TIMESTAMP" />
+    <result column="intervalKM" property="intervalkm" jdbcType="VARCHAR" />
+    <result column="repairType" property="repairtype" jdbcType="VARCHAR" />
+    <result column="supplierName" property="suppliername" jdbcType="VARCHAR" />
+    <result column="carnum" property="carnum" jdbcType="VARCHAR" />
+    <result column="beiyong1" property="beiyong1" jdbcType="VARCHAR" />
+    <result column="beiyong2" property="beiyong2" jdbcType="VARCHAR" />
+    <association property="carRegister" javaType="carRegister">
+		<id column="car_id" property="carId" jdbcType="INTEGER" />
+	    <result column="carnumber" property="carnumber" jdbcType="VARCHAR" />
+	     <result column="useNature" property="usenature" jdbcType="VARCHAR" />
+	</association>
+    <association property="department" javaType="department">
+		<id column="department_id" property="departmentId" jdbcType="VARCHAR" />
+	    <result column="department_name" property="departmentName" jdbcType="VARCHAR" />
+	    <result column="fatherdep" property="fatherdep" jdbcType="VARCHAR" />
+	</association>
+  </resultMap>
+  <select id="find" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+			keep_id,
+		   intervalKM,
+		   startDate,
+		   endDate,
+		   carnum,
+		   beiyong1,
+		   beiyong2,
+		   repairType,
+		   supplierName,
+		   c_register.car_id,
+		   c_register.carnumber,
+		   c_register.usenature,
+		   department.department_id,
+		   department.department_name
+		FROM 
+			c_keep
+			LEFT JOIN c_register ON c_keep.car_id = c_register.car_id
+			LEFT JOIN department ON c_keep.department_id = department.department_id
+		WHERE 
+			c_keep.department_id = #{departmentId}
+	</select>
+	
+	<select id="find1" parameterType="carWbtj" resultMap="BaseResultMap">
+		SELECT
+			keep_id,
+		   intervalKM,
+		   startDate,
+		   endDate,
+		    carnum,
+		   beiyong1,
+		   beiyong2,
+		   repairType,
+		   supplierName,
+		   c_register.car_id,
+		   c_register.carnumber,
+		   c_register.usenature,
+		   department.department_id,
+		  department.department_name
+		FROM 
+			c_keep
+			LEFT JOIN c_register ON c_keep.car_id = c_register.car_id
+			LEFT JOIN department ON c_keep.department_id = department.department_id
+	</select>
+	<select id="searchCarWbtjByCarWbtj1" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+			keep_id,
+		   intervalKM,
+		   startDate,
+		   endDate,
+		   carnum,
+		   beiyong1,
+		   beiyong2,
+		   repairType,
+		   supplierName,
+		   c_register.car_id,
+		   c_register.carnumber,
+		   c_register.usenature,
+		   department.department_id,
+		   department.department_name
+		FROM 
+			c_keep
+			LEFT JOIN c_register ON c_keep.car_id = c_register.car_id
+			LEFT JOIN department ON c_keep.department_id = department.department_id
+		WHERE 
+			c_register.carnumber = #{cnumber}
+	</select>
+	
+	<select id="searchCarWbtjByCarWbtj2" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+			keep_id,
+		   intervalKM,
+		   startDate,
+		   endDate,
+		   carnum,
+		   beiyong1,
+		   beiyong2,
+		   repairType,
+		   supplierName,
+		   c_register.car_id,
+		   c_register.carnumber,
+		   c_register.usenature,
+		   department.department_id,
+		   department.department_name
+		FROM 
+			c_keep
+			LEFT JOIN c_register ON c_keep.car_id = c_register.car_id
+			LEFT JOIN department ON c_keep.department_id = department.department_id
+		WHERE 
+			date_format(startDate,'%Y')=#{year}
+	</select>
+	<select id="searchCarWbtjByCarWbtj3" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+			keep_id,
+		   intervalKM,
+		   startDate,
+		   endDate,
+		   carnum,
+		   beiyong1,
+		   beiyong2,
+		   repairType,
+		   supplierName,
+		   c_register.car_id,
+		   c_register.carnumber,
+		   c_register.usenature,
+		   department.department_id,
+		   department.department_name
+		FROM 
+			c_keep
+			LEFT JOIN c_register ON c_keep.car_id = c_register.car_id
+			LEFT JOIN department ON c_keep.department_id = department.department_id
+		WHERE 
+		c_register.carnumber = #{0}
+			and
+		date_format(startDate,'%Y')=#{1}
+	</select>
+	<select id="searchCarWbtjByCarWbtj4" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+			keep_id,
+		   intervalKM,
+		   startDate,
+		   endDate,
+		   carnum,
+		   beiyong1,
+		   beiyong2,
+		   repairType,
+		   supplierName,
+		   c_register.car_id,
+		   c_register.carnumber,
+		   c_register.usenature,
+		   department.department_id,
+		   department.department_name
+		FROM 
+			c_keep
+			LEFT JOIN c_register ON c_keep.car_id = c_register.car_id
+			LEFT JOIN department ON c_keep.department_id = department.department_id
+		WHERE 
+			c_register.carnumber = #{0}
+			and
+			date_format(startDate,'%Y')=#{1}
+			and 
+			date_format(startDate,'%c')=#{2}
+	</select>
+	<select id="searchCarWbtjByCarWbtj5" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+			keep_id,
+		   intervalKM,
+		   startDate,
+		   endDate,
+		   carnum,
+		   beiyong1,
+		   beiyong2,
+		   repairType,
+		   supplierName,
+		   c_register.car_id,
+		   c_register.carnumber,
+		   c_register.usenature,
+		   department.department_id,
+		   department.department_name
+		FROM 
+			c_keep
+			LEFT JOIN c_register ON c_keep.car_id = c_register.car_id
+			LEFT JOIN department ON c_keep.department_id = department.department_id
+		WHERE 
+			0=0
+			and c_register.department_id = #{departmentId}
+	</select>
+	<select id="searchCarWbtjByCarWbtj6" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+			keep_id,
+		   intervalKM,
+		   startDate,
+		   endDate,
+		   carnum,
+		   beiyong1,
+		   beiyong2,
+		   repairType,
+		   supplierName,
+		   c_register.car_id,
+		   c_register.carnumber,
+		   c_register.usenature,
+		   department.department_id,
+		   department.department_name
+		FROM 
+			c_keep
+			LEFT JOIN c_register ON c_keep.car_id = c_register.car_id
+			LEFT JOIN department ON c_keep.department_id = department.department_id
+		WHERE 
+			0=0
+			and department_id = #{0}
+			and c_register.carnumber = #{1}
+	</select>
+	<select id="searchCarWbtjByCarWbtj7" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+			keep_id,
+		   intervalKM,
+		   startDate,
+		   endDate,
+		   carnum,
+		   beiyong1,
+		   beiyong2,
+		   repairType,
+		   supplierName,
+		   c_register.car_id,
+		   c_register.carnumber,
+		   c_register.usenature,
+		   department.department_id,
+		   department.department_name
+		FROM 
+			c_keep
+			LEFT JOIN c_register ON c_keep.car_id = c_register.car_id
+			LEFT JOIN department ON c_keep.department_id = department.department_id
+		WHERE 
+			0=0
+			and department_id = #{0}
+			and
+			date_format(startDate,'%Y')=#{1}
+	</select>
+	<select id="searchCarWbtjByCarWbtj8" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+			keep_id,
+		   intervalKM,
+		   startDate,
+		   endDate,
+		   carnum,
+		   beiyong1,
+		   beiyong2,
+		   repairType,
+		   supplierName,
+		   c_register.car_id,
+		   c_register.carnumber,
+		   c_register.usenature,
+		   department.department_id,
+		   department.department_name
+		FROM 
+			c_keep
+			LEFT JOIN c_register ON c_keep.car_id = c_register.car_id
+			LEFT JOIN department ON c_keep.department_id = department.department_id
+		WHERE 
+			0=0
+			and 
+			department_id = #{0}
+			and
+			c_register.carnumber = #{1}
+			and 
+			date_format(startDate,'%Y')=#{2}
+	</select>
+	<select id="searchCarWbtjByCarWbtj9" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+			keep_id,
+		   intervalKM,
+		   startDate,
+		   endDate,
+		   carnum,
+		   beiyong1,
+		   beiyong2,
+		   repairType,
+		   supplierName,
+		   c_register.car_id,
+		   c_register.carnumber,
+		   c_register.usenature,
+		   department.department_id,
+		   department.department_name
+		FROM 
+			c_keep
+			LEFT JOIN c_register ON c_keep.car_id = c_register.car_id
+			LEFT JOIN department ON c_keep.department_id = department.department_id
+		WHERE 
+			0=0
+			and department_id = #{0}
+			and
+			c_register.carnumber = #{1}
+			and 
+			date_format(startDate,'%Y')=#{2}
+			and 
+			date_format(startDate,'%c')=#{3}
+	</select>
+	<select id="searchCarWbtjByCarWbtj10" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+			keep_id,
+		   intervalKM,
+		   startDate,
+		   endDate,
+		   carnum,
+		   beiyong1,
+		   beiyong2,
+		   repairType,
+		   supplierName,
+		   c_register.car_id,
+		   c_register.carnumber,
+		   c_register.usenature,
+		   department.department_id,
+		   department.department_name
+		FROM 
+			c_keep
+			LEFT JOIN c_register ON c_keep.car_id = c_register.car_id
+			LEFT JOIN department ON c_keep.department_id = department.department_id
+		WHERE 
+			date_format(startDate,'%Y')=#{0}
+			and 
+			date_format(startDate,'%c')=#{1}
+	</select>
+	<select id="searchCarWbtjByCarWbtj11" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+			keep_id,
+		   intervalKM,
+		   startDate,
+		   endDate,
+		   carnum,
+		   beiyong1,
+		   beiyong2,
+		   repairType,
+		   supplierName,
+		   c_register.car_id,
+		   c_register.carnumber,
+		   c_register.usenature,
+		   department.department_id,
+		   department.department_name
+		FROM 
+			c_keep
+			LEFT JOIN c_register ON c_keep.car_id = c_register.car_id
+			LEFT JOIN department ON c_keep.department_id = department.department_id
+		WHERE 
+			0=0
+			and department_id = #{0}
+			and 
+			date_format(startDate,'%Y')=#{1}
+			and 
+			date_format(startDate,'%c')=#{2}
+	</select>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    keep_id, startDate, endDate, intervalKM, repairType, supplierName, car_id, carnum, 
+    department_id, beiyong1, beiyong2
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.hqu.production_ms.domain.CarWbtjExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from c_keep
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from c_keep
+    where keep_id = #{keepId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from c_keep
+    where keep_id = #{keepId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.hqu.production_ms.domain.CarWbtjExample" >
+    delete from c_keep
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.hqu.production_ms.domain.CarWbtj" >
+    insert into c_keep (keep_id, startDate, endDate, 
+      intervalKM, repairType, supplierName, 
+      car_id, carnum, department_id, 
+      beiyong1, beiyong2)
+    values (#{keepId,jdbcType=INTEGER}, #{startdate,jdbcType=TIMESTAMP}, #{enddate,jdbcType=TIMESTAMP}, 
+      #{intervalkm,jdbcType=VARCHAR}, #{repairtype,jdbcType=VARCHAR}, #{suppliername,jdbcType=VARCHAR}, 
+      #{carId,jdbcType=INTEGER}, #{carnum,jdbcType=VARCHAR}, #{departmentId,jdbcType=VARCHAR}, 
+      #{beiyong1,jdbcType=VARCHAR}, #{beiyong2,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="org.hqu.production_ms.domain.CarWbtj" >
+    insert into c_keep
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="keepId != null" >
+        keep_id,
+      </if>
+      <if test="startdate != null" >
+        startDate,
+      </if>
+      <if test="enddate != null" >
+        endDate,
+      </if>
+      <if test="intervalkm != null" >
+        intervalKM,
+      </if>
+      <if test="repairtype != null" >
+        repairType,
+      </if>
+      <if test="suppliername != null" >
+        supplierName,
+      </if>
+      <if test="carId != null" >
+        car_id,
+      </if>
+      <if test="carnum != null" >
+        carnum,
+      </if>
+      <if test="departmentId != null" >
+        department_id,
+      </if>
+      <if test="beiyong1 != null" >
+        beiyong1,
+      </if>
+      <if test="beiyong2 != null" >
+        beiyong2,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="keepId != null" >
+        #{keepId,jdbcType=INTEGER},
+      </if>
+      <if test="startdate != null" >
+        #{startdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="enddate != null" >
+        #{enddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="intervalkm != null" >
+        #{intervalkm,jdbcType=VARCHAR},
+      </if>
+      <if test="repairtype != null" >
+        #{repairtype,jdbcType=VARCHAR},
+      </if>
+      <if test="suppliername != null" >
+        #{suppliername,jdbcType=VARCHAR},
+      </if>
+      <if test="carId != null" >
+        #{carId,jdbcType=INTEGER},
+      </if>
+      <if test="carnum != null" >
+        #{carnum,jdbcType=VARCHAR},
+      </if>
+      <if test="departmentId != null" >
+        #{departmentId,jdbcType=VARCHAR},
+      </if>
+      <if test="beiyong1 != null" >
+        #{beiyong1,jdbcType=VARCHAR},
+      </if>
+      <if test="beiyong2 != null" >
+        #{beiyong2,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.hqu.production_ms.domain.CarWbtjExample" resultType="java.lang.Integer" >
+    select count(*) from c_keep
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update c_keep
+    <set >
+      <if test="record.keepId != null" >
+        keep_id = #{record.keepId,jdbcType=INTEGER},
+      </if>
+      <if test="record.startdate != null" >
+        startDate = #{record.startdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.enddate != null" >
+        endDate = #{record.enddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.intervalkm != null" >
+        intervalKM = #{record.intervalkm,jdbcType=VARCHAR},
+      </if>
+      <if test="record.repairtype != null" >
+        repairType = #{record.repairtype,jdbcType=VARCHAR},
+      </if>
+      <if test="record.suppliername != null" >
+        supplierName = #{record.suppliername,jdbcType=VARCHAR},
+      </if>
+      <if test="record.carId != null" >
+        car_id = #{record.carId,jdbcType=INTEGER},
+      </if>
+      <if test="record.carnum != null" >
+        carnum = #{record.carnum,jdbcType=VARCHAR},
+      </if>
+      <if test="record.departmentId != null" >
+        department_id = #{record.departmentId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.beiyong1 != null" >
+        beiyong1 = #{record.beiyong1,jdbcType=VARCHAR},
+      </if>
+      <if test="record.beiyong2 != null" >
+        beiyong2 = #{record.beiyong2,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update c_keep
+    set keep_id = #{record.keepId,jdbcType=INTEGER},
+      startDate = #{record.startdate,jdbcType=TIMESTAMP},
+      endDate = #{record.enddate,jdbcType=TIMESTAMP},
+      intervalKM = #{record.intervalkm,jdbcType=VARCHAR},
+      repairType = #{record.repairtype,jdbcType=VARCHAR},
+      supplierName = #{record.suppliername,jdbcType=VARCHAR},
+      car_id = #{record.carId,jdbcType=INTEGER},
+      carnum = #{record.carnum,jdbcType=VARCHAR},
+      department_id = #{record.departmentId,jdbcType=VARCHAR},
+      beiyong1 = #{record.beiyong1,jdbcType=VARCHAR},
+      beiyong2 = #{record.beiyong2,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.hqu.production_ms.domain.CarWbtj" >
+    update c_keep
+    <set >
+      <if test="startdate != null" >
+        startDate = #{startdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="enddate != null" >
+        endDate = #{enddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="intervalkm != null" >
+        intervalKM = #{intervalkm,jdbcType=VARCHAR},
+      </if>
+      <if test="repairtype != null" >
+        repairType = #{repairtype,jdbcType=VARCHAR},
+      </if>
+      <if test="suppliername != null" >
+        supplierName = #{suppliername,jdbcType=VARCHAR},
+      </if>
+      <if test="carId != null" >
+        car_id = #{carId,jdbcType=INTEGER},
+      </if>
+      <if test="carnum != null" >
+        carnum = #{carnum,jdbcType=VARCHAR},
+      </if>
+      <if test="departmentId != null" >
+        department_id = #{departmentId,jdbcType=VARCHAR},
+      </if>
+      <if test="beiyong1 != null" >
+        beiyong1 = #{beiyong1,jdbcType=VARCHAR},
+      </if>
+      <if test="beiyong2 != null" >
+        beiyong2 = #{beiyong2,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where keep_id = #{keepId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.hqu.production_ms.domain.CarWbtj" >
+    update c_keep
+    set startDate = #{startdate,jdbcType=TIMESTAMP},
+      endDate = #{enddate,jdbcType=TIMESTAMP},
+      intervalKM = #{intervalkm,jdbcType=VARCHAR},
+      repairType = #{repairtype,jdbcType=VARCHAR},
+      supplierName = #{suppliername,jdbcType=VARCHAR},
+      car_id = #{carId,jdbcType=INTEGER},
+      carnum = #{carnum,jdbcType=VARCHAR},
+      department_id = #{departmentId,jdbcType=VARCHAR},
+      beiyong1 = #{beiyong1,jdbcType=VARCHAR},
+      beiyong2 = #{beiyong2,jdbcType=VARCHAR}
+    where keep_id = #{keepId,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,125 @@
+package org.hqu.production_ms.domain.po;
+
+import java.util.Date;
+
+public class WeiguiPO {
+    private Integer weiguiId;
+
+    private String carnumber;
+
+    private Date weiguitime;
+
+    private String place;
+
+    private String xingwei;
+
+    private String score;
+
+    private String money;
+
+    private String issend;
+
+    private String drivernum;
+
+    private String drivername;
+
+    private Date chulitime;
+
+    private String chuliname;
+
+    public Integer getWeiguiId() {
+        return weiguiId;
+    }
+
+    public void setWeiguiId(Integer weiguiId) {
+        this.weiguiId = weiguiId;
+    }
+
+    public String getCarnumber() {
+        return carnumber;
+    }
+
+    public void setCarnumber(String carnumber) {
+        this.carnumber = carnumber == null ? null : carnumber.trim();
+    }
+
+    public Date getWeiguitime() {
+        return weiguitime;
+    }
+
+    public void setWeiguitime(Date weiguitime) {
+        this.weiguitime = weiguitime;
+    }
+
+    public String getPlace() {
+        return place;
+    }
+
+    public void setPlace(String place) {
+        this.place = place == null ? null : place.trim();
+    }
+
+    public String getXingwei() {
+        return xingwei;
+    }
+
+    public void setXingwei(String xingwei) {
+        this.xingwei = xingwei == null ? null : xingwei.trim();
+    }
+
+    public String getScore() {
+        return score;
+    }
+
+    public void setScore(String score) {
+        this.score = score == null ? null : score.trim();
+    }
+
+    public String getMoney() {
+        return money;
+    }
+
+    public void setMoney(String money) {
+        this.money = money == null ? null : money.trim();
+    }
+
+    public String getIssend() {
+        return issend;
+    }
+
+    public void setIssend(String issend) {
+        this.issend = issend == null ? null : issend.trim();
+    }
+
+    public String getDrivernum() {
+        return drivernum;
+    }
+
+    public void setDrivernum(String drivernum) {
+        this.drivernum = drivernum == null ? null : drivernum.trim();
+    }
+
+    public String getDrivername() {
+        return drivername;
+    }
+
+    public void setDrivername(String drivername) {
+        this.drivername = drivername == null ? null : drivername.trim();
+    }
+
+    public Date getChulitime() {
+        return chulitime;
+    }
+
+    public void setChulitime(Date chulitime) {
+        this.chulitime = chulitime;
+    }
+
+    public String getChuliname() {
+        return chuliname;
+    }
+
+    public void setChuliname(String chuliname) {
+        this.chuliname = chuliname == null ? null : chuliname.trim();
+    }
+}

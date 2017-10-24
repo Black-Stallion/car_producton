@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.hqu.production_ms.mapper.BaoYangWarnMapper" >
+  <resultMap id="BaseResultMap" type="org.hqu.production_ms.domain.BaoYangWarn" >
+    <id column="warn_id" property="warnId" jdbcType="INTEGER" />
+    <result column="carnumber" property="carnumber" jdbcType="VARCHAR" />
+    <result column="total" property="total" jdbcType="VARCHAR" />
+    <result column="weihuName" property="weihuname" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+  </resultMap>
+  
+   <!-- 扩展的sql -->
+  <!-- 查询所有记录 -->
+	<select id="find" parameterType="baoYangWarn" resultMap="BaseResultMap">
+		SELECT
+			*
+		FROM 
+			c_car_baoyangWarn 
+			where status LIKE '%未读%'
+			
+	</select>
+	
+	<!-- 查询所单个记录 -->
+	<select id="selectSingleBaoYangWarn" parameterType="INTEGER" resultMap="BaseResultMap">
+		SELECT
+			*
+		FROM 
+			c_car_baoyangWarn
+		
+	</select>
+	
+
+	<update id="updateStatus" parameterType="INTEGER" >
+    update c_car_baoyangwarn
+    set  status = '已读'
+    where warn_id = #{warnId,jdbcType=INTEGER}
+  </update>
+  
+  <!-- 批量删除 -->
+	<delete id="deleteBatch">
+		DELETE
+		FROM
+			c_car_baoyangWarn
+		WHERE
+			warn_id IN
+		<foreach collection="array" item="id" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</delete>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    warn_id, carnumber, total, weihuName, status
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.hqu.production_ms.domain.BaoYangWarnExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from c_car_baoyangwarn
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from c_car_baoyangwarn
+    where warn_id = #{warnId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from c_car_baoyangwarn
+    where warn_id = #{warnId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.hqu.production_ms.domain.BaoYangWarnExample" >
+    delete from c_car_baoyangwarn
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.hqu.production_ms.domain.BaoYangWarn" >
+    insert into c_car_baoyangwarn (warn_id, carnumber, total, 
+      weihuName, status)
+    values (#{warnId,jdbcType=INTEGER}, #{carnumber,jdbcType=VARCHAR}, #{total,jdbcType=VARCHAR}, 
+      #{weihuname,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="org.hqu.production_ms.domain.BaoYangWarn" >
+    insert into c_car_baoyangwarn
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="warnId != null" >
+        warn_id,
+      </if>
+      <if test="carnumber != null" >
+        carnumber,
+      </if>
+      <if test="total != null" >
+        total,
+      </if>
+      <if test="weihuname != null" >
+        weihuName,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="warnId != null" >
+        #{warnId,jdbcType=INTEGER},
+      </if>
+      <if test="carnumber != null" >
+        #{carnumber,jdbcType=VARCHAR},
+      </if>
+      <if test="total != null" >
+        #{total,jdbcType=VARCHAR},
+      </if>
+      <if test="weihuname != null" >
+        #{weihuname,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.hqu.production_ms.domain.BaoYangWarnExample" resultType="java.lang.Integer" >
+    select count(*) from c_car_baoyangwarn
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update c_car_baoyangwarn
+    <set >
+      <if test="record.warnId != null" >
+        warn_id = #{record.warnId,jdbcType=INTEGER},
+      </if>
+      <if test="record.carnumber != null" >
+        carnumber = #{record.carnumber,jdbcType=VARCHAR},
+      </if>
+      <if test="record.total != null" >
+        total = #{record.total,jdbcType=VARCHAR},
+      </if>
+      <if test="record.weihuname != null" >
+        weihuName = #{record.weihuname,jdbcType=VARCHAR},
+      </if>
+      <if test="record.status != null" >
+        status = #{record.status,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update c_car_baoyangwarn
+    set warn_id = #{record.warnId,jdbcType=INTEGER},
+      carnumber = #{record.carnumber,jdbcType=VARCHAR},
+      total = #{record.total,jdbcType=VARCHAR},
+      weihuName = #{record.weihuname,jdbcType=VARCHAR},
+      status = #{record.status,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.hqu.production_ms.domain.BaoYangWarn" >
+    update c_car_baoyangwarn
+    <set >
+      <if test="carnumber != null" >
+        carnumber = #{carnumber,jdbcType=VARCHAR},
+      </if>
+      <if test="total != null" >
+        total = #{total,jdbcType=VARCHAR},
+      </if>
+      <if test="weihuname != null" >
+        weihuName = #{weihuname,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where warn_id = #{warnId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.hqu.production_ms.domain.BaoYangWarn" >
+    update c_car_baoyangwarn
+    set carnumber = #{carnumber,jdbcType=VARCHAR},
+      total = #{total,jdbcType=VARCHAR},
+      weihuName = #{weihuname,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR}
+    where warn_id = #{warnId,jdbcType=INTEGER}
+  </update>
+</mapper>

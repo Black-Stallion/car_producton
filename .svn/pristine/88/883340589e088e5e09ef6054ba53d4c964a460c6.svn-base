@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.hqu.production_ms.mapper.CarTireMapper" >
+  <resultMap id="BaseResultMap" type="org.hqu.production_ms.domain.CarTire" >
+    <id column="tire_id" property="tireId" jdbcType="INTEGER" />
+    <result column="changpai" property="changpai" jdbcType="VARCHAR" />
+    <result column="guige" property="guige" jdbcType="VARCHAR" />
+    <result column="taihao" property="taihao" jdbcType="VARCHAR" />
+    <result column="startDate" property="startdate" jdbcType="TIMESTAMP" />
+    <result column="endDate" property="enddate" jdbcType="TIMESTAMP" />
+    <result column="addKM" property="addkm" jdbcType="VARCHAR" />
+    <result column="why" property="why" jdbcType="VARCHAR" />
+    <result column="checkRecord" property="checkrecord" jdbcType="VARCHAR" />
+    <result column="checkRecord1" property="checkrecord1" jdbcType="VARCHAR" />
+    <result column="checkRecord2" property="checkrecord2" jdbcType="VARCHAR" />
+  </resultMap>
+   <!-- 查询所有记录 -->
+	<select id="find" parameterType="carTire" resultMap="BaseResultMap">
+		SELECT
+			*
+		FROM 
+			c_tire 
+	    ORDER BY 
+	    enddate
+	</select>
+	
+	<!-- 查询所单个记录 -->
+	<select id="selectSingleCarTire" parameterType="INTEGER" resultMap="BaseResultMap">
+		SELECT
+			*
+		FROM
+			c_tire
+		WHERE  tire_id = #{tireId}
+	</select>
+	
+  <!-- 批量删除 -->
+	<delete id="deleteBatch">
+		DELETE
+		FROM
+			c_tire
+		WHERE
+			tire_id IN
+		<foreach collection="array" item="id" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</delete>
+	<select id="searchCarTireByCarTireBand" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+			*
+		FROM
+			c_tire
+		WHERE
+			brand LIKE CONCAT( '%',#{brand},'%' ) 
+	</select>
+	
+	<select id="searchCarTireByCarTireNums" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+			*
+		FROM
+			c_tire
+		WHERE
+			checkNums =#{brand}
+	</select>
+	<select id="searchCarTireByCarTireCarXH" parameterType="string" resultMap="BaseResultMap">
+		*
+		FROM
+			c_tire
+		WHERE
+			typename = CONCAT( '%',#{typename},'%' ) 
+	</select>
+	
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    tire_id, changpai, guige, taihao, startDate, endDate, addKM, why, checkRecord, checkRecord1, 
+    checkRecord2
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.hqu.production_ms.domain.CarTireExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from c_tire
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from c_tire
+    where tire_id = #{tireId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from c_tire
+    where tire_id = #{tireId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.hqu.production_ms.domain.CarTireExample" >
+    delete from c_tire
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.hqu.production_ms.domain.CarTire" >
+    insert into c_tire (tire_id, changpai, guige, 
+      taihao, startDate, endDate, 
+      addKM, why, checkRecord, 
+      checkRecord1, checkRecord2)
+    values (#{tireId,jdbcType=INTEGER}, #{changpai,jdbcType=VARCHAR}, #{guige,jdbcType=VARCHAR}, 
+      #{taihao,jdbcType=VARCHAR}, #{startdate,jdbcType=TIMESTAMP}, #{enddate,jdbcType=TIMESTAMP}, 
+      #{addkm,jdbcType=VARCHAR}, #{why,jdbcType=VARCHAR}, #{checkrecord,jdbcType=VARCHAR}, 
+      #{checkrecord1,jdbcType=VARCHAR}, #{checkrecord2,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="org.hqu.production_ms.domain.CarTire" >
+    insert into c_tire
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="tireId != null" >
+        tire_id,
+      </if>
+      <if test="changpai != null" >
+        changpai,
+      </if>
+      <if test="guige != null" >
+        guige,
+      </if>
+      <if test="taihao != null" >
+        taihao,
+      </if>
+      <if test="startdate != null" >
+        startDate,
+      </if>
+      <if test="enddate != null" >
+        endDate,
+      </if>
+      <if test="addkm != null" >
+        addKM,
+      </if>
+      <if test="why != null" >
+        why,
+      </if>
+      <if test="checkrecord != null" >
+        checkRecord,
+      </if>
+      <if test="checkrecord1 != null" >
+        checkRecord1,
+      </if>
+      <if test="checkrecord2 != null" >
+        checkRecord2,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="tireId != null" >
+        #{tireId,jdbcType=INTEGER},
+      </if>
+      <if test="changpai != null" >
+        #{changpai,jdbcType=VARCHAR},
+      </if>
+      <if test="guige != null" >
+        #{guige,jdbcType=VARCHAR},
+      </if>
+      <if test="taihao != null" >
+        #{taihao,jdbcType=VARCHAR},
+      </if>
+      <if test="startdate != null" >
+        #{startdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="enddate != null" >
+        #{enddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="addkm != null" >
+        #{addkm,jdbcType=VARCHAR},
+      </if>
+      <if test="why != null" >
+        #{why,jdbcType=VARCHAR},
+      </if>
+      <if test="checkrecord != null" >
+        #{checkrecord,jdbcType=VARCHAR},
+      </if>
+      <if test="checkrecord1 != null" >
+        #{checkrecord1,jdbcType=VARCHAR},
+      </if>
+      <if test="checkrecord2 != null" >
+        #{checkrecord2,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.hqu.production_ms.domain.CarTireExample" resultType="java.lang.Integer" >
+    select count(*) from c_tire
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update c_tire
+    <set >
+      <if test="record.tireId != null" >
+        tire_id = #{record.tireId,jdbcType=INTEGER},
+      </if>
+      <if test="record.changpai != null" >
+        changpai = #{record.changpai,jdbcType=VARCHAR},
+      </if>
+      <if test="record.guige != null" >
+        guige = #{record.guige,jdbcType=VARCHAR},
+      </if>
+      <if test="record.taihao != null" >
+        taihao = #{record.taihao,jdbcType=VARCHAR},
+      </if>
+      <if test="record.startdate != null" >
+        startDate = #{record.startdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.enddate != null" >
+        endDate = #{record.enddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.addkm != null" >
+        addKM = #{record.addkm,jdbcType=VARCHAR},
+      </if>
+      <if test="record.why != null" >
+        why = #{record.why,jdbcType=VARCHAR},
+      </if>
+      <if test="record.checkrecord != null" >
+        checkRecord = #{record.checkrecord,jdbcType=VARCHAR},
+      </if>
+      <if test="record.checkrecord1 != null" >
+        checkRecord1 = #{record.checkrecord1,jdbcType=VARCHAR},
+      </if>
+      <if test="record.checkrecord2 != null" >
+        checkRecord2 = #{record.checkrecord2,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update c_tire
+    set tire_id = #{record.tireId,jdbcType=INTEGER},
+      changpai = #{record.changpai,jdbcType=VARCHAR},
+      guige = #{record.guige,jdbcType=VARCHAR},
+      taihao = #{record.taihao,jdbcType=VARCHAR},
+      startDate = #{record.startdate,jdbcType=TIMESTAMP},
+      endDate = #{record.enddate,jdbcType=TIMESTAMP},
+      addKM = #{record.addkm,jdbcType=VARCHAR},
+      why = #{record.why,jdbcType=VARCHAR},
+      checkRecord = #{record.checkrecord,jdbcType=VARCHAR},
+      checkRecord1 = #{record.checkrecord1,jdbcType=VARCHAR},
+      checkRecord2 = #{record.checkrecord2,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.hqu.production_ms.domain.CarTire" >
+    update c_tire
+    <set >
+      <if test="changpai != null" >
+        changpai = #{changpai,jdbcType=VARCHAR},
+      </if>
+      <if test="guige != null" >
+        guige = #{guige,jdbcType=VARCHAR},
+      </if>
+      <if test="taihao != null" >
+        taihao = #{taihao,jdbcType=VARCHAR},
+      </if>
+      <if test="startdate != null" >
+        startDate = #{startdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="enddate != null" >
+        endDate = #{enddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="addkm != null" >
+        addKM = #{addkm,jdbcType=VARCHAR},
+      </if>
+      <if test="why != null" >
+        why = #{why,jdbcType=VARCHAR},
+      </if>
+      <if test="checkrecord != null" >
+        checkRecord = #{checkrecord,jdbcType=VARCHAR},
+      </if>
+      <if test="checkrecord1 != null" >
+        checkRecord1 = #{checkrecord1,jdbcType=VARCHAR},
+      </if>
+      <if test="checkrecord2 != null" >
+        checkRecord2 = #{checkrecord2,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where tire_id = #{tireId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.hqu.production_ms.domain.CarTire" >
+    update c_tire
+    set changpai = #{changpai,jdbcType=VARCHAR},
+      guige = #{guige,jdbcType=VARCHAR},
+      taihao = #{taihao,jdbcType=VARCHAR},
+      startDate = #{startdate,jdbcType=TIMESTAMP},
+      endDate = #{enddate,jdbcType=TIMESTAMP},
+      addKM = #{addkm,jdbcType=VARCHAR},
+      why = #{why,jdbcType=VARCHAR},
+      checkRecord = #{checkrecord,jdbcType=VARCHAR},
+      checkRecord1 = #{checkrecord1,jdbcType=VARCHAR},
+      checkRecord2 = #{checkrecord2,jdbcType=VARCHAR}
+    where tire_id = #{tireId,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,115 @@
+package org.hqu.production_ms.domain;
+
+import java.util.Date;
+
+public class Shigu {
+    private Integer shiguId;
+
+    private Integer shigucode;
+
+    private Date shigutime;
+
+    private String place;
+
+    private String shigutype;
+
+    private String zeren;
+
+    private String yuanyin;
+
+    private String sunshi;
+
+    private String drivernum;
+
+    private String drivername;
+
+    private String carnumber;
+
+    public Integer getShiguId() {
+        return shiguId;
+    }
+
+    public void setShiguId(Integer shiguId) {
+        this.shiguId = shiguId;
+    }
+
+    public Integer getShigucode() {
+        return shigucode;
+    }
+
+    public void setShigucode(Integer shigucode) {
+        this.shigucode = shigucode;
+    }
+
+    public Date getShigutime() {
+        return shigutime;
+    }
+
+    public void setShigutime(Date shigutime) {
+        this.shigutime = shigutime;
+    }
+
+    public String getPlace() {
+        return place;
+    }
+
+    public void setPlace(String place) {
+        this.place = place == null ? null : place.trim();
+    }
+
+    public String getShigutype() {
+        return shigutype;
+    }
+
+    public void setShigutype(String shigutype) {
+        this.shigutype = shigutype == null ? null : shigutype.trim();
+    }
+
+    public String getZeren() {
+        return zeren;
+    }
+
+    public void setZeren(String zeren) {
+        this.zeren = zeren == null ? null : zeren.trim();
+    }
+
+    public String getYuanyin() {
+        return yuanyin;
+    }
+
+    public void setYuanyin(String yuanyin) {
+        this.yuanyin = yuanyin == null ? null : yuanyin.trim();
+    }
+
+    public String getSunshi() {
+        return sunshi;
+    }
+
+    public void setSunshi(String sunshi) {
+        this.sunshi = sunshi == null ? null : sunshi.trim();
+    }
+
+    public String getDrivernum() {
+        return drivernum;
+    }
+
+    public void setDrivernum(String drivernum) {
+        this.drivernum = drivernum == null ? null : drivernum.trim();
+    }
+
+    public String getDrivername() {
+        return drivername;
+    }
+
+    public void setDrivername(String drivername) {
+        this.drivername = drivername == null ? null : drivername.trim();
+    }
+
+    public String getCarnumber() {
+        return carnumber;
+    }
+
+    public void setCarnumber(String carnumber) {
+        this.carnumber = carnumber == null ? null : carnumber.trim();
+    }
+}

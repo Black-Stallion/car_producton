@@ -1,0 +1,848 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.hqu.production_ms.mapper.CarTypeMapper" >
+  <resultMap id="BaseResultMap" type="org.hqu.production_ms.domain.CarType" >
+    <id column="typeId" property="typeid" jdbcType="INTEGER" />
+    <result column="carXH" property="carxh" jdbcType="VARCHAR" />
+    <result column="brand" property="brand" jdbcType="VARCHAR" />
+    <result column="carCD" property="carcd" jdbcType="VARCHAR" />
+    <result column="engineID" property="engineid" jdbcType="VARCHAR" />
+    <result column="engineXH" property="enginexh" jdbcType="VARCHAR" />
+    <result column="fuelType" property="fueltype" jdbcType="VARCHAR" />
+    <result column="power" property="power" jdbcType="DECIMAL" />
+    <result column="paiLiang" property="pailiang" jdbcType="DECIMAL" />
+    <result column="factory" property="factory" jdbcType="VARCHAR" />
+    <result column="turnXS" property="turnxs" jdbcType="VARCHAR" />
+    <result column="frontLunJu" property="frontlunju" jdbcType="DECIMAL" />
+    <result column="afterLunJu" property="afterlunju" jdbcType="DECIMAL" />
+    <result column="tireNum" property="tirenum" jdbcType="INTEGER" />
+    <result column="frontTireGG" property="fronttiregg" jdbcType="VARCHAR" />
+    <result column="afterTireGG" property="aftertiregg" jdbcType="VARCHAR" />
+    <result column="gBTHPS" property="gbthps" jdbcType="DECIMAL" />
+    <result column="zhouju" property="zhouju" jdbcType="DECIMAL" />
+    <result column="zhoushu" property="zhoushu" jdbcType="DECIMAL" />
+    <result column="carWlong" property="carwlong" jdbcType="DECIMAL" />
+    <result column="carWwide" property="carwwide" jdbcType="DECIMAL" />
+    <result column="carWhigh" property="carwhigh" jdbcType="DECIMAL" />
+    <result column="carNlong" property="carnlong" jdbcType="DECIMAL" />
+    <result column="carNwide" property="carnwide" jdbcType="DECIMAL" />
+    <result column="carNhigh" property="carnhigh" jdbcType="DECIMAL" />
+    <result column="carQuality" property="carquality" jdbcType="DECIMAL" />
+    <result column="carCheckQuality" property="carcheckquality" jdbcType="DECIMAL" />
+    <result column="checkNums" property="checknums" jdbcType="INTEGER" />
+    <result column="tractionQuality" property="tractionquality" jdbcType="DECIMAL" />
+    <result column="cabNums" property="cabnums" jdbcType="INTEGER" />
+    <result column="cType" property="ctype" jdbcType="VARCHAR" />
+    <result column="typename" property="typename" jdbcType="VARCHAR" />
+  </resultMap>
+  <!-- 扩展的sql -->
+  <!-- 查询所有记录 -->
+	<select id="find" parameterType="carType" resultMap="BaseResultMap">
+		SELECT
+			typeId,
+			typename,
+			carXH,
+			cType,
+			brand,
+			carCD,
+			engineID,
+			engineXH,
+			fuelType,
+			power,
+			paiLiang,
+			factory,
+			turnXS,
+			frontLunJu,
+			afterLunJu,
+			tireNum,
+			frontTireGG,
+			afterTireGG,
+			 gBTHPS,
+			  zhouju,
+			  zhoushu,
+			  carWlong,
+			  carWwide,
+			  carWhigh,
+			  carNlong,
+			  carNwide,
+			  carNhigh,
+			 carQuality,
+			  carCheckQuality,
+			  checkNums,
+			  tractionQuality,
+			  cabNums
+		FROM 
+			c_type ORDER BY typename
+	</select>
+	
+	<!-- 查询所单个记录 -->
+	<select id="selectSingleCarType" parameterType="INTEGER" resultMap="BaseResultMap">
+		SELECT
+			typeId,
+			typename,
+			carXH,
+			cType,
+			brand,
+			carCD,
+			engineID,
+			engineXH,
+			fuelType,
+			power,
+			paiLiang,
+			factory,
+			turnXS,
+			frontLunJu,
+			afterLunJu,
+			tireNum,
+			frontTireGG,
+			afterTireGG,
+			 gBTHPS,
+			  zhouju,
+			  zhoushu,
+			  carWlong,
+			  carWwide,
+			  carWhigh,
+			  carNlong,
+			  carNwide,
+			  carNhigh,
+			 carQuality,
+			  carCheckQuality,
+			  checkNums,
+			  tractionQuality,
+			  cabNums
+		FROM
+			c_type
+		WHERE  typeId = #{typeid}
+	</select>
+	
+  <!-- 批量删除 -->
+	<delete id="deleteBatch">
+		DELETE
+		FROM
+			c_type
+		WHERE
+			typeId IN
+		<foreach collection="array" item="id" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</delete>
+	<select id="searchCarTypeByCarTypeBand" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+			typeId,
+			typename,
+			carXH,
+			cType,
+			brand,
+			carCD,
+			engineID,
+			engineXH,
+			fuelType,
+			power,
+			paiLiang,
+			factory,
+			turnXS,
+			frontLunJu,
+			afterLunJu,
+			tireNum,
+			frontTireGG,
+			afterTireGG,
+			 gBTHPS,
+			  zhouju,
+			  zhoushu,
+			  carWlong,
+			  carWwide,
+			  carWhigh,
+			  carNlong,
+			  carNwide,
+			  carNhigh,
+			 carQuality,
+			  carCheckQuality,
+			  checkNums,
+			  tractionQuality,
+			  cabNums
+		FROM
+			c_type
+		WHERE
+			brand LIKE CONCAT( '%',#{brand},'%' ) 
+	</select>
+	
+	<select id="searchCarTypeByCarTypeNums" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+			typeId,
+			typename,
+			carXH,
+			cType,
+			brand,
+			carCD,
+			engineID,
+			engineXH,
+			fuelType,
+			power,
+			paiLiang,
+			factory,
+			turnXS,
+			frontLunJu,
+			afterLunJu,
+			tireNum,
+			frontTireGG,
+			afterTireGG,
+			 gBTHPS,
+			  zhouju,
+			  zhoushu,
+			  carWlong,
+			  carWwide,
+			  carWhigh,
+			  carNlong,
+			  carNwide,
+			  carNhigh,
+			 carQuality,
+			  carCheckQuality,
+			  checkNums,
+			  tractionQuality,
+			  cabNums
+		FROM
+			c_type
+		WHERE
+			checkNums =#{brand}
+	</select>
+	<select id="searchCarTypeByCarTypeCarXH" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+			typeId,
+			typename,
+			carXH,
+			cType,
+			brand,
+			carCD,
+			engineID,
+			engineXH,
+			fuelType,
+			power,
+			paiLiang,
+			factory,
+			turnXS,
+			frontLunJu,
+			afterLunJu,
+			tireNum,
+			frontTireGG,
+			afterTireGG,
+			 gBTHPS,
+			  zhouju,
+			  zhoushu,
+			  carWlong,
+			  carWwide,
+			  carWhigh,
+			  carNlong,
+			  carNwide,
+			  carNhigh,
+			 carQuality,
+			  carCheckQuality,
+			  checkNums,
+			  tractionQuality,
+			  cabNums
+		FROM
+			c_type
+		WHERE
+			typename = CONCAT( '%',#{typename},'%' ) 
+	</select>
+	
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    typeId, carXH, brand, carCD, engineID, engineXH, fuelType, power, paiLiang, factory, 
+    turnXS, frontLunJu, afterLunJu, tireNum, frontTireGG, afterTireGG, gBTHPS, zhouju, 
+    zhoushu, carWlong, carWwide, carWhigh, carNlong, carNwide, carNhigh, carQuality, 
+    carCheckQuality, checkNums, tractionQuality, cabNums, cType, typename
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.hqu.production_ms.domain.CarTypeExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from c_type
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from c_type
+    where typeId = #{typeid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from c_type
+    where typeId = #{typeid,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.hqu.production_ms.domain.CarTypeExample" >
+    delete from c_type
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.hqu.production_ms.domain.CarType" >
+    insert into c_type (typeId, carXH, brand, 
+      carCD, engineID, engineXH, 
+      fuelType, power, paiLiang, 
+      factory, turnXS, frontLunJu, 
+      afterLunJu, tireNum, frontTireGG, 
+      afterTireGG, gBTHPS, zhouju, 
+      zhoushu, carWlong, carWwide, 
+      carWhigh, carNlong, carNwide, 
+      carNhigh, carQuality, carCheckQuality, 
+      checkNums, tractionQuality, cabNums, 
+      cType, typename)
+    values (#{typeid,jdbcType=INTEGER}, #{carxh,jdbcType=VARCHAR}, #{brand,jdbcType=VARCHAR}, 
+      #{carcd,jdbcType=VARCHAR}, #{engineid,jdbcType=VARCHAR}, #{enginexh,jdbcType=VARCHAR}, 
+      #{fueltype,jdbcType=VARCHAR}, #{power,jdbcType=DECIMAL}, #{pailiang,jdbcType=DECIMAL}, 
+      #{factory,jdbcType=VARCHAR}, #{turnxs,jdbcType=VARCHAR}, #{frontlunju,jdbcType=DECIMAL}, 
+      #{afterlunju,jdbcType=DECIMAL}, #{tirenum,jdbcType=INTEGER}, #{fronttiregg,jdbcType=VARCHAR}, 
+      #{aftertiregg,jdbcType=VARCHAR}, #{gbthps,jdbcType=DECIMAL}, #{zhouju,jdbcType=DECIMAL}, 
+      #{zhoushu,jdbcType=DECIMAL}, #{carwlong,jdbcType=DECIMAL}, #{carwwide,jdbcType=DECIMAL}, 
+      #{carwhigh,jdbcType=DECIMAL}, #{carnlong,jdbcType=DECIMAL}, #{carnwide,jdbcType=DECIMAL}, 
+      #{carnhigh,jdbcType=DECIMAL}, #{carquality,jdbcType=DECIMAL}, #{carcheckquality,jdbcType=DECIMAL}, 
+      #{checknums,jdbcType=INTEGER}, #{tractionquality,jdbcType=DECIMAL}, #{cabnums,jdbcType=INTEGER}, 
+      #{ctype,jdbcType=VARCHAR}, #{typename,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="org.hqu.production_ms.domain.CarType" >
+    insert into c_type
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="typeid != null" >
+        typeId,
+      </if>
+      <if test="carxh != null" >
+        carXH,
+      </if>
+      <if test="brand != null" >
+        brand,
+      </if>
+      <if test="carcd != null" >
+        carCD,
+      </if>
+      <if test="engineid != null" >
+        engineID,
+      </if>
+      <if test="enginexh != null" >
+        engineXH,
+      </if>
+      <if test="fueltype != null" >
+        fuelType,
+      </if>
+      <if test="power != null" >
+        power,
+      </if>
+      <if test="pailiang != null" >
+        paiLiang,
+      </if>
+      <if test="factory != null" >
+        factory,
+      </if>
+      <if test="turnxs != null" >
+        turnXS,
+      </if>
+      <if test="frontlunju != null" >
+        frontLunJu,
+      </if>
+      <if test="afterlunju != null" >
+        afterLunJu,
+      </if>
+      <if test="tirenum != null" >
+        tireNum,
+      </if>
+      <if test="fronttiregg != null" >
+        frontTireGG,
+      </if>
+      <if test="aftertiregg != null" >
+        afterTireGG,
+      </if>
+      <if test="gbthps != null" >
+        gBTHPS,
+      </if>
+      <if test="zhouju != null" >
+        zhouju,
+      </if>
+      <if test="zhoushu != null" >
+        zhoushu,
+      </if>
+      <if test="carwlong != null" >
+        carWlong,
+      </if>
+      <if test="carwwide != null" >
+        carWwide,
+      </if>
+      <if test="carwhigh != null" >
+        carWhigh,
+      </if>
+      <if test="carnlong != null" >
+        carNlong,
+      </if>
+      <if test="carnwide != null" >
+        carNwide,
+      </if>
+      <if test="carnhigh != null" >
+        carNhigh,
+      </if>
+      <if test="carquality != null" >
+        carQuality,
+      </if>
+      <if test="carcheckquality != null" >
+        carCheckQuality,
+      </if>
+      <if test="checknums != null" >
+        checkNums,
+      </if>
+      <if test="tractionquality != null" >
+        tractionQuality,
+      </if>
+      <if test="cabnums != null" >
+        cabNums,
+      </if>
+      <if test="ctype != null" >
+        cType,
+      </if>
+      <if test="typename != null" >
+        typename,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="typeid != null" >
+        #{typeid,jdbcType=INTEGER},
+      </if>
+      <if test="carxh != null" >
+        #{carxh,jdbcType=VARCHAR},
+      </if>
+      <if test="brand != null" >
+        #{brand,jdbcType=VARCHAR},
+      </if>
+      <if test="carcd != null" >
+        #{carcd,jdbcType=VARCHAR},
+      </if>
+      <if test="engineid != null" >
+        #{engineid,jdbcType=VARCHAR},
+      </if>
+      <if test="enginexh != null" >
+        #{enginexh,jdbcType=VARCHAR},
+      </if>
+      <if test="fueltype != null" >
+        #{fueltype,jdbcType=VARCHAR},
+      </if>
+      <if test="power != null" >
+        #{power,jdbcType=DECIMAL},
+      </if>
+      <if test="pailiang != null" >
+        #{pailiang,jdbcType=DECIMAL},
+      </if>
+      <if test="factory != null" >
+        #{factory,jdbcType=VARCHAR},
+      </if>
+      <if test="turnxs != null" >
+        #{turnxs,jdbcType=VARCHAR},
+      </if>
+      <if test="frontlunju != null" >
+        #{frontlunju,jdbcType=DECIMAL},
+      </if>
+      <if test="afterlunju != null" >
+        #{afterlunju,jdbcType=DECIMAL},
+      </if>
+      <if test="tirenum != null" >
+        #{tirenum,jdbcType=INTEGER},
+      </if>
+      <if test="fronttiregg != null" >
+        #{fronttiregg,jdbcType=VARCHAR},
+      </if>
+      <if test="aftertiregg != null" >
+        #{aftertiregg,jdbcType=VARCHAR},
+      </if>
+      <if test="gbthps != null" >
+        #{gbthps,jdbcType=DECIMAL},
+      </if>
+      <if test="zhouju != null" >
+        #{zhouju,jdbcType=DECIMAL},
+      </if>
+      <if test="zhoushu != null" >
+        #{zhoushu,jdbcType=DECIMAL},
+      </if>
+      <if test="carwlong != null" >
+        #{carwlong,jdbcType=DECIMAL},
+      </if>
+      <if test="carwwide != null" >
+        #{carwwide,jdbcType=DECIMAL},
+      </if>
+      <if test="carwhigh != null" >
+        #{carwhigh,jdbcType=DECIMAL},
+      </if>
+      <if test="carnlong != null" >
+        #{carnlong,jdbcType=DECIMAL},
+      </if>
+      <if test="carnwide != null" >
+        #{carnwide,jdbcType=DECIMAL},
+      </if>
+      <if test="carnhigh != null" >
+        #{carnhigh,jdbcType=DECIMAL},
+      </if>
+      <if test="carquality != null" >
+        #{carquality,jdbcType=DECIMAL},
+      </if>
+      <if test="carcheckquality != null" >
+        #{carcheckquality,jdbcType=DECIMAL},
+      </if>
+      <if test="checknums != null" >
+        #{checknums,jdbcType=INTEGER},
+      </if>
+      <if test="tractionquality != null" >
+        #{tractionquality,jdbcType=DECIMAL},
+      </if>
+      <if test="cabnums != null" >
+        #{cabnums,jdbcType=INTEGER},
+      </if>
+      <if test="ctype != null" >
+        #{ctype,jdbcType=VARCHAR},
+      </if>
+      <if test="typename != null" >
+        #{typename,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.hqu.production_ms.domain.CarTypeExample" resultType="java.lang.Integer" >
+    select count(*) from c_type
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update c_type
+    <set >
+      <if test="record.typeid != null" >
+        typeId = #{record.typeid,jdbcType=INTEGER},
+      </if>
+      <if test="record.carxh != null" >
+        carXH = #{record.carxh,jdbcType=VARCHAR},
+      </if>
+      <if test="record.brand != null" >
+        brand = #{record.brand,jdbcType=VARCHAR},
+      </if>
+      <if test="record.carcd != null" >
+        carCD = #{record.carcd,jdbcType=VARCHAR},
+      </if>
+      <if test="record.engineid != null" >
+        engineID = #{record.engineid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.enginexh != null" >
+        engineXH = #{record.enginexh,jdbcType=VARCHAR},
+      </if>
+      <if test="record.fueltype != null" >
+        fuelType = #{record.fueltype,jdbcType=VARCHAR},
+      </if>
+      <if test="record.power != null" >
+        power = #{record.power,jdbcType=DECIMAL},
+      </if>
+      <if test="record.pailiang != null" >
+        paiLiang = #{record.pailiang,jdbcType=DECIMAL},
+      </if>
+      <if test="record.factory != null" >
+        factory = #{record.factory,jdbcType=VARCHAR},
+      </if>
+      <if test="record.turnxs != null" >
+        turnXS = #{record.turnxs,jdbcType=VARCHAR},
+      </if>
+      <if test="record.frontlunju != null" >
+        frontLunJu = #{record.frontlunju,jdbcType=DECIMAL},
+      </if>
+      <if test="record.afterlunju != null" >
+        afterLunJu = #{record.afterlunju,jdbcType=DECIMAL},
+      </if>
+      <if test="record.tirenum != null" >
+        tireNum = #{record.tirenum,jdbcType=INTEGER},
+      </if>
+      <if test="record.fronttiregg != null" >
+        frontTireGG = #{record.fronttiregg,jdbcType=VARCHAR},
+      </if>
+      <if test="record.aftertiregg != null" >
+        afterTireGG = #{record.aftertiregg,jdbcType=VARCHAR},
+      </if>
+      <if test="record.gbthps != null" >
+        gBTHPS = #{record.gbthps,jdbcType=DECIMAL},
+      </if>
+      <if test="record.zhouju != null" >
+        zhouju = #{record.zhouju,jdbcType=DECIMAL},
+      </if>
+      <if test="record.zhoushu != null" >
+        zhoushu = #{record.zhoushu,jdbcType=DECIMAL},
+      </if>
+      <if test="record.carwlong != null" >
+        carWlong = #{record.carwlong,jdbcType=DECIMAL},
+      </if>
+      <if test="record.carwwide != null" >
+        carWwide = #{record.carwwide,jdbcType=DECIMAL},
+      </if>
+      <if test="record.carwhigh != null" >
+        carWhigh = #{record.carwhigh,jdbcType=DECIMAL},
+      </if>
+      <if test="record.carnlong != null" >
+        carNlong = #{record.carnlong,jdbcType=DECIMAL},
+      </if>
+      <if test="record.carnwide != null" >
+        carNwide = #{record.carnwide,jdbcType=DECIMAL},
+      </if>
+      <if test="record.carnhigh != null" >
+        carNhigh = #{record.carnhigh,jdbcType=DECIMAL},
+      </if>
+      <if test="record.carquality != null" >
+        carQuality = #{record.carquality,jdbcType=DECIMAL},
+      </if>
+      <if test="record.carcheckquality != null" >
+        carCheckQuality = #{record.carcheckquality,jdbcType=DECIMAL},
+      </if>
+      <if test="record.checknums != null" >
+        checkNums = #{record.checknums,jdbcType=INTEGER},
+      </if>
+      <if test="record.tractionquality != null" >
+        tractionQuality = #{record.tractionquality,jdbcType=DECIMAL},
+      </if>
+      <if test="record.cabnums != null" >
+        cabNums = #{record.cabnums,jdbcType=INTEGER},
+      </if>
+      <if test="record.ctype != null" >
+        cType = #{record.ctype,jdbcType=VARCHAR},
+      </if>
+      <if test="record.typename != null" >
+        typename = #{record.typename,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update c_type
+    set typeId = #{record.typeid,jdbcType=INTEGER},
+      carXH = #{record.carxh,jdbcType=VARCHAR},
+      brand = #{record.brand,jdbcType=VARCHAR},
+      carCD = #{record.carcd,jdbcType=VARCHAR},
+      engineID = #{record.engineid,jdbcType=VARCHAR},
+      engineXH = #{record.enginexh,jdbcType=VARCHAR},
+      fuelType = #{record.fueltype,jdbcType=VARCHAR},
+      power = #{record.power,jdbcType=DECIMAL},
+      paiLiang = #{record.pailiang,jdbcType=DECIMAL},
+      factory = #{record.factory,jdbcType=VARCHAR},
+      turnXS = #{record.turnxs,jdbcType=VARCHAR},
+      frontLunJu = #{record.frontlunju,jdbcType=DECIMAL},
+      afterLunJu = #{record.afterlunju,jdbcType=DECIMAL},
+      tireNum = #{record.tirenum,jdbcType=INTEGER},
+      frontTireGG = #{record.fronttiregg,jdbcType=VARCHAR},
+      afterTireGG = #{record.aftertiregg,jdbcType=VARCHAR},
+      gBTHPS = #{record.gbthps,jdbcType=DECIMAL},
+      zhouju = #{record.zhouju,jdbcType=DECIMAL},
+      zhoushu = #{record.zhoushu,jdbcType=DECIMAL},
+      carWlong = #{record.carwlong,jdbcType=DECIMAL},
+      carWwide = #{record.carwwide,jdbcType=DECIMAL},
+      carWhigh = #{record.carwhigh,jdbcType=DECIMAL},
+      carNlong = #{record.carnlong,jdbcType=DECIMAL},
+      carNwide = #{record.carnwide,jdbcType=DECIMAL},
+      carNhigh = #{record.carnhigh,jdbcType=DECIMAL},
+      carQuality = #{record.carquality,jdbcType=DECIMAL},
+      carCheckQuality = #{record.carcheckquality,jdbcType=DECIMAL},
+      checkNums = #{record.checknums,jdbcType=INTEGER},
+      tractionQuality = #{record.tractionquality,jdbcType=DECIMAL},
+      cabNums = #{record.cabnums,jdbcType=INTEGER},
+      cType = #{record.ctype,jdbcType=VARCHAR},
+      typename = #{record.typename,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.hqu.production_ms.domain.CarType" >
+    update c_type
+    <set >
+      <if test="carxh != null" >
+        carXH = #{carxh,jdbcType=VARCHAR},
+      </if>
+      <if test="brand != null" >
+        brand = #{brand,jdbcType=VARCHAR},
+      </if>
+      <if test="carcd != null" >
+        carCD = #{carcd,jdbcType=VARCHAR},
+      </if>
+      <if test="engineid != null" >
+        engineID = #{engineid,jdbcType=VARCHAR},
+      </if>
+      <if test="enginexh != null" >
+        engineXH = #{enginexh,jdbcType=VARCHAR},
+      </if>
+      <if test="fueltype != null" >
+        fuelType = #{fueltype,jdbcType=VARCHAR},
+      </if>
+      <if test="power != null" >
+        power = #{power,jdbcType=DECIMAL},
+      </if>
+      <if test="pailiang != null" >
+        paiLiang = #{pailiang,jdbcType=DECIMAL},
+      </if>
+      <if test="factory != null" >
+        factory = #{factory,jdbcType=VARCHAR},
+      </if>
+      <if test="turnxs != null" >
+        turnXS = #{turnxs,jdbcType=VARCHAR},
+      </if>
+      <if test="frontlunju != null" >
+        frontLunJu = #{frontlunju,jdbcType=DECIMAL},
+      </if>
+      <if test="afterlunju != null" >
+        afterLunJu = #{afterlunju,jdbcType=DECIMAL},
+      </if>
+      <if test="tirenum != null" >
+        tireNum = #{tirenum,jdbcType=INTEGER},
+      </if>
+      <if test="fronttiregg != null" >
+        frontTireGG = #{fronttiregg,jdbcType=VARCHAR},
+      </if>
+      <if test="aftertiregg != null" >
+        afterTireGG = #{aftertiregg,jdbcType=VARCHAR},
+      </if>
+      <if test="gbthps != null" >
+        gBTHPS = #{gbthps,jdbcType=DECIMAL},
+      </if>
+      <if test="zhouju != null" >
+        zhouju = #{zhouju,jdbcType=DECIMAL},
+      </if>
+      <if test="zhoushu != null" >
+        zhoushu = #{zhoushu,jdbcType=DECIMAL},
+      </if>
+      <if test="carwlong != null" >
+        carWlong = #{carwlong,jdbcType=DECIMAL},
+      </if>
+      <if test="carwwide != null" >
+        carWwide = #{carwwide,jdbcType=DECIMAL},
+      </if>
+      <if test="carwhigh != null" >
+        carWhigh = #{carwhigh,jdbcType=DECIMAL},
+      </if>
+      <if test="carnlong != null" >
+        carNlong = #{carnlong,jdbcType=DECIMAL},
+      </if>
+      <if test="carnwide != null" >
+        carNwide = #{carnwide,jdbcType=DECIMAL},
+      </if>
+      <if test="carnhigh != null" >
+        carNhigh = #{carnhigh,jdbcType=DECIMAL},
+      </if>
+      <if test="carquality != null" >
+        carQuality = #{carquality,jdbcType=DECIMAL},
+      </if>
+      <if test="carcheckquality != null" >
+        carCheckQuality = #{carcheckquality,jdbcType=DECIMAL},
+      </if>
+      <if test="checknums != null" >
+        checkNums = #{checknums,jdbcType=INTEGER},
+      </if>
+      <if test="tractionquality != null" >
+        tractionQuality = #{tractionquality,jdbcType=DECIMAL},
+      </if>
+      <if test="cabnums != null" >
+        cabNums = #{cabnums,jdbcType=INTEGER},
+      </if>
+      <if test="ctype != null" >
+        cType = #{ctype,jdbcType=VARCHAR},
+      </if>
+      <if test="typename != null" >
+        typename = #{typename,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where typeId = #{typeid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.hqu.production_ms.domain.CarType" >
+    update c_type
+    set carXH = #{carxh,jdbcType=VARCHAR},
+      brand = #{brand,jdbcType=VARCHAR},
+      carCD = #{carcd,jdbcType=VARCHAR},
+      engineID = #{engineid,jdbcType=VARCHAR},
+      engineXH = #{enginexh,jdbcType=VARCHAR},
+      fuelType = #{fueltype,jdbcType=VARCHAR},
+      power = #{power,jdbcType=DECIMAL},
+      paiLiang = #{pailiang,jdbcType=DECIMAL},
+      factory = #{factory,jdbcType=VARCHAR},
+      turnXS = #{turnxs,jdbcType=VARCHAR},
+      frontLunJu = #{frontlunju,jdbcType=DECIMAL},
+      afterLunJu = #{afterlunju,jdbcType=DECIMAL},
+      tireNum = #{tirenum,jdbcType=INTEGER},
+      frontTireGG = #{fronttiregg,jdbcType=VARCHAR},
+      afterTireGG = #{aftertiregg,jdbcType=VARCHAR},
+      gBTHPS = #{gbthps,jdbcType=DECIMAL},
+      zhouju = #{zhouju,jdbcType=DECIMAL},
+      zhoushu = #{zhoushu,jdbcType=DECIMAL},
+      carWlong = #{carwlong,jdbcType=DECIMAL},
+      carWwide = #{carwwide,jdbcType=DECIMAL},
+      carWhigh = #{carwhigh,jdbcType=DECIMAL},
+      carNlong = #{carnlong,jdbcType=DECIMAL},
+      carNwide = #{carnwide,jdbcType=DECIMAL},
+      carNhigh = #{carnhigh,jdbcType=DECIMAL},
+      carQuality = #{carquality,jdbcType=DECIMAL},
+      carCheckQuality = #{carcheckquality,jdbcType=DECIMAL},
+      checkNums = #{checknums,jdbcType=INTEGER},
+      tractionQuality = #{tractionquality,jdbcType=DECIMAL},
+      cabNums = #{cabnums,jdbcType=INTEGER},
+      cType = #{ctype,jdbcType=VARCHAR},
+      typename = #{typename,jdbcType=VARCHAR}
+    where typeId = #{typeid,jdbcType=INTEGER}
+  </update>
+</mapper>

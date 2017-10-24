@@ -1,0 +1,51 @@
+package org.hqu.production_ms.mapper;
+
+import java.util.List;
+import org.apache.ibatis.annotations.Param;
+import org.hqu.production_ms.domain.CarSend;
+import org.hqu.production_ms.domain.CarSendExample;
+import org.hqu.production_ms.domain.po.CarSendPO;
+
+public interface CarSendMapper {
+	
+	//扩展的mapper接口方法
+	int deleteBatch(int[] ids);
+	
+	List<CarSend> find();
+	
+	List<CarSend> find1();
+	
+	List<CarSend> findByDepartment();
+	
+	List<CarSend> getXX();
+	
+	List<CarSend> searchCarSendByCarSendDriverfrom(String brand);
+
+	List<CarSend> searchCarSendByCarSendAA(String checkNums);
+
+	List<CarSend> searchCarSendByCarSendName(String carXH);
+	
+	CarSend selectSingleCarSend(int applyId);
+		//逆向工程生成的mapper接口
+    int countByExample(CarSendExample example);
+
+    int deleteByExample(CarSendExample example);
+
+    int deleteByPrimaryKey(Integer sendId);
+
+    int insert(CarSendPO record);
+
+    int insertSelective(CarSend record);
+
+    List<CarSend> selectByExample(CarSendExample example);
+
+    CarSend selectByPrimaryKey(Integer sendId);
+
+    int updateByExampleSelective(@Param("record") CarSend record, @Param("example") CarSendExample example);
+
+    int updateByExample(@Param("record") CarSend record, @Param("example") CarSendExample example);
+
+    int updateByPrimaryKeySelective(CarSendPO record);
+
+    int updateByPrimaryKey(CarSendPO record);
+}

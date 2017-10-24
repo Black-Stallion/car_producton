@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.hqu.production_ms.mapper.CarFoldMapper" >
+  <resultMap id="BaseResultMap" type="org.hqu.production_ms.domain.CarFold" >
+    <id column="fold_id" property="foldId" jdbcType="INTEGER" />
+    <result column="image" property="image" jdbcType="VARCHAR" />
+    <result column="fold" property="fold" jdbcType="VARCHAR" />
+    <result column="datetime" property="datetime" jdbcType="TIMESTAMP" />
+    <result column="user" property="user" jdbcType="VARCHAR" />
+    <result column="bei" property="bei" jdbcType="VARCHAR" />
+    <result column="bei2" property="bei2" jdbcType="VARCHAR" />
+    <association property="department" javaType="department">
+		<id column="department_id" property="departmentId" jdbcType="VARCHAR" />
+	    <result column="department_name" property="departmentName" jdbcType="VARCHAR" />
+	    <result column="fatherdep" property="fatherdep" jdbcType="VARCHAR" />
+	    <result column="level" property="level" jdbcType="INTEGER" />
+	</association>
+  </resultMap>
+   <select id="find" parameterType="carFold" resultMap="BaseResultMap">
+		SELECT
+			fold_id,
+			image,
+			datetime,
+			fold,
+			user,
+			bei,
+			bei2,
+			department.department_id,
+			department.department_name
+		FROM 
+			c_fold
+			LEFT JOIN department ON c_fold.bei2 = department.department_id
+			order by datetime desc
+	</select>
+	 <select id="find1" parameterType="String" resultMap="BaseResultMap">
+		SELECT
+			fold_id,
+			image,
+			datetime,
+			user,
+			fold,
+			bei,
+			bei2,
+			department.department_id,
+			department.department_name
+		FROM 
+			c_fold
+			LEFT JOIN department ON c_fold.bei2 = department.department_id
+			where 
+			department.department_id =#{id}
+			order by datetime desc
+	</select>
+	<select id="selectSingleCarFold" parameterType="INTEGER" resultMap="BaseResultMap">
+		SELECT
+			fold_id,
+			image,
+			datetime,
+			user,
+			fold,
+			bei,
+			bei2,
+			department.department_id,
+			department.department_name
+		FROM 
+			c_fold
+			LEFT JOIN department ON c_fold.bei2 = department.department_id
+		WHERE  fold_id = #{Id}
+	</select>
+	<delete id="deleteBatch">
+		DELETE
+		FROM
+			c_fold
+		WHERE
+			fold_id IN
+		<foreach collection="array" item="id" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</delete>
+	<select id="searchCarFoldByCarFoldDriverfrom" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+			fold_id,
+			image,
+			datetime,
+			user,
+			fold,
+			bei,
+			bei2,
+			department.department_id,
+			department.department_name
+		FROM 
+			c_fold
+			LEFT JOIN department ON c_fold.bei2 = department.department_id
+		WHERE
+			user LIKE CONCAT( '%',#{user},'%' ) 
+			order by datetime desc
+	</select>
+	
+	<select id="searchCarFoldByCarFoldAA" parameterType="string" resultMap="BaseResultMap">
+	SELECT
+			fold_id,
+			image,
+			datetime,
+			user,
+			fold,
+			bei,
+			bei2,
+			department.department_id,
+			department.department_name
+		FROM 
+			c_fold
+			LEFT JOIN department ON c_fold.bei2 = department.department_id
+		WHERE
+			fold LIKE CONCAT( '%',#{fold},'%' )
+			order by datetime desc
+	</select>
+	<select id="searchCarFoldByCarFoldDriverfrom1" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+			fold_id,
+			image,
+			datetime,
+			user,
+			fold,
+			bei,
+			bei2,
+			department.department_id,
+			department.department_name
+		FROM 
+			c_fold
+			LEFT JOIN department ON c_fold.bei2 = department.department_id
+		WHERE
+			department.department_id =#{0}
+			and
+			user LIKE CONCAT( '%',#{1},'%' ) 
+			order by datetime desc
+	</select>
+	
+	<select id="searchCarFoldByCarFoldAA1" parameterType="string" resultMap="BaseResultMap">
+	SELECT
+			fold_id,
+			image,
+			datetime,
+			user,
+			fold,
+			bei,
+			bei2,
+			department.department_id,
+			department.department_name
+		FROM 
+			c_fold
+			LEFT JOIN department ON c_fold.bei2 = department.department_id
+		WHERE
+			department.department_id =#{0}
+			and
+			fold LIKE CONCAT( '%',#{1},'%' )
+			order by datetime desc
+	</select>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    fold_id, image, fold, datetime, user, bei, bei2
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.hqu.production_ms.domain.CarFoldExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from c_fold
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from c_fold
+    where fold_id = #{foldId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from c_fold
+    where fold_id = #{foldId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.hqu.production_ms.domain.CarFoldExample" >
+    delete from c_fold
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.hqu.production_ms.domain.CarFold" >
+    insert into c_fold (fold_id, image, fold, 
+      datetime, user, bei, 
+      bei2)
+    values (#{foldId,jdbcType=INTEGER}, #{image,jdbcType=VARCHAR}, #{fold,jdbcType=VARCHAR}, 
+      #{datetime,jdbcType=TIMESTAMP}, #{user,jdbcType=VARCHAR}, #{bei,jdbcType=VARCHAR}, 
+      #{bei2,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="org.hqu.production_ms.domain.CarFold" >
+    insert into c_fold
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="foldId != null" >
+        fold_id,
+      </if>
+      <if test="image != null" >
+        image,
+      </if>
+      <if test="fold != null" >
+        fold,
+      </if>
+      <if test="datetime != null" >
+        datetime,
+      </if>
+      <if test="user != null" >
+        user,
+      </if>
+      <if test="bei != null" >
+        bei,
+      </if>
+      <if test="bei2 != null" >
+        bei2,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="foldId != null" >
+        #{foldId,jdbcType=INTEGER},
+      </if>
+      <if test="image != null" >
+        #{image,jdbcType=VARCHAR},
+      </if>
+      <if test="fold != null" >
+        #{fold,jdbcType=VARCHAR},
+      </if>
+      <if test="datetime != null" >
+        #{datetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="user != null" >
+        #{user,jdbcType=VARCHAR},
+      </if>
+      <if test="bei != null" >
+        #{bei,jdbcType=VARCHAR},
+      </if>
+      <if test="bei2 != null" >
+        #{bei2,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.hqu.production_ms.domain.CarFoldExample" resultType="java.lang.Integer" >
+    select count(*) from c_fold
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update c_fold
+    <set >
+      <if test="record.foldId != null" >
+        fold_id = #{record.foldId,jdbcType=INTEGER},
+      </if>
+      <if test="record.image != null" >
+        image = #{record.image,jdbcType=VARCHAR},
+      </if>
+      <if test="record.fold != null" >
+        fold = #{record.fold,jdbcType=VARCHAR},
+      </if>
+      <if test="record.datetime != null" >
+        datetime = #{record.datetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.user != null" >
+        user = #{record.user,jdbcType=VARCHAR},
+      </if>
+      <if test="record.bei != null" >
+        bei = #{record.bei,jdbcType=VARCHAR},
+      </if>
+      <if test="record.bei2 != null" >
+        bei2 = #{record.bei2,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update c_fold
+    set fold_id = #{record.foldId,jdbcType=INTEGER},
+      image = #{record.image,jdbcType=VARCHAR},
+      fold = #{record.fold,jdbcType=VARCHAR},
+      datetime = #{record.datetime,jdbcType=TIMESTAMP},
+      user = #{record.user,jdbcType=VARCHAR},
+      bei = #{record.bei,jdbcType=VARCHAR},
+      bei2 = #{record.bei2,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.hqu.production_ms.domain.CarFold" >
+    update c_fold
+    <set >
+      <if test="image != null" >
+        image = #{image,jdbcType=VARCHAR},
+      </if>
+      <if test="fold != null" >
+        fold = #{fold,jdbcType=VARCHAR},
+      </if>
+      <if test="datetime != null" >
+        datetime = #{datetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="user != null" >
+        user = #{user,jdbcType=VARCHAR},
+      </if>
+      <if test="bei != null" >
+        bei = #{bei,jdbcType=VARCHAR},
+      </if>
+      <if test="bei2 != null" >
+        bei2 = #{bei2,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where fold_id = #{foldId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.hqu.production_ms.domain.CarFold" >
+    update c_fold
+    set image = #{image,jdbcType=VARCHAR},
+      fold = #{fold,jdbcType=VARCHAR},
+      datetime = #{datetime,jdbcType=TIMESTAMP},
+      user = #{user,jdbcType=VARCHAR},
+      bei = #{bei,jdbcType=VARCHAR},
+      bei2 = #{bei2,jdbcType=VARCHAR}
+    where fold_id = #{foldId,jdbcType=INTEGER}
+  </update>
+</mapper>

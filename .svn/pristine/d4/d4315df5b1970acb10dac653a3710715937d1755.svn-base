@@ -1,0 +1,123 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<link href="js/kindeditor-4.1.10/themes/default/default.css" type="text/css" rel="stylesheet">
+
+<link href="css/uploadfile.css" rel="stylesheet"> 
+<script src="js/jquery.uploadfile.js"></script>
+
+<script type="text/javascript" charset="utf-8" src="js/kindeditor-4.1.10/kindeditor-all-min.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/kindeditor-4.1.10/lang/zh_CN.js"></script>
+<div style="padding:10px 10px 10px 10px">
+	<form id="permissionForm" class="itemForm" method="post"> 
+           	<input type="hidden" name="roleId"/>
+            <span style="font-weight: bold;">车辆信息管理：</span>
+			<label><input name="permissionOption" type="checkbox" value="11" />车辆新增 </label> 
+			<label><input name="permissionOption" type="checkbox" value="12" />车辆修改 </label> 
+			<label><input name="permissionOption" type="checkbox" value="13" />车辆删除 </label> 
+			<br><br>
+            <span style="font-weight: bold;">车辆异动管理：</span>
+			<label><input name="permissionOption" type="checkbox" value="21" />异动新增 </label> 
+			<label><input name="permissionOption" type="checkbox" value="22" />异动修改 </label> 
+			<label><input name="permissionOption" type="checkbox" value="23" />异动删除 </label> 
+			<br><br>
+            <span style="font-weight: bold;">用车管理：</span>
+			<label><input name="permissionOption" type="checkbox" value="31" />用车新增 </label> 
+			<label><input name="permissionOption" type="checkbox" value="32" />用车修改 </label> 
+			<label><input name="permissionOption" type="checkbox" value="33" />用车删除 </label> 
+			<br><br>
+			<span style="font-weight: bold;">车辆维保：</span>
+			<label><input name="permissionOption" type="checkbox" value="61" />维保新增 </label> 
+			<label><input name="permissionOption" type="checkbox" value="62" />维保修改 </label> 
+			<label><input name="permissionOption" type="checkbox" value="63" />维保删除 </label> 
+			<br><br>
+			<span style="font-weight: bold;">技术月度检查：</span>
+			<label><input name="permissionOption" type="checkbox" value="71" />检查新增 </label> 
+			<label><input name="permissionOption" type="checkbox" value="72" />检查修改 </label> 
+			<label><input name="permissionOption" type="checkbox" value="73" />检查删除 </label> 
+			<br><br>
+			<span style="font-weight: bold;">运行状况管理：</span>
+			<label><input name="permissionOption" type="checkbox" value="81" />状况新增 </label> 
+			<label><input name="permissionOption" type="checkbox" value="82" />状况修改 </label> 
+			<label><input name="permissionOption" type="checkbox" value="83" />状况删除 </label>
+			<br><br>
+			<span style="font-weight: bold;">交通事故管理：</span>
+			<label><input name="permissionOption" type="checkbox" value="91" />事故新增 </label> 
+			<label><input name="permissionOption" type="checkbox" value="92" />事故修改 </label> 
+			<label><input name="permissionOption" type="checkbox" value="93" />事故删除 </label> 
+			<br><br>
+			<span style="font-weight: bold;">违章记录管理：</span>
+			<label><input name="permissionOption" type="checkbox" value="101" />记录新增 </label> 
+			<label><input name="permissionOption" type="checkbox" value="102" />记录修改 </label> 
+			<label><input name="permissionOption" type="checkbox" value="103" />记录删除 </label> 
+			<br><br>
+			<span style="font-weight: bold;">车间管理：</span>
+			<label><input name="permissionOption" type="checkbox" value="41" />车间新增 </label> 
+			<label><input name="permissionOption" type="checkbox" value="42" />车间修改 </label> 
+			<label><input name="permissionOption" type="checkbox" value="43" />车间删除 </label> 
+			<br><br>
+			<span style="font-weight: bold;">司机管理：</span>
+			<label><input name="permissionOption" type="checkbox" value="51" />司机新增 </label> 
+			<label><input name="permissionOption" type="checkbox" value="52" />司机修改 </label> 
+			<label><input name="permissionOption" type="checkbox" value="53" />司机删除 </label> 
+			<br><br>
+			<span style="font-weight: bold;">用户管理：</span>
+			<label><input name="permissionOption" type="checkbox" value="201" />用户新增 </label> 
+			<label><input name="permissionOption" type="checkbox" value="202" />用户修改 </label> 
+			<label><input name="permissionOption" type="checkbox" value="203" />用户删除 </label> 
+			<br><br>
+			<span style="font-weight: bold;">角色管理：</span>
+			<label><input name="permissionOption" type="checkbox" value="211" />角色新增 </label> 
+			<label><input name="permissionOption" type="checkbox" value="212" />角色修改 </label> 
+			<label><input name="permissionOption" type="checkbox" value="213" />角色删除 </label> 
+			<br><br><br>
+	</form>
+	<div style="padding:5px">
+	    <a href="javascript:void(0)" class="easyui-linkbutton" onclick="updatePermission()">保存</a>
+	</div>
+</div>
+<script type="text/javascript">
+	function rolePermissionInit(){
+		var roleId = $('#permissionForm [name=roleId]').val();
+		$.get("permission/get_permission", {roleId : roleId}, function(data){
+			//获得所要回显的值，此处为","分割的字符串
+	        var checkeds = data.sysPermissionId;
+			if(checkeds != '' && checkeds != null){
+				//拆分为字符串数组
+		        checkArray =checkeds.split(",");
+		    	//获得所有的复选框对象
+			    var checkBoxAll = $("input[name='permissionOption']");
+			    //获得所有复选框的value值，然后，用checkArray中的值和他们比较，如果有，则说明该复选框被选中
+			    for(var i=0;i<checkArray.length-1;i++){
+				    //获取所有复选框对象的value属性，然后，用checkArray[i]和他们匹配，如果有，则说明他应被选中
+				    $.each(checkBoxAll,function(j,checkbox){
+					    //获取复选框的value属性
+					    var checkValue=$(checkbox).val();
+					    
+					    if(checkArray[i]==checkValue){
+					    	$(checkbox).prop("checked",true);
+					    }
+				    });
+			   }
+			}
+		}); 
+	}
+	
+	function updatePermission(){
+    	var permission = '';
+    	if($("input[name='permissionOption']:checkbox:checked").length>0){
+			$("input[name='permissionOption']:checkbox:checked").each(function(){
+				permission += $(this).val()+',';
+			}); 
+		}
+		var roleId = $("#permissionForm [name=roleId]").val();
+		$.post('permission/update_by_roleid', { roleId : roleId, permission : permission }, function(data){
+			if(data.status == 200){
+				$("#permissionWindow").window("close");
+				$("#roleList").datagrid("reload");
+				$.messager.alert("操作提示", "更新权限成功！");
+			}else{
+				$.messager.alert("操作提示", "更新权限失败！","error");
+			}
+		});
+    }
+	
+</script>

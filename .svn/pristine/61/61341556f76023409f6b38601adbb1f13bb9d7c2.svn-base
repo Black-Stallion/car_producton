@@ -1,0 +1,666 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.hqu.production_ms.mapper.CarApproveMapper" >
+  <resultMap id="BaseResultMap" type="org.hqu.production_ms.domain.CarApprove" >
+    <id column="apply_id" property="applyId" jdbcType="INTEGER" />
+    <result column="bianhao" property="bianhao" jdbcType="VARCHAR" />
+    <result column="applyname" property="applyname" jdbcType="VARCHAR" />
+    <result column="approve" property="approve" jdbcType="VARCHAR" />
+    <result column="people" property="people" jdbcType="INTEGER" />
+    <result column="thing" property="thing" jdbcType="VARCHAR" />
+    <result column="days" property="days" jdbcType="INTEGER" />
+    <result column="outtime" property="outtime" jdbcType="TIMESTAMP" />
+    <result column="applytime" property="applytime" jdbcType="TIMESTAMP" />
+    <result column="approvetime" property="approvetime" jdbcType="TIMESTAMP" />
+    <result column="driver" property="driver" jdbcType="VARCHAR" />
+    <result column="stats" property="stats" jdbcType="VARCHAR" />
+    <result column="notes" property="notes" jdbcType="VARCHAR" />
+    <result column="usenature" property="usenature" jdbcType="VARCHAR" />
+  <association property="carRegister" javaType="carRegister">
+		<id column="car_id" property="carId" jdbcType="INTEGER" />
+	    <result column="carnumber" property="carnumber" jdbcType="VARCHAR" />
+	</association>
+	<association property="department" javaType="department">
+		<id column="department_id" property="departmentId" jdbcType="VARCHAR" />
+	    <result column="department_name" property="departmentName" jdbcType="VARCHAR" />
+	    <result column="fatherdep" property="fatherdep" jdbcType="VARCHAR" />
+	</association>
+   <association property="carDriver" javaType="carDriver">
+		<id column="driver_id" property="driverId" jdbcType="INTEGER" />
+	    <result column="drvierName" property="drviername" jdbcType="VARCHAR" />
+	</association>
+  </resultMap>
+  <select id="find" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+				apply_id,
+			   bianhao ,
+			   applyname,
+			   approve,
+			   people,
+			   thing,
+			   days,
+			   outtime,
+			   applytime,
+			   approvetime,
+			   driver,
+			   c_apply.usenature,
+			   stats,
+			   notes,
+			   c_register.car_id,
+			   carnumber,
+			   department.department_id,
+			   department.department_name,
+			   fatherdep,
+			   c_driver.driver_id,
+			   drviername
+		FROM 
+			c_apply
+			LEFT JOIN c_register ON c_apply.car_id = c_apply.car_id
+			LEFT JOIN department ON c_apply.department_id = department.department_id
+			LEFT JOIN c_driver ON c_apply.driver_id = c_driver.driver_id
+		WHERE 
+			0 = 0
+			and stats='未审批'
+			and approve = #{approve}
+	</select>
+	
+	<select id="find1" parameterType="String" resultMap="BaseResultMap">
+		SELECT
+				apply_id,
+			   bianhao ,
+			   applyname,
+			   approve,
+			   people,
+			   thing,
+			   days,
+			   outtime,
+			   applytime,
+			   approvetime,
+			   driver,
+			   c_apply.usenature,
+			   stats,
+			   notes,
+			   c_register.car_id,
+			   carnumber,
+			   department.department_id,
+			  department.department_name,
+			   fatherdep,
+			   c_driver.driver_id,
+			   drviername
+		FROM 
+			c_apply
+			LEFT JOIN c_register ON c_apply.car_id = c_apply.car_id
+			LEFT JOIN department ON c_apply.department_id = department.department_id
+			LEFT JOIN c_driver ON c_apply.driver_id = c_driver.driver_id
+		WHERE 
+			0 = 0
+			and approve = #{0}
+			and c_apply.department_id=#{1}
+			
+			and stats='未审批'
+	</select>
+	
+	<select id="getXX" parameterType="carRegister" resultMap="BaseResultMap">
+		SELECT
+			*
+		FROM 
+			c_apply
+			order by applytime
+	</select>
+	<select id="findByDepartment" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+				apply_id,
+			   bianhao ,
+			   applyname,
+			   approve,
+			   people,
+			   thing,
+			   days,
+			   outtime,
+			   applytime,
+			   approvetime,
+			   driver,
+			   c_apply.usenature,
+			   stats,
+			   notes,
+			   c_register.car_id,
+			   carnumber,
+			   department.department_id,
+			   department_name,
+			   fatherdep,
+			   c_driver.driver_id,
+			   drviername
+		FROM 
+			c_apply
+			LEFT JOIN c_register ON c_apply.car_id = c_apply.car_id
+			LEFT JOIN department ON c_apply.department_id = department.department_id
+			LEFT JOIN c_driver ON c_apply.driver_id = c_driver.driver_id
+		WHERE 
+			0 = 0
+		<if test="departmentId!=null">
+			and department_id=#{departmentId}
+		</if>
+		order by applytime
+	</select>
+	
+	<!-- 查询所单个记录 -->
+	<select id="selectSingleApprove" parameterType="INTEGER" resultMap="BaseResultMap">
+		SELECT
+			   apply_id,
+			   bianhao ,
+			   applyname,
+			   approve,
+			   people,
+			   thing,
+			   days,
+			   outtime,
+			   applytime,
+			   approvetime,
+			   driver,
+			   c_apply.usenature,
+			   stats,
+			   notes,
+			   c_register.car_id,
+			   carnumber,
+			   department.department_id,
+			   department_name,
+			   fatherdep,
+			   c_driver.driver_id,
+			   drviername
+		FROM 
+			c_apply 
+			LEFT JOIN c_register ON c_apply.car_id = c_apply.car_id
+			LEFT JOIN department ON c_apply.department_id = department.department_id
+			LEFT JOIN c_driver ON c_apply.driver_id = c_driver.driver_id
+		WHERE 
+			apply_id = #{applyId}
+	</select>
+	
+  <!-- 批量删除 -->
+	<delete id="deleteBatch">
+		DELETE
+		FROM
+			c_apply
+		WHERE
+			apply_id IN
+		<foreach collection="array" item="id" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</delete>
+	<select id="searchCarApplyByCarApplyDriverfrom" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+			   apply_id,
+			   bianhao ,
+			   applyname,
+			   approve,
+			   people,
+			   thing,
+			   days,
+			   outtime,
+			   applytime,
+			   approvetime,
+			   driver,
+			  c_apply. usenature,
+			   stats,
+			   notes,
+			   c_register.car_id,
+			   carnumber,
+			   department.department_id,
+			   department_name,
+			   fatherdep,
+			   c_driver.driver_id,
+			   drviername
+		FROM 
+			c_apply
+			LEFT JOIN c_register ON c_apply.car_id = c_apply.car_id
+			LEFT JOIN department ON c_apply.department_id = department.department_id
+			LEFT JOIN c_driver ON c_apply.driver_id = c_driver.driver_id
+		WHERE
+			<if test="departmentId!=null">
+				and department_id=#{departmentId}
+			</if>
+		AND
+			approve LIKE CONCAT( '%',#{approve},'%' ) 
+	</select>
+	
+	<select id="searchCarApplyByCarApplyAA" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+			   apply_id,
+			   bianhao ,
+			   applyname,
+			   approve,
+			   people,
+			   thing,
+			   days,
+			   outtime,
+			   applytime,
+			   approvetime,
+			   driver,
+			   c_apply.usenature,
+			   stats,
+			   notes,
+			   c_register.car_id,
+			   carnumber,
+			   department.department_id,
+			   department_name,
+			   fatherdep,
+			   c_driver.driver_id,
+			   drviername
+		FROM 
+			c_apply
+			LEFT JOIN c_register ON c_apply.car_id = c_apply.car_id
+			LEFT JOIN department ON c_apply.department_id = department.department_id
+			LEFT JOIN c_driver ON c_apply.driver_id = c_driver.driver_id
+		WHERE
+			departmentName LIKE CONCAT( '%',#{departmentName},'%' ) 
+	</select>
+	<select id="searchCarApplyByCarApplyName" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+			   apply_id,
+			   bianhao ,
+			   applyname,
+			   approve,
+			   people,
+			   thing,
+			   days,
+			   outtime,
+			   applytime,
+			   approvetime,
+			   driver,
+			   c_apply.usenature,
+			   stats,
+			   notes,
+			   c_register.car_id,
+			   carnumber,
+			   department.department_id,
+			   department_name,
+			   fatherdep,
+			   c_driver.driver_id,
+			   drviername
+		FROM 
+			c_apply
+			LEFT JOIN c_register ON c_apply.car_id = c_apply.car_id
+			LEFT JOIN department ON c_apply.department_id = department.department_id
+			LEFT JOIN c_driver ON c_apply.driver_id = c_driver.driver_id
+		WHERE
+			applyname LIKE CONCAT( '%',#{applyname},'%' ) 
+	</select>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    apply_id, bianhao, applyname, approve, car_id, people, thing, days, outtime, applytime, 
+    approvetime, driver, stats, notes, department_id, driver_id, usenature
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.hqu.production_ms.domain.CarApplyExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from c_apply
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from c_apply
+    where apply_id = #{applyId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from c_apply
+    where apply_id = #{applyId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.hqu.production_ms.domain.CarApplyExample" >
+    delete from c_apply
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.hqu.production_ms.domain.CarApprove" >
+    insert into c_apply (apply_id, bianhao, applyname, 
+      approve, car_id, people, 
+      thing, days, outtime, 
+      applytime, approvetime, driver, 
+      stats, notes, department_id, 
+      driver_id, usenature)
+    values (#{applyId,jdbcType=INTEGER}, #{bianhao,jdbcType=VARCHAR}, #{applyname,jdbcType=VARCHAR}, 
+      #{approve,jdbcType=VARCHAR}, #{carId,jdbcType=INTEGER}, #{people,jdbcType=INTEGER}, 
+      #{thing,jdbcType=VARCHAR}, #{days,jdbcType=INTEGER}, #{outtime,jdbcType=TIMESTAMP}, 
+      #{applytime,jdbcType=TIMESTAMP}, #{approvetime,jdbcType=TIMESTAMP}, #{driver,jdbcType=VARCHAR}, 
+      #{stats,jdbcType=VARCHAR}, #{notes,jdbcType=VARCHAR}, #{departmentId,jdbcType=VARCHAR}, 
+      #{driverId,jdbcType=INTEGER}, #{usenature,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="org.hqu.production_ms.domain.CarApprove" >
+    insert into c_apply
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="applyId != null" >
+        apply_id,
+      </if>
+      <if test="bianhao != null" >
+        bianhao,
+      </if>
+      <if test="applyname != null" >
+        applyname,
+      </if>
+      <if test="approve != null" >
+        approve,
+      </if>
+      <if test="carId != null" >
+        car_id,
+      </if>
+      <if test="people != null" >
+        people,
+      </if>
+      <if test="thing != null" >
+        thing,
+      </if>
+      <if test="days != null" >
+        days,
+      </if>
+      <if test="outtime != null" >
+        outtime,
+      </if>
+      <if test="applytime != null" >
+        applytime,
+      </if>
+      <if test="approvetime != null" >
+        approvetime,
+      </if>
+      <if test="driver != null" >
+        driver,
+      </if>
+      <if test="stats != null" >
+        stats,
+      </if>
+      <if test="notes != null" >
+        notes,
+      </if>
+      <if test="departmentId != null" >
+        department_id,
+      </if>
+      <if test="driverId != null" >
+        driver_id,
+      </if>
+      <if test="usenature != null" >
+        usenature,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="applyId != null" >
+        #{applyId,jdbcType=INTEGER},
+      </if>
+      <if test="bianhao != null" >
+        #{bianhao,jdbcType=VARCHAR},
+      </if>
+      <if test="applyname != null" >
+        #{applyname,jdbcType=VARCHAR},
+      </if>
+      <if test="approve != null" >
+        #{approve,jdbcType=VARCHAR},
+      </if>
+      <if test="carId != null" >
+        #{carId,jdbcType=INTEGER},
+      </if>
+      <if test="people != null" >
+        #{people,jdbcType=INTEGER},
+      </if>
+      <if test="thing != null" >
+        #{thing,jdbcType=VARCHAR},
+      </if>
+      <if test="days != null" >
+        #{days,jdbcType=INTEGER},
+      </if>
+      <if test="outtime != null" >
+        #{outtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="applytime != null" >
+        #{applytime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="approvetime != null" >
+        #{approvetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="driver != null" >
+        #{driver,jdbcType=VARCHAR},
+      </if>
+      <if test="stats != null" >
+        #{stats,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null" >
+        #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="departmentId != null" >
+        #{departmentId,jdbcType=VARCHAR},
+      </if>
+      <if test="driverId != null" >
+        #{driverId,jdbcType=INTEGER},
+      </if>
+      <if test="usenature != null" >
+        #{usenature,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.hqu.production_ms.domain.CarApplyExample" resultType="java.lang.Integer" >
+    select count(*) from c_apply
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update c_apply
+    <set >
+      <if test="record.applyId != null" >
+        apply_id = #{record.applyId,jdbcType=INTEGER},
+      </if>
+      <if test="record.bianhao != null" >
+        bianhao = #{record.bianhao,jdbcType=VARCHAR},
+      </if>
+      <if test="record.applyname != null" >
+        applyname = #{record.applyname,jdbcType=VARCHAR},
+      </if>
+      <if test="record.approve != null" >
+        approve = #{record.approve,jdbcType=VARCHAR},
+      </if>
+      <if test="record.carId != null" >
+        car_id = #{record.carId,jdbcType=INTEGER},
+      </if>
+      <if test="record.people != null" >
+        people = #{record.people,jdbcType=INTEGER},
+      </if>
+      <if test="record.thing != null" >
+        thing = #{record.thing,jdbcType=VARCHAR},
+      </if>
+      <if test="record.days != null" >
+        days = #{record.days,jdbcType=INTEGER},
+      </if>
+      <if test="record.outtime != null" >
+        outtime = #{record.outtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.applytime != null" >
+        applytime = #{record.applytime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.approvetime != null" >
+        approvetime = #{record.approvetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.driver != null" >
+        driver = #{record.driver,jdbcType=VARCHAR},
+      </if>
+      <if test="record.stats != null" >
+        stats = #{record.stats,jdbcType=VARCHAR},
+      </if>
+      <if test="record.notes != null" >
+        notes = #{record.notes,jdbcType=VARCHAR},
+      </if>
+      <if test="record.departmentId != null" >
+        department_id = #{record.departmentId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.driverId != null" >
+        driver_id = #{record.driverId,jdbcType=INTEGER},
+      </if>
+      <if test="record.usenature != null" >
+        usenature = #{record.usenature,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update c_apply
+    set apply_id = #{record.applyId,jdbcType=INTEGER},
+      bianhao = #{record.bianhao,jdbcType=VARCHAR},
+      applyname = #{record.applyname,jdbcType=VARCHAR},
+      approve = #{record.approve,jdbcType=VARCHAR},
+      car_id = #{record.carId,jdbcType=INTEGER},
+      people = #{record.people,jdbcType=INTEGER},
+      thing = #{record.thing,jdbcType=VARCHAR},
+      days = #{record.days,jdbcType=INTEGER},
+      outtime = #{record.outtime,jdbcType=TIMESTAMP},
+      applytime = #{record.applytime,jdbcType=TIMESTAMP},
+      approvetime = #{record.approvetime,jdbcType=TIMESTAMP},
+      driver = #{record.driver,jdbcType=VARCHAR},
+      stats = #{record.stats,jdbcType=VARCHAR},
+      notes = #{record.notes,jdbcType=VARCHAR},
+      department_id = #{record.departmentId,jdbcType=VARCHAR},
+      driver_id = #{record.driverId,jdbcType=INTEGER},
+      usenature = #{record.usenature,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.hqu.production_ms.domain.CarApprove" >
+    update c_apply
+    <set >
+      <if test="bianhao != null" >
+        bianhao = #{bianhao,jdbcType=VARCHAR},
+      </if>
+      <if test="applyname != null" >
+        applyname = #{applyname,jdbcType=VARCHAR},
+      </if>
+      <if test="approve != null" >
+        approve = #{approve,jdbcType=VARCHAR},
+      </if>
+      <if test="carId != null" >
+        car_id = #{carId,jdbcType=INTEGER},
+      </if>
+      <if test="people != null" >
+        people = #{people,jdbcType=INTEGER},
+      </if>
+      <if test="thing != null" >
+        thing = #{thing,jdbcType=VARCHAR},
+      </if>
+      <if test="days != null" >
+        days = #{days,jdbcType=INTEGER},
+      </if>
+      <if test="outtime != null" >
+        outtime = #{outtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="applytime != null" >
+        applytime = #{applytime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="approvetime != null" >
+        approvetime = #{approvetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="driver != null" >
+        driver = #{driver,jdbcType=VARCHAR},
+      </if>
+      <if test="stats != null" >
+        stats = #{stats,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null" >
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="departmentId != null" >
+        department_id = #{departmentId,jdbcType=VARCHAR},
+      </if>
+      <if test="driverId != null" >
+        driver_id = #{driverId,jdbcType=INTEGER},
+      </if>
+      <if test="usenature != null" >
+        usenature = #{usenature,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where apply_id = #{applyId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.hqu.production_ms.domain.CarApprove" >
+    update c_apply
+    set bianhao = #{bianhao,jdbcType=VARCHAR},
+      applyname = #{applyname,jdbcType=VARCHAR},
+      approve = #{approve,jdbcType=VARCHAR},
+      car_id = #{carId,jdbcType=INTEGER},
+      people = #{people,jdbcType=INTEGER},
+      thing = #{thing,jdbcType=VARCHAR},
+      days = #{days,jdbcType=INTEGER},
+      outtime = #{outtime,jdbcType=TIMESTAMP},
+      applytime = #{applytime,jdbcType=TIMESTAMP},
+      approvetime = #{approvetime,jdbcType=TIMESTAMP},
+      driver = #{driver,jdbcType=VARCHAR},
+      stats = #{stats,jdbcType=VARCHAR},
+      notes = #{notes,jdbcType=VARCHAR},
+      department_id = #{departmentId,jdbcType=VARCHAR},
+      driver_id = #{driverId,jdbcType=INTEGER},
+      usenature = #{usenature,jdbcType=VARCHAR}
+    where apply_id = #{applyId,jdbcType=INTEGER}
+  </update>
+</mapper>

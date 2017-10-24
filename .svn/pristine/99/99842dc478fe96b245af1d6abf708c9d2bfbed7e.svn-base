@@ -1,0 +1,68 @@
+package org.hqu.production_ms.domain.authority;
+
+/**
+ * created on 2016年10月30日 
+ *
+ * 系统用户
+ *
+ * @author  megagao
+ * @version  0.0.1
+ */
+public class SysUser {
+	
+    private String id;
+
+    private String username;
+
+    private String password;
+    private String departmentId;
+
+    private String locked;
+
+    public String getDepartmentId() {
+		return departmentId;
+	}
+
+	public void setDepartmentId(String departmentId) {
+		this.departmentId = departmentId;
+	}
+
+	public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id == null ? null : id.trim();
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username == null ? null : username.trim();
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password == null ? null : password.trim();
+    }
+
+    public String getLocked() {
+        return locked;
+    }
+
+    public void setLocked(String locked) {
+        this.locked = locked == null ? null : locked.trim();
+    }
+
+	@Override
+	public String toString() {
+		return "SysUser [id=" + id + ", username=" + username + ", password=" + password + ", departmentId="
+				+ departmentId + ", locked=" + locked + "]";
+	}
+    
+}

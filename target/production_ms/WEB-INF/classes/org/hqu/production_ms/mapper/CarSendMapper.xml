@@ -1,0 +1,1092 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.hqu.production_ms.mapper.CarSendMapper" >
+  <resultMap id="BaseResultMap" type="org.hqu.production_ms.domain.CarSend" >
+    <id column="send_id" property="sendId" jdbcType="INTEGER" />
+    <result column="sendNums" property="sendnums" jdbcType="VARCHAR" />
+    <result column="sendUser" property="senduser" jdbcType="VARCHAR" />
+    <result column="road" property="road" jdbcType="VARCHAR" />
+    <result column="userCarPeople" property="usercarpeople" jdbcType="VARCHAR" />
+    <result column="sendDate" property="senddate" jdbcType="TIMESTAMP" />
+    <result column="endCarDate" property="endcardate" jdbcType="TIMESTAMP" />
+    <result column="firstDuty" property="firstduty" jdbcType="VARCHAR" />
+    <result column="safe" property="safe" jdbcType="VARCHAR" />
+    <result column="note" property="note" jdbcType="VARCHAR" />
+    <result column="firstkm" property="firstkm" jdbcType="VARCHAR" />
+    <result column="endkm" property="endkm" jdbcType="VARCHAR" />
+    <result column="tianqi" property="tianqi" jdbcType="VARCHAR" />
+    <result column="chucheq" property="chucheq" jdbcType="VARCHAR" />
+    <result column="xingshiz" property="xingshiz" jdbcType="VARCHAR" />
+    <result column="shoucheh" property="shoucheh" jdbcType="VARCHAR" />
+    <result column="shigujl" property="shigujl" jdbcType="VARCHAR" />
+    <result column="notes" property="notes" jdbcType="VARCHAR" />
+    <result column="apply_id" property="applyId" jdbcType="INTEGER" />
+    <result column="sdate" property="sdate" jdbcType="DATE" />
+    <result column="department_id" property="departmentId" jdbcType="VARCHAR" />
+    <result column="car_id" property="carId" jdbcType="INTEGER" />
+    <result column="driver_id" property="driverId" jdbcType="INTEGER" />
+     <result column="kkk1" property="kkk1" jdbcType="VARCHAR" />
+  <association property="carApply" javaType="carApply">
+		<id column="apply_id" property="applyId" jdbcType="INTEGER" />
+	    <result column="bianhao" property="bianhao" jdbcType="VARCHAR" />
+	    <result column="applyname" property="applyname" jdbcType="VARCHAR" />
+	    <result column="approve" property="approve" jdbcType="VARCHAR" />
+	    <result column="people" property="people" jdbcType="INTEGER" />
+	</association>
+	<association property="carRegister" javaType="carRegister">
+		<id column="car_id" property="carId" jdbcType="INTEGER" />
+	    <result column="carnumber" property="carnumber" jdbcType="VARCHAR" />
+	     <result column="useNature" property="usenature" jdbcType="VARCHAR" />
+	</association>
+	<association property="department" javaType="department">
+		<id column="department_id" property="departmentId" jdbcType="VARCHAR" />
+	    <result column="department_name" property="departmentName" jdbcType="VARCHAR" />
+	    <result column="fatherdep" property="fatherdep" jdbcType="VARCHAR" />
+	    <result column="level" property="level" jdbcType="INTEGER" />
+	</association>
+   <association property="carDriver" javaType="carDriver">
+		<id column="driver_id" property="driverId" jdbcType="INTEGER" />
+	    <result column="drvierName" property="drviername" jdbcType="VARCHAR" />
+	</association>
+  </resultMap>
+  <select id="find" parameterType="carSend" resultMap="BaseResultMap">
+		SELECT
+			send_id,
+			sendNums,
+			sendUser,
+			road,
+			userCarPeople,
+			sendDate,
+			sdate,
+			endCarDate,
+			firstDuty,
+			safe,
+			c_send.note,
+			firstkm,
+			endkm,
+			tianqi,
+			chucheq,
+			xingshiz,
+			shoucheh,
+			shigujl,
+			c_send.notes,
+			c_apply.apply_id,
+			c_apply.bianhao,
+			c_register.car_id,
+			c_register.useNature,
+			c_register.carnumber,
+			department.fatherdep,
+			department.level,
+			department.department_id,
+			department.department_name,
+			c_driver.driver_id,
+			c_driver.drviername
+		FROM 
+			c_send
+			LEFT JOIN c_apply ON c_send.apply_id = c_apply.apply_id
+			LEFT JOIN c_register ON c_send.car_id = c_register.car_id
+			LEFT JOIN department ON c_send.department_id = department.department_id
+			LEFT JOIN c_driver ON c_send.driver_id = c_driver.driver_id
+		ORDER BY 
+			sendDate desc
+	</select>
+	<select id="findStat" parameterType="carSend" resultMap="BaseResultMap">
+		SELECT
+			*
+		FROM 
+			c_send
+		WHERE
+			endkm IS NULL OR endkm='' or endkm='534'
+	</select>
+	<select id="findStat1" parameterType="String" resultMap="BaseResultMap">
+		SELECT
+			*
+		FROM 
+			c_send
+		WHERE
+			(endkm IS NULL OR endkm='')
+			and
+			department_id = #{id}
+			
+	</select>
+	<select id="findDepnums" parameterType="String" resultMap="BaseResultMap">
+		SELECT
+			send_id,
+			sendDate,
+			sdate,
+			endCarDate,
+			SUM(endkm-firstkm) AS kkk1,
+			department.department_id,
+			department.department_name
+		FROM 
+			c_send
+		LEFT JOIN department ON c_send.department_id = department.department_id
+		WHERE
+			DATE_FORMAT(sendDate,'%Y')=#{0}
+		AND 
+			DATE_FORMAT(sendDate,'%c')=#{1}
+		GROUP BY department.department_id
+	</select>
+	<select id="findCarnums" parameterType="String" resultMap="BaseResultMap">
+	SELECT c1.car_id,c1.carnumber,c1.usenature,IFNULL(c2.kkk,0) AS kkk1,c2.send_id,c1.department_id FROM c_register c1 LEFT JOIN(
+	SELECT
+			send_id,
+			sendDate,
+			sdate,
+			endCarDate,
+			SUM(endkm-firstkm) AS kkk,
+			c_send.car_id,
+			department.department_id,
+			department.department_name
+		FROM 
+			c_send
+			LEFT JOIN department ON c_send.department_id = department.department_id
+		WHERE
+			(c_send.department_id = #{0} OR department.fatherdep=#{1})
+		AND 
+			DATE_FORMAT(sendDate,'%Y')=#{2}
+			GROUP BY 
+			c_send.car_id) c2 ON c1.car_id = c2.car_id
+		WHERE
+			(c1.department_id = #{3})
+		GROUP BY 
+			c1.car_id
+	</select>
+	<select id="findDrivernums" parameterType="String" resultMap="BaseResultMap">
+	SELECT c1.drvierName, c1.department_id,c1.driver_id,c2.kkk AS kkk1,c2.send_id,c2.sendDate FROM c_driver c1 LEFT JOIN(SELECT
+			send_id,
+			sendDate,
+			sdate,
+			endCarDate,
+			SUM(endkm-firstkm) AS kkk,
+			department.department_id,
+			department.department_name,
+			c_driver.driver_id,
+			c_driver.drviername
+		FROM 
+			c_send
+			LEFT JOIN c_driver ON c_send.driver_id = c_driver.driver_id
+			LEFT JOIN department ON c_send.department_id = department.department_id
+		WHERE
+			(c_send.department_id =#{0} OR department.fatherdep=#{1})
+		AND 
+			DATE_FORMAT(sendDate,'%Y')=#{2}
+			GROUP BY c_send.driver_id) c2 ON c1.driver_id = c2.driver_id
+		WHERE c1.department_id = #{3}
+		GROUP BY 
+			c1.driver_id
+	</select>
+	 <select id="find1" parameterType="String" resultMap="BaseResultMap">
+		select
+		    send_id,
+			sendNums,
+			sendUser,
+			road,
+			userCarPeople,
+			sendDate,
+			sdate,
+			endCarDate,
+			firstDuty,
+			safe,
+			c_send.note,
+			firstkm,
+			endkm,
+			tianqi,
+			chucheq,
+			xingshiz,
+			shoucheh,
+			shigujl,
+			c_send.notes,
+			c_apply.apply_id,
+			c_apply.bianhao,
+			c_register.car_id,
+			c_register.useNature,
+			c_register.carnumber,
+			department.fatherdep,
+			department.level,
+			department.department_id,
+			department.department_name,
+			c_driver.driver_id,
+			c_driver.drviername
+		FROM 
+			c_send
+			LEFT JOIN c_apply ON c_send.apply_id = c_apply.apply_id
+			LEFT JOIN c_register ON c_send.car_id = c_register.car_id
+			LEFT JOIN department ON c_send.department_id = department.department_id
+			LEFT JOIN c_driver ON c_send.driver_id = c_driver.driver_id
+			where c_send.department_id = #{departmentId}
+		ORDER BY 
+			sendDate desc
+	</select>
+	<select id="finds" parameterType="String" resultMap="BaseResultMap">
+		select
+		    send_id,
+			sendNums,
+			sendUser,
+			road,
+			userCarPeople,
+			sendDate,
+			sdate,
+			endCarDate,
+			firstDuty,
+			safe,
+			c_send.note,
+			firstkm,
+			endkm,
+			tianqi,
+			chucheq,
+			xingshiz,
+			shoucheh,
+			shigujl,
+			c_send.notes,
+			c_apply.apply_id,
+			c_apply.bianhao,
+			c_register.car_id,
+			c_register.useNature,
+			c_register.carnumber,
+			department.fatherdep,
+			department.level,
+			department.department_id,
+			department.department_name,
+			c_driver.driver_id,
+			c_driver.drviername
+		FROM 
+			c_send
+			LEFT JOIN c_apply ON c_send.apply_id = c_apply.apply_id
+			LEFT JOIN c_register ON c_send.car_id = c_register.car_id
+			LEFT JOIN department ON c_send.department_id = department.department_id
+			LEFT JOIN c_driver ON c_send.driver_id = c_driver.driver_id
+			where 
+			(c_send.department_id = #{0} or department.fatherdep=#{1})
+		ORDER BY 
+			sendDate desc
+	</select>
+	<!-- 查询所单个记录 -->
+	<select id="selectSingleCarSend" parameterType="INTEGER" resultMap="BaseResultMap">
+		SELECT
+			send_id,
+			sendNums,
+			sendUser,
+			road,
+			userCarPeople,
+			sendDate,
+			sdate,
+			endCarDate,
+			firstDuty,
+			safe,
+			c_send.note,
+			firstkm,
+			endkm,
+			tianqi,
+			chucheq,
+			xingshiz,
+			shoucheh,
+			shigujl,
+			c_send.notes,
+			c_apply.apply_id,
+			c_apply.bianhao,
+			c_register.car_id,
+			c_register.useNature,
+			c_register.carnumber,
+			department.fatherdep,
+			department.level,
+			department.department_id,
+			department.department_name,
+			c_driver.driver_id,
+			c_driver.drviername
+		FROM 
+			c_send
+			LEFT JOIN c_apply ON c_send.apply_id = c_apply.apply_id
+			LEFT JOIN c_register ON c_send.car_id = c_register.car_id
+			LEFT JOIN department ON c_send.department_id = department.department_id
+			LEFT JOIN c_driver ON c_send.driver_id = c_driver.driver_id
+		WHERE  send_id = #{sendId}
+	</select>
+	
+	
+  <!-- 批量删除 -->
+	<delete id="deleteBatch">
+		DELETE
+		FROM
+			c_send
+		WHERE
+			send_id IN
+		<foreach collection="array" item="id" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</delete>
+	<select id="findByCarId" parameterType="INTEGER" resultMap="BaseResultMap">
+		select
+		    send_id,
+			sendNums,
+			sendUser,
+			road,
+			userCarPeople,
+			sendDate,
+			sdate,
+			endCarDate,
+			firstDuty,
+			safe,
+			c_send.note,
+			firstkm,
+			endkm,
+			tianqi,
+			chucheq,
+			xingshiz,
+			shoucheh,
+			shigujl,
+			c_send.notes,
+			c_apply.apply_id,
+			c_apply.bianhao,
+			c_register.car_id,
+			c_register.useNature,
+			c_register.carnumber,
+			department.fatherdep,
+			department.level,
+			department.department_id,
+			department.department_name,
+			c_driver.driver_id,
+			c_driver.drviername
+		FROM 
+			c_send
+			LEFT JOIN c_apply ON c_send.apply_id = c_apply.apply_id
+			LEFT JOIN c_register ON c_send.car_id = c_register.car_id
+			LEFT JOIN department ON c_send.department_id = department.department_id
+			LEFT JOIN c_driver ON c_send.driver_id = c_driver.driver_id
+		WHERE
+			c_register.car_id =#{carId} 
+			ORDER BY 
+			sendDate desc
+	</select>
+	<select id="searchCarSendByCarSendDriverfrom" parameterType="string" resultMap="BaseResultMap">
+		select
+		    send_id,
+			sendNums,
+			sendUser,
+			road,
+			userCarPeople,
+			sendDate,
+			sdate,
+			endCarDate,
+			firstDuty,
+			safe,
+			c_send.note,
+			firstkm,
+			endkm,
+			tianqi,
+			chucheq,
+			xingshiz,
+			shoucheh,
+			shigujl,
+			c_send.notes,
+			c_apply.apply_id,
+			c_apply.bianhao,
+			c_register.car_id,
+			c_register.useNature,
+			c_register.carnumber,
+			department.fatherdep,
+			department.level,
+			department.department_id,
+			department.department_name,
+			c_driver.driver_id,
+			c_driver.drviername
+		FROM 
+			c_send
+			LEFT JOIN c_apply ON c_send.apply_id = c_apply.apply_id
+			LEFT JOIN c_register ON c_send.car_id = c_register.car_id
+			LEFT JOIN department ON c_send.department_id = department.department_id
+			LEFT JOIN c_driver ON c_send.driver_id = c_driver.driver_id
+		WHERE
+			c_register.carnumber LIKE CONCAT( '%',#{sendnums},'%' )
+			ORDER BY 
+			sendDate desc 
+	</select>
+	
+	<select id="searchCarSendByCarSendAA" parameterType="string" resultMap="BaseResultMap">
+		select
+		    send_id,
+			sendNums,
+			sendUser,
+			road,
+			userCarPeople,
+			sendDate,
+			sdate,
+			endCarDate,
+			firstDuty,
+			safe,
+			c_send.note,
+			firstkm,
+			endkm,
+			tianqi,
+			chucheq,
+			xingshiz,
+			shoucheh,
+			shigujl,
+			c_send.notes,
+			c_apply.apply_id,
+			c_apply.bianhao,
+			c_register.car_id,
+			c_register.useNature,
+			c_register.carnumber,
+			department.fatherdep,
+			department.level,
+			department.department_id,
+			department.department_name,
+			c_driver.driver_id,
+			c_driver.drviername
+		FROM 
+			c_send
+			LEFT JOIN c_apply ON c_send.apply_id = c_apply.apply_id
+			LEFT JOIN c_register ON c_send.car_id = c_register.car_id
+			LEFT JOIN department ON c_send.department_id = department.department_id
+			LEFT JOIN c_driver ON c_send.driver_id = c_driver.driver_id
+		WHERE
+			c_apply.bianhao LIKE CONCAT( '%',#{bianh},'%')
+	</select>
+	<select id="searchCarSendByCarSendName" parameterType="string" resultMap="BaseResultMap">
+		select
+		    send_id,
+			sendNums,
+			sendUser,
+			road,
+			userCarPeople,
+			sendDate,
+			sdate,
+			endCarDate,
+			firstDuty,
+			safe,
+			c_send.note,
+			firstkm,
+			endkm,
+			tianqi,
+			chucheq,
+			xingshiz,
+			shoucheh,
+			shigujl,
+			c_send.notes,
+			c_apply.apply_id,
+			c_apply.bianhao,
+			c_register.car_id,
+			c_register.useNature,
+			c_register.carnumber,
+			department.fatherdep,
+			department.level,
+			department.department_id,
+			department.department_name,
+			c_driver.driver_id,
+			c_driver.drviername
+		FROM 
+			c_send
+			LEFT JOIN c_apply ON c_send.apply_id = c_apply.apply_id
+			LEFT JOIN c_register ON c_send.car_id = c_register.car_id
+			LEFT JOIN department ON c_send.department_id = department.department_id
+			LEFT JOIN c_driver ON c_send.driver_id = c_driver.driver_id
+		WHERE
+			c_driver.drviername LIKE CONCAT( '%',#{drivername},'%' ) 
+			ORDER BY 
+			sendDate desc
+	</select>
+	<select id="searchCarSendByCarSendDriverfrom1" parameterType="string" resultMap="BaseResultMap">
+		select
+		    send_id,
+			sendNums,
+			sendUser,
+			road,
+			userCarPeople,
+			sendDate,
+			sdate,
+			endCarDate,
+			firstDuty,
+			safe,
+			c_send.note,
+			firstkm,
+			endkm,
+			tianqi,
+			chucheq,
+			xingshiz,
+			shoucheh,
+			shigujl,
+			c_send.notes,
+			c_apply.apply_id,
+			c_apply.bianhao,
+			c_register.car_id,
+			c_register.useNature,
+			c_register.carnumber,
+			department.fatherdep,
+			department.level,
+			department.department_id,
+			department.department_name,
+			c_driver.driver_id,
+			c_driver.drviername
+		FROM 
+			c_send
+			LEFT JOIN c_apply ON c_send.apply_id = c_apply.apply_id
+			LEFT JOIN c_register ON c_send.car_id = c_register.car_id
+			LEFT JOIN department ON c_send.department_id = department.department_id
+			LEFT JOIN c_driver ON c_send.driver_id = c_driver.driver_id
+		WHERE
+			(department.department_id = #{0} or department.fatherdep=#{1} )
+			and
+			c_register.carnumber LIKE CONCAT( '%',#{2},'%' ) 
+			ORDER BY 
+			sendDate desc
+	</select>
+	
+	<select id="searchCarSendByCarSendAA1" parameterType="string" resultMap="BaseResultMap">
+		select
+		    send_id,
+			sendNums,
+			sendUser,
+			road,
+			userCarPeople,
+			sendDate,
+			sdate,
+			endCarDate,
+			firstDuty,
+			safe,
+			c_send.note,
+			firstkm,
+			endkm,
+			tianqi,
+			chucheq,
+			xingshiz,
+			shoucheh,
+			shigujl,
+			c_send.notes,
+			c_apply.apply_id,
+			c_apply.bianhao,
+			c_register.car_id,
+			c_register.useNature,
+			c_register.carnumber,
+			department.fatherdep,
+			department.level,
+			department.department_id,
+			department.department_name,
+			c_driver.driver_id,
+			c_driver.drviername
+		FROM 
+			c_send
+			LEFT JOIN c_apply ON c_send.apply_id = c_apply.apply_id
+			LEFT JOIN c_register ON c_send.car_id = c_register.car_id
+			LEFT JOIN department ON c_send.department_id = department.department_id
+			LEFT JOIN c_driver ON c_send.driver_id = c_driver.driver_id
+		WHERE
+			(department.department_id = #{0} or department.fatherdep=#{1} )
+			and
+			c_apply.bianhao LIKE CONCAT( '%',#{2},'%' ) 
+			ORDER BY 
+			sendDate desc
+	</select>
+	<select id="searchCarSendByCarSendName1" parameterType="string" resultMap="BaseResultMap">
+		select
+		    send_id,
+			sendNums,
+			sendUser,
+			road,
+			userCarPeople,
+			sendDate,
+			sdate,
+			endCarDate,
+			firstDuty,
+			safe,
+			c_send.note,
+			firstkm,
+			endkm,
+			tianqi,
+			chucheq,
+			xingshiz,
+			shoucheh,
+			shigujl,
+			c_send.notes,
+			c_apply.apply_id,
+			c_apply.bianhao,
+			c_register.car_id,
+			c_register.useNature,
+			c_register.carnumber,
+			department.fatherdep,
+			department.level,
+			department.department_id,
+			department.department_name,
+			c_driver.driver_id,
+			c_driver.drviername
+		FROM 
+			c_send
+			LEFT JOIN c_apply ON c_send.apply_id = c_apply.apply_id
+			LEFT JOIN c_register ON c_send.car_id = c_register.car_id
+			LEFT JOIN department ON c_send.department_id = department.department_id
+			LEFT JOIN c_driver ON c_send.driver_id = c_driver.driver_id
+		WHERE
+			(department.department_id = #{0} or department.fatherdep=#{1} )
+			and
+			c_driver.drviername LIKE CONCAT( '%',#{2},'%' ) 
+			ORDER BY 
+			sendDate desc
+	</select>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    send_id, sendNums, sendUser, road, userCarPeople, sendDate, endCarDate, firstDuty, 
+    safe, note, firstkm, endkm, tianqi, chucheq, xingshiz, shoucheh, shigujl, notes, 
+    apply_id, sdate, department_id, car_id, driver_id
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.hqu.production_ms.domain.CarSendExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from c_send
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from c_send
+    where send_id = #{sendId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from c_send
+    where send_id = #{sendId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.hqu.production_ms.domain.CarSendExample" >
+    delete from c_send
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.hqu.production_ms.domain.CarSend" >
+    insert into c_send (send_id, sendNums, sendUser, 
+      road, userCarPeople, sendDate, 
+      endCarDate, firstDuty, safe, 
+      note, firstkm, endkm, 
+      tianqi, chucheq, xingshiz, 
+      shoucheh, shigujl, notes, 
+      apply_id, sdate, department_id, 
+      car_id, driver_id)
+    values (#{sendId,jdbcType=INTEGER}, #{sendnums,jdbcType=VARCHAR}, #{senduser,jdbcType=VARCHAR}, 
+      #{road,jdbcType=VARCHAR}, #{usercarpeople,jdbcType=VARCHAR}, #{senddate,jdbcType=TIMESTAMP}, 
+      #{endcardate,jdbcType=TIMESTAMP}, #{firstduty,jdbcType=VARCHAR}, #{safe,jdbcType=VARCHAR}, 
+      #{note,jdbcType=VARCHAR}, #{firstkm,jdbcType=VARCHAR}, #{endkm,jdbcType=VARCHAR}, 
+      #{tianqi,jdbcType=VARCHAR}, #{chucheq,jdbcType=VARCHAR}, #{xingshiz,jdbcType=VARCHAR}, 
+      #{shoucheh,jdbcType=VARCHAR}, #{shigujl,jdbcType=VARCHAR}, #{notes,jdbcType=VARCHAR}, 
+      #{applyId,jdbcType=INTEGER}, #{sdate,jdbcType=DATE}, #{departmentId,jdbcType=VARCHAR}, 
+      #{carId,jdbcType=INTEGER}, #{driverId,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="org.hqu.production_ms.domain.CarSend" >
+    insert into c_send
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="sendId != null" >
+        send_id,
+      </if>
+      <if test="sendnums != null" >
+        sendNums,
+      </if>
+      <if test="senduser != null" >
+        sendUser,
+      </if>
+      <if test="road != null" >
+        road,
+      </if>
+      <if test="usercarpeople != null" >
+        userCarPeople,
+      </if>
+      <if test="senddate != null" >
+        sendDate,
+      </if>
+      <if test="endcardate != null" >
+        endCarDate,
+      </if>
+      <if test="firstduty != null" >
+        firstDuty,
+      </if>
+      <if test="safe != null" >
+        safe,
+      </if>
+      <if test="note != null" >
+        note,
+      </if>
+      <if test="firstkm != null" >
+        firstkm,
+      </if>
+      <if test="endkm != null" >
+        endkm,
+      </if>
+      <if test="tianqi != null" >
+        tianqi,
+      </if>
+      <if test="chucheq != null" >
+        chucheq,
+      </if>
+      <if test="xingshiz != null" >
+        xingshiz,
+      </if>
+      <if test="shoucheh != null" >
+        shoucheh,
+      </if>
+      <if test="shigujl != null" >
+        shigujl,
+      </if>
+      <if test="notes != null" >
+        notes,
+      </if>
+      <if test="applyId != null" >
+        apply_id,
+      </if>
+      <if test="sdate != null" >
+        sdate,
+      </if>
+      <if test="departmentId != null" >
+        department_id,
+      </if>
+      <if test="carId != null" >
+        car_id,
+      </if>
+      <if test="driverId != null" >
+        driver_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="sendId != null" >
+        #{sendId,jdbcType=INTEGER},
+      </if>
+      <if test="sendnums != null" >
+        #{sendnums,jdbcType=VARCHAR},
+      </if>
+      <if test="senduser != null" >
+        #{senduser,jdbcType=VARCHAR},
+      </if>
+      <if test="road != null" >
+        #{road,jdbcType=VARCHAR},
+      </if>
+      <if test="usercarpeople != null" >
+        #{usercarpeople,jdbcType=VARCHAR},
+      </if>
+      <if test="senddate != null" >
+        #{senddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endcardate != null" >
+        #{endcardate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="firstduty != null" >
+        #{firstduty,jdbcType=VARCHAR},
+      </if>
+      <if test="safe != null" >
+        #{safe,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null" >
+        #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="firstkm != null" >
+        #{firstkm,jdbcType=VARCHAR},
+      </if>
+      <if test="endkm != null" >
+        #{endkm,jdbcType=VARCHAR},
+      </if>
+      <if test="tianqi != null" >
+        #{tianqi,jdbcType=VARCHAR},
+      </if>
+      <if test="chucheq != null" >
+        #{chucheq,jdbcType=VARCHAR},
+      </if>
+      <if test="xingshiz != null" >
+        #{xingshiz,jdbcType=VARCHAR},
+      </if>
+      <if test="shoucheh != null" >
+        #{shoucheh,jdbcType=VARCHAR},
+      </if>
+      <if test="shigujl != null" >
+        #{shigujl,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null" >
+        #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="applyId != null" >
+        #{applyId,jdbcType=INTEGER},
+      </if>
+      <if test="sdate != null" >
+        #{sdate,jdbcType=DATE},
+      </if>
+      <if test="departmentId != null" >
+        #{departmentId,jdbcType=VARCHAR},
+      </if>
+      <if test="carId != null" >
+        #{carId,jdbcType=INTEGER},
+      </if>
+      <if test="driverId != null" >
+        #{driverId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.hqu.production_ms.domain.CarSendExample" resultType="java.lang.Integer" >
+    select count(*) from c_send
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update c_send
+    <set >
+      <if test="record.sendId != null" >
+        send_id = #{record.sendId,jdbcType=INTEGER},
+      </if>
+      <if test="record.sendnums != null" >
+        sendNums = #{record.sendnums,jdbcType=VARCHAR},
+      </if>
+      <if test="record.senduser != null" >
+        sendUser = #{record.senduser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.road != null" >
+        road = #{record.road,jdbcType=VARCHAR},
+      </if>
+      <if test="record.usercarpeople != null" >
+        userCarPeople = #{record.usercarpeople,jdbcType=VARCHAR},
+      </if>
+      <if test="record.senddate != null" >
+        sendDate = #{record.senddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.endcardate != null" >
+        endCarDate = #{record.endcardate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.firstduty != null" >
+        firstDuty = #{record.firstduty,jdbcType=VARCHAR},
+      </if>
+      <if test="record.safe != null" >
+        safe = #{record.safe,jdbcType=VARCHAR},
+      </if>
+      <if test="record.note != null" >
+        note = #{record.note,jdbcType=VARCHAR},
+      </if>
+      <if test="record.firstkm != null" >
+        firstkm = #{record.firstkm,jdbcType=VARCHAR},
+      </if>
+      <if test="record.endkm != null" >
+        endkm = #{record.endkm,jdbcType=VARCHAR},
+      </if>
+      <if test="record.tianqi != null" >
+        tianqi = #{record.tianqi,jdbcType=VARCHAR},
+      </if>
+      <if test="record.chucheq != null" >
+        chucheq = #{record.chucheq,jdbcType=VARCHAR},
+      </if>
+      <if test="record.xingshiz != null" >
+        xingshiz = #{record.xingshiz,jdbcType=VARCHAR},
+      </if>
+      <if test="record.shoucheh != null" >
+        shoucheh = #{record.shoucheh,jdbcType=VARCHAR},
+      </if>
+      <if test="record.shigujl != null" >
+        shigujl = #{record.shigujl,jdbcType=VARCHAR},
+      </if>
+      <if test="record.notes != null" >
+        notes = #{record.notes,jdbcType=VARCHAR},
+      </if>
+      <if test="record.applyId != null" >
+        apply_id = #{record.applyId,jdbcType=INTEGER},
+      </if>
+      <if test="record.sdate != null" >
+        sdate = #{record.sdate,jdbcType=DATE},
+      </if>
+      <if test="record.departmentId != null" >
+        department_id = #{record.departmentId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.carId != null" >
+        car_id = #{record.carId,jdbcType=INTEGER},
+      </if>
+      <if test="record.driverId != null" >
+        driver_id = #{record.driverId,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update c_send
+    set send_id = #{record.sendId,jdbcType=INTEGER},
+      sendNums = #{record.sendnums,jdbcType=VARCHAR},
+      sendUser = #{record.senduser,jdbcType=VARCHAR},
+      road = #{record.road,jdbcType=VARCHAR},
+      userCarPeople = #{record.usercarpeople,jdbcType=VARCHAR},
+      sendDate = #{record.senddate,jdbcType=TIMESTAMP},
+      endCarDate = #{record.endcardate,jdbcType=TIMESTAMP},
+      firstDuty = #{record.firstduty,jdbcType=VARCHAR},
+      safe = #{record.safe,jdbcType=VARCHAR},
+      note = #{record.note,jdbcType=VARCHAR},
+      firstkm = #{record.firstkm,jdbcType=VARCHAR},
+      endkm = #{record.endkm,jdbcType=VARCHAR},
+      tianqi = #{record.tianqi,jdbcType=VARCHAR},
+      chucheq = #{record.chucheq,jdbcType=VARCHAR},
+      xingshiz = #{record.xingshiz,jdbcType=VARCHAR},
+      shoucheh = #{record.shoucheh,jdbcType=VARCHAR},
+      shigujl = #{record.shigujl,jdbcType=VARCHAR},
+      notes = #{record.notes,jdbcType=VARCHAR},
+      apply_id = #{record.applyId,jdbcType=INTEGER},
+      sdate = #{record.sdate,jdbcType=DATE},
+      department_id = #{record.departmentId,jdbcType=VARCHAR},
+      car_id = #{record.carId,jdbcType=INTEGER},
+      driver_id = #{record.driverId,jdbcType=INTEGER}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.hqu.production_ms.domain.CarSend" >
+    update c_send
+    <set >
+      <if test="sendnums != null" >
+        sendNums = #{sendnums,jdbcType=VARCHAR},
+      </if>
+      <if test="senduser != null" >
+        sendUser = #{senduser,jdbcType=VARCHAR},
+      </if>
+      <if test="road != null" >
+        road = #{road,jdbcType=VARCHAR},
+      </if>
+      <if test="usercarpeople != null" >
+        userCarPeople = #{usercarpeople,jdbcType=VARCHAR},
+      </if>
+      <if test="senddate != null" >
+        sendDate = #{senddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endcardate != null" >
+        endCarDate = #{endcardate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="firstduty != null" >
+        firstDuty = #{firstduty,jdbcType=VARCHAR},
+      </if>
+      <if test="safe != null" >
+        safe = #{safe,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null" >
+        note = #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="firstkm != null" >
+        firstkm = #{firstkm,jdbcType=VARCHAR},
+      </if>
+      <if test="endkm != null" >
+        endkm = #{endkm,jdbcType=VARCHAR},
+      </if>
+      <if test="tianqi != null" >
+        tianqi = #{tianqi,jdbcType=VARCHAR},
+      </if>
+      <if test="chucheq != null" >
+        chucheq = #{chucheq,jdbcType=VARCHAR},
+      </if>
+      <if test="xingshiz != null" >
+        xingshiz = #{xingshiz,jdbcType=VARCHAR},
+      </if>
+      <if test="shoucheh != null" >
+        shoucheh = #{shoucheh,jdbcType=VARCHAR},
+      </if>
+      <if test="shigujl != null" >
+        shigujl = #{shigujl,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null" >
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="applyId != null" >
+        apply_id = #{applyId,jdbcType=INTEGER},
+      </if>
+      <if test="sdate != null" >
+        sdate = #{sdate,jdbcType=DATE},
+      </if>
+      <if test="departmentId != null" >
+        department_id = #{departmentId,jdbcType=VARCHAR},
+      </if>
+      <if test="carId != null" >
+        car_id = #{carId,jdbcType=INTEGER},
+      </if>
+      <if test="driverId != null" >
+        driver_id = #{driverId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where send_id = #{sendId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.hqu.production_ms.domain.CarSend" >
+    update c_send
+    set sendNums = #{sendnums,jdbcType=VARCHAR},
+      sendUser = #{senduser,jdbcType=VARCHAR},
+      road = #{road,jdbcType=VARCHAR},
+      userCarPeople = #{usercarpeople,jdbcType=VARCHAR},
+      sendDate = #{senddate,jdbcType=TIMESTAMP},
+      endCarDate = #{endcardate,jdbcType=TIMESTAMP},
+      firstDuty = #{firstduty,jdbcType=VARCHAR},
+      safe = #{safe,jdbcType=VARCHAR},
+      note = #{note,jdbcType=VARCHAR},
+      firstkm = #{firstkm,jdbcType=VARCHAR},
+      endkm = #{endkm,jdbcType=VARCHAR},
+      tianqi = #{tianqi,jdbcType=VARCHAR},
+      chucheq = #{chucheq,jdbcType=VARCHAR},
+      xingshiz = #{xingshiz,jdbcType=VARCHAR},
+      shoucheh = #{shoucheh,jdbcType=VARCHAR},
+      shigujl = #{shigujl,jdbcType=VARCHAR},
+      notes = #{notes,jdbcType=VARCHAR},
+      apply_id = #{applyId,jdbcType=INTEGER},
+      sdate = #{sdate,jdbcType=DATE},
+      department_id = #{departmentId,jdbcType=VARCHAR},
+      car_id = #{carId,jdbcType=INTEGER},
+      driver_id = #{driverId,jdbcType=INTEGER}
+    where send_id = #{sendId,jdbcType=INTEGER}
+  </update>
+</mapper>

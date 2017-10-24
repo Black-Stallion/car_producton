@@ -1,0 +1,725 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.hqu.production_ms.mapper.authority.SysUserMapper" >
+  <resultMap id="BaseResultMap" type="sysUser" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="username" property="username" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="locked" property="locked" jdbcType="CHAR" />
+    <result column="department_id" property="departmentId" jdbcType="VARCHAR" />
+    <result column="qq" property="qq" jdbcType="VARCHAR" />
+    <result column="shenfen" property="shenfen" jdbcType="VARCHAR" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="culte" property="culte" jdbcType="VARCHAR" />
+    <result column="jiguan" property="jiguan" jdbcType="VARCHAR" />
+    <result column="gongzuodanwei" property="gongzuodanwei" jdbcType="VARCHAR" />
+    <result column="leve" property="leve" jdbcType="INTEGER" />
+    <result column="s1" property="s1" jdbcType="VARCHAR" />
+    <result column="s2" property="s2" jdbcType="VARCHAR" />
+    <result column="s3" property="s3" jdbcType="VARCHAR" />
+ <association property="department" javaType="department">
+		<id column="department_id" property="departmentId" jdbcType="VARCHAR" />
+	    <result column="department_name" property="departmentName" jdbcType="VARCHAR" />
+	    <result column="fatherdep" property="fatherdep" jdbcType="VARCHAR" />
+	    <result column="level" property="level" jdbcType="INTEGER" />
+	</association>
+  </resultMap>
+  <resultMap id="UserPORM" type="userPO"  extends="BaseResultMap">
+    <result column="role_name" property="roleName" jdbcType="VARCHAR" />
+    <result column="role_id" property="roleId" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  	<!-- 扩展的sql -->
+	<!-- 查询所有记录 -->
+	<select id="find" parameterType="sysUser" resultMap="UserPORM">
+		SELECT
+			sys_user.id,
+			username,
+			password,
+			shenfen,
+			phone,
+			culte,
+			jiguan,
+			qq,
+			gongzuodanwei,
+			leve,
+			department.department_id,
+			department.department_name,
+			department.fatherdep,
+			department.level,
+			locked,
+			role_id,
+			role_name
+		FROM
+			sys_user
+		LEFT JOIN sys_user_role ON sys_user_id = sys_user.id
+		LEFT JOIN sys_role ON sys_role_id = sys_role.role_id
+		left join department on department.department_id = sys_user.department_id
+		order by role_id
+	</select>
+	<select id="find1" parameterType="String" resultMap="UserPORM">
+		SELECT
+			sys_user.id,
+			username,
+			password,
+			shenfen,
+			phone,
+			culte,
+			jiguan,
+			qq,
+			gongzuodanwei,
+			leve,
+			department.department_id,
+			department.department_name,
+			department.fatherdep,
+			department.level,
+			locked,
+			role_id,
+			role_name
+		FROM
+			sys_user
+			LEFT JOIN sys_user_role ON sys_user_id = sys_user.id
+		LEFT JOIN sys_role ON sys_role_id = sys_role.role_id
+		left join department on department.department_id = sys_user.department_id
+		where 
+		department.department_id=#{departmentId}
+		order by role_id
+	</select>
+	<select id="finds1" parameterType="String" resultMap="UserPORM">
+		SELECT
+			sys_user.id,
+			username,
+			password,
+			shenfen,
+			phone,
+			culte,
+			jiguan,
+			qq,
+			gongzuodanwei,
+			leve,
+			department.department_id,
+			department.department_name,
+			department.fatherdep,
+			department.level,
+			locked,
+			role_id,
+			role_name
+		FROM
+			sys_user
+			LEFT JOIN sys_user_role ON sys_user_id = sys_user.id
+		LEFT JOIN sys_role ON sys_role_id = sys_role.role_id
+		left join department on department.department_id = sys_user.department_id
+		where 
+		(department.department_id=#{0} or department.fatherdep=#{1})
+		order by role_id
+	</select>
+	<select id="find2" parameterType="String" resultMap="UserPORM">
+		SELECT
+			sys_user.id,
+			username,
+			password,
+			shenfen,
+			phone,
+			culte,
+			jiguan,
+			qq,
+			gongzuodanwei,
+			leve,
+			department.department_id,
+			department.department_name,
+			department.fatherdep,
+			department.level,
+			locked,
+			role_id,
+			role_name
+		FROM
+			sys_user
+		LEFT JOIN sys_user_role ON sys_user_id = sys_user.id
+		LEFT JOIN sys_role ON sys_role_id = sys_role.role_id
+		left join department on department.department_id = sys_user.department_id
+		where 
+		department.department_id=#{departmentId}
+		order by role_id
+	</select>
+	<!-- 批量删除 -->
+	<delete id="deleteBatch">
+		DELETE
+		FROM
+			sys_user
+		WHERE
+			sys_user.id IN
+		<foreach collection="array" item="id" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</delete>
+	
+	<!-- 修改状态，批量启用停用-->
+	<update id="changeStatus">
+		UPDATE c_order
+		SET status = #{status}
+		WHERE
+			order_id IN
+		<foreach collection="ids" item="id" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</update>
+		<select id="searchUserByid" parameterType="string" resultMap="BaseResultMap">
+			SELECT
+			sys_user.id,
+			username,
+			password,
+			shenfen,
+			phone,
+			culte,
+			jiguan,
+			qq,
+			gongzuodanwei,
+			leve,
+			department.department_id,
+			department.department_name,
+			department.fatherdep,
+			department.level,
+			locked,
+			sys_role.role_id,
+			sys_role.role_name
+		FROM
+			sys_user
+		LEFT JOIN sys_user_role ON sys_user_id = sys_user.id
+		LEFT JOIN sys_role ON sys_role_id = sys_role.role_id
+		left join department on department.department_id = sys_user.department_id
+		WHERE
+			sys_user.id =#{userId} 
+		</select>
+	<select id="searchUserByUserId" parameterType="string" resultMap="UserPORM">
+		SELECT
+			sys_user.id,
+			username,
+			password,
+			shenfen,
+			phone,
+			culte,
+			jiguan,
+			qq,
+			gongzuodanwei,
+			leve,
+			department.department_id,
+			department.department_name,
+			department.fatherdep,
+			department.level,
+			locked,
+			role_id,
+			role_name
+		FROM
+			sys_user
+		LEFT JOIN sys_user_role ON sys_user_id = sys_user.id
+		LEFT JOIN sys_role ON sys_role_id = sys_role.role_id
+		left join department on department.department_id = sys_user.department_id
+		WHERE
+			department.department_name LIKE CONCAT(
+				'%',
+				#{departmentname},'%' ) 
+	</select>
+	
+	<select id="searchUserByUserName" parameterType="string" resultMap="UserPORM">
+		SELECT
+			sys_user.id,
+			username,
+			password,
+			shenfen,
+			phone,
+			culte,
+			jiguan,
+			qq,
+			gongzuodanwei,
+			leve,
+			department.department_id,
+			department.department_name,
+			department.fatherdep,
+			department.level,
+			locked,
+			role_id,
+			role_name
+		FROM
+			sys_user
+		LEFT JOIN sys_user_role ON sys_user_id = sys_user.id
+		LEFT JOIN sys_role ON sys_role_id = sys_role.role_id
+		left join department on department.department_id = sys_user.department_id
+		WHERE
+			username LIKE CONCAT(
+				'%',
+				#{userName},'%' ) 
+	</select>
+	
+	<select id="searchUserByRoleName" parameterType="string" resultMap="UserPORM">
+		SELECT
+			sys_user.id,
+			username,
+			password,
+			shenfen,
+			phone,
+			culte,
+			jiguan,
+			qq,
+			gongzuodanwei,
+			leve,
+			department.department_id,
+			department.department_name,
+			department.fatherdep,
+			department.level,
+			locked,
+			role_id,
+			role_name
+		FROM
+			sys_user
+		LEFT JOIN sys_user_role ON sys_user_id = sys_user.id
+		LEFT JOIN sys_role ON sys_role_id = sys_role.role_id
+		left join department on department.department_id = sys_user.department_id
+		WHERE
+			role_name LIKE CONCAT(
+				'%',
+				#{roleName},'%' ) 
+	</select>
+	<select id="searchUserByUserId1" parameterType="string" resultMap="UserPORM">
+		SELECT
+			sys_user.id,
+			username,
+			password,
+			shenfen,
+			phone,
+			culte,
+			jiguan,
+			qq,
+			gongzuodanwei,
+			leve,
+			department.department_id,
+			department.department_name,
+			department.fatherdep,
+			department.level,
+			locked,
+			role_id,
+			role_name
+		FROM
+			sys_user
+		LEFT JOIN sys_user_role ON sys_user_id = sys_user.id
+		LEFT JOIN sys_role ON sys_role_id = sys_role.role_id
+		left join department on department.department_id = sys_user.department_id
+		WHERE
+		department.department_id=#{0}
+		and
+			department.department_name LIKE CONCAT(
+				'%',
+				#{1},'%' ) 
+	</select>
+	
+	<select id="searchUserByUserName1" parameterType="string" resultMap="UserPORM">
+		SELECT
+			sys_user.id,
+			username,
+			password,
+			shenfen,
+			phone,
+			culte,
+			jiguan,
+			qq,
+			gongzuodanwei,
+			leve,
+			department.department_id,
+			department.department_name,
+			department.fatherdep,
+			department.level,
+			locked,
+			role_id,
+			role_name
+		FROM
+			sys_user
+		LEFT JOIN sys_user_role ON sys_user_id = sys_user.id
+		LEFT JOIN sys_role ON sys_role_id = sys_role.role_id
+		left join department on department.department_id = sys_user.department_id
+		WHERE
+		department.department_id=#{0}
+		and
+			username LIKE CONCAT(
+				'%',
+				#{1},'%' ) 
+	</select>
+	
+	<select id="searchUserByRoleName1" parameterType="string" resultMap="UserPORM">
+		SELECT
+			sys_user.id,
+			username,
+			password,
+			shenfen,
+			phone,
+			culte,
+			jiguan,
+			qq,
+			gongzuodanwei,
+			leve,
+			department.department_id,
+			department.department_name,
+			department.fatherdep,
+			department.level,
+			locked,
+			role_id,
+			role_name
+		FROM
+			sys_user
+		LEFT JOIN sys_user_role ON sys_user_id = sys_user.id
+		LEFT JOIN sys_role ON sys_role_id = sys_role.role_id
+		left join department on department.department_id = sys_user.department_id
+		WHERE
+		department.department_id=#{0}
+		and
+			role_name LIKE CONCAT(
+				'%',
+				#{1},'%' ) 
+	</select>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, username, password, locked, department_id, qq, shenfen, phone, culte, jiguan, 
+    gongzuodanwei, leve, s1, s2, s3
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="sysUserExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from sys_user
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from sys_user
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from sys_user
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="sysUserExample" >
+    delete from sys_user
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="sysUser" >
+    insert into sys_user (id, username, password, 
+      locked, department_id, qq, 
+      shenfen, phone, culte, 
+      jiguan, gongzuodanwei, leve, 
+      s1, s2, s3)
+    values (#{id,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+      #{locked,jdbcType=CHAR}, #{departmentId,jdbcType=VARCHAR}, #{qq,jdbcType=VARCHAR}, 
+      #{shenfen,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{culte,jdbcType=VARCHAR}, 
+      #{jiguan,jdbcType=VARCHAR}, #{gongzuodanwei,jdbcType=VARCHAR}, #{leve,jdbcType=INTEGER}, 
+      #{s1,jdbcType=VARCHAR}, #{s2,jdbcType=VARCHAR}, #{s3,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="sysUser" >
+    insert into sys_user
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="username != null" >
+        username,
+      </if>
+      <if test="password != null" >
+        password,
+      </if>
+      <if test="locked != null" >
+        locked,
+      </if>
+      <if test="departmentId != null" >
+        department_id,
+      </if>
+      <if test="qq != null" >
+        qq,
+      </if>
+      <if test="shenfen != null" >
+        shenfen,
+      </if>
+      <if test="phone != null" >
+        phone,
+      </if>
+      <if test="culte != null" >
+        culte,
+      </if>
+      <if test="jiguan != null" >
+        jiguan,
+      </if>
+      <if test="gongzuodanwei != null" >
+        gongzuodanwei,
+      </if>
+      <if test="leve != null" >
+        leve,
+      </if>
+      <if test="s1 != null" >
+        s1,
+      </if>
+      <if test="s2 != null" >
+        s2,
+      </if>
+      <if test="s3 != null" >
+        s3,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null" >
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="locked != null" >
+        #{locked,jdbcType=CHAR},
+      </if>
+      <if test="departmentId != null" >
+        #{departmentId,jdbcType=VARCHAR},
+      </if>
+      <if test="qq != null" >
+        #{qq,jdbcType=VARCHAR},
+      </if>
+      <if test="shenfen != null" >
+        #{shenfen,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="culte != null" >
+        #{culte,jdbcType=VARCHAR},
+      </if>
+      <if test="jiguan != null" >
+        #{jiguan,jdbcType=VARCHAR},
+      </if>
+      <if test="gongzuodanwei != null" >
+        #{gongzuodanwei,jdbcType=VARCHAR},
+      </if>
+      <if test="leve != null" >
+        #{leve,jdbcType=INTEGER},
+      </if>
+      <if test="s1 != null" >
+        #{s1,jdbcType=VARCHAR},
+      </if>
+      <if test="s2 != null" >
+        #{s2,jdbcType=VARCHAR},
+      </if>
+      <if test="s3 != null" >
+        #{s3,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="sysUserExample" resultType="java.lang.Integer" >
+    select count(*) from sys_user
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update sys_user
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=VARCHAR},
+      </if>
+      <if test="record.username != null" >
+        username = #{record.username,jdbcType=VARCHAR},
+      </if>
+      <if test="record.password != null" >
+        password = #{record.password,jdbcType=VARCHAR},
+      </if>
+      <if test="record.locked != null" >
+        locked = #{record.locked,jdbcType=CHAR},
+      </if>
+      <if test="record.departmentId != null" >
+        department_id = #{record.departmentId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.qq != null" >
+        qq = #{record.qq,jdbcType=VARCHAR},
+      </if>
+      <if test="record.shenfen != null" >
+        shenfen = #{record.shenfen,jdbcType=VARCHAR},
+      </if>
+      <if test="record.phone != null" >
+        phone = #{record.phone,jdbcType=VARCHAR},
+      </if>
+      <if test="record.culte != null" >
+        culte = #{record.culte,jdbcType=VARCHAR},
+      </if>
+      <if test="record.jiguan != null" >
+        jiguan = #{record.jiguan,jdbcType=VARCHAR},
+      </if>
+      <if test="record.gongzuodanwei != null" >
+        gongzuodanwei = #{record.gongzuodanwei,jdbcType=VARCHAR},
+      </if>
+      <if test="record.leve != null" >
+        leve = #{record.leve,jdbcType=INTEGER},
+      </if>
+      <if test="record.s1 != null" >
+        s1 = #{record.s1,jdbcType=VARCHAR},
+      </if>
+      <if test="record.s2 != null" >
+        s2 = #{record.s2,jdbcType=VARCHAR},
+      </if>
+      <if test="record.s3 != null" >
+        s3 = #{record.s3,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update sys_user
+    set id = #{record.id,jdbcType=VARCHAR},
+      username = #{record.username,jdbcType=VARCHAR},
+      password = #{record.password,jdbcType=VARCHAR},
+      locked = #{record.locked,jdbcType=CHAR},
+      department_id = #{record.departmentId,jdbcType=VARCHAR},
+      qq = #{record.qq,jdbcType=VARCHAR},
+      shenfen = #{record.shenfen,jdbcType=VARCHAR},
+      phone = #{record.phone,jdbcType=VARCHAR},
+      culte = #{record.culte,jdbcType=VARCHAR},
+      jiguan = #{record.jiguan,jdbcType=VARCHAR},
+      gongzuodanwei = #{record.gongzuodanwei,jdbcType=VARCHAR},
+      leve = #{record.leve,jdbcType=INTEGER},
+      s1 = #{record.s1,jdbcType=VARCHAR},
+      s2 = #{record.s2,jdbcType=VARCHAR},
+      s3 = #{record.s3,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="sysUser" >
+    update sys_user
+    <set >
+      <if test="username != null" >
+        username = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="locked != null" >
+        locked = #{locked,jdbcType=CHAR},
+      </if>
+      <if test="departmentId != null" >
+        department_id = #{departmentId,jdbcType=VARCHAR},
+      </if>
+      <if test="qq != null" >
+        qq = #{qq,jdbcType=VARCHAR},
+      </if>
+      <if test="shenfen != null" >
+        shenfen = #{shenfen,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="culte != null" >
+        culte = #{culte,jdbcType=VARCHAR},
+      </if>
+      <if test="jiguan != null" >
+        jiguan = #{jiguan,jdbcType=VARCHAR},
+      </if>
+      <if test="gongzuodanwei != null" >
+        gongzuodanwei = #{gongzuodanwei,jdbcType=VARCHAR},
+      </if>
+      <if test="leve != null" >
+        leve = #{leve,jdbcType=INTEGER},
+      </if>
+      <if test="s1 != null" >
+        s1 = #{s1,jdbcType=VARCHAR},
+      </if>
+      <if test="s2 != null" >
+        s2 = #{s2,jdbcType=VARCHAR},
+      </if>
+      <if test="s3 != null" >
+        s3 = #{s3,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="sysUser" >
+    update sys_user
+    set username = #{username,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      locked = #{locked,jdbcType=CHAR},
+      department_id = #{departmentId,jdbcType=VARCHAR},
+      qq = #{qq,jdbcType=VARCHAR},
+      shenfen = #{shenfen,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      culte = #{culte,jdbcType=VARCHAR},
+      jiguan = #{jiguan,jdbcType=VARCHAR},
+      gongzuodanwei = #{gongzuodanwei,jdbcType=VARCHAR},
+      leve = #{leve,jdbcType=INTEGER},
+      s1 = #{s1,jdbcType=VARCHAR},
+      s2 = #{s2,jdbcType=VARCHAR},
+      s3 = #{s3,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

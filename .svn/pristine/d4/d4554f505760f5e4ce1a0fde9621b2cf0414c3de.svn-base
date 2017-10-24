@@ -1,0 +1,32 @@
+package org.hqu.production_ms.service;
+
+import java.util.List;
+
+import org.hqu.production_ms.domain.BaoYangWarn;
+import org.hqu.production_ms.domain.custom.CustomResult;
+import org.hqu.production_ms.domain.custom.EUDataGridResult;
+import org.hqu.production_ms.domain.po.BaoYangWarnPO;
+
+public interface BaoYangWarnService {
+
+	List<BaoYangWarn> find() throws Exception;  
+	
+	EUDataGridResult getList(int page, int rows, BaoYangWarn baoYangWarn) throws Exception;
+	
+	BaoYangWarn get(int string) throws Exception;
+	
+	CustomResult delete(int string) throws Exception;
+
+	CustomResult deleteBatch(int[] ids) throws Exception;
+
+	CustomResult insert(BaoYangWarnPO baoYangWarn) throws Exception;
+
+    //更新全部字段，不判断非空，直接进行更新
+    CustomResult updateAll(BaoYangWarnPO baoYangWarn) throws Exception;
+    
+    CustomResult update(BaoYangWarnPO baoYangWarn) throws Exception;
+    
+    CustomResult updateStatus(int id) throws Exception; 
+
+
+}

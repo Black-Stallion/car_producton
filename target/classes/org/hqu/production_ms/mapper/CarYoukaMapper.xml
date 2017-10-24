@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.hqu.production_ms.mapper.CarYoukaMapper" >
+  <resultMap id="BaseResultMap" type="org.hqu.production_ms.domain.CarYouka" >
+    <id column="youka_id" property="youkaId" jdbcType="INTEGER" />
+    <result column="you_id" property="youId" jdbcType="INTEGER" />
+    <result column="car_id" property="carId" jdbcType="INTEGER" />
+    <result column="yongyou" property="yongyou" jdbcType="DECIMAL" />
+    <result column="totlyou" property="totlyou" jdbcType="DECIMAL" />
+    <result column="beiyong1" property="beiyong1" jdbcType="TIMESTAMP" />
+    <result column="beiyong2" property="beiyong2" jdbcType="VARCHAR" />
+    <result column="allyou" property="allyou" jdbcType="DECIMAL" />
+    <result column="alltomoney" property="alltomoney" jdbcType="DECIMAL" />
+    <association property="carRegister" javaType="carRegister">
+		<id column="car_id" property="carId" jdbcType="INTEGER" />
+	    <result column="carnumber" property="carnumber" jdbcType="VARCHAR" />
+	     <result column="useNature" property="usenature" jdbcType="VARCHAR" />
+	</association>
+	 <association property="carYou" javaType="carYou">
+		<id column="you_id" property="youId" jdbcType="INTEGER" />
+    	<result column="younumber" property="younumber" jdbcType="VARCHAR" />
+	    <result column="department_id" property="departmentId" jdbcType="VARCHAR" /> 
+	</association>
+	 <association property="department" javaType="department">
+		<id column="department_id" property="departmentId" jdbcType="VARCHAR" />
+	    <result column="department_name" property="departmentName" jdbcType="VARCHAR" />
+	    <result column="fatherdep" property="fatherdep" jdbcType="VARCHAR" />
+	</association>
+  </resultMap>
+   <select id="find" parameterType="carYouka" resultMap="BaseResultMap">
+		SELECT
+				youka_id,
+			   yongyou,
+			   totlyou,
+			   c_youka.beiyong1,
+			   c_youka.beiyong2,
+			   c_register.car_id,
+			   c_register.carnumber,
+			   c_register.useNature,
+			   c_you.you_id,
+			   c_you.younumber,
+			   c_you.department_id,
+			   department.department_name
+		FROM 
+			c_youka
+			LEFT JOIN c_register ON c_youka.car_id = c_register.car_id
+			LEFT JOIN c_you ON c_youka.you_id = c_you.you_id
+			LEFT JOIN department ON c_you.department_id = department.department_id
+		WHERE 
+			0 = 0
+			order by c_youka.beiyong1 desc
+	</select>
+	
+	<select id="find1" parameterType="String" resultMap="BaseResultMap">
+		SELECT
+				youka_id,
+			   yongyou,
+			   totlyou,
+			   c_youka.beiyong1,
+			   c_youka.beiyong2,
+			   c_register.car_id,
+			   c_register.carnumber,
+			   c_register.useNature,
+			   c_you.you_id,
+			   c_you.younumber,
+			   c_you.department_id,
+			   department.department_name
+		FROM 
+			c_youka
+			LEFT JOIN c_register ON c_youka.car_id = c_register.car_id
+			LEFT JOIN c_you ON c_youka.you_id = c_you.you_id
+			LEFT JOIN department ON c_you.department_id = department.department_id
+		WHERE 
+			0 = 0
+			and c_you.department_id=#{departmentId}
+			order by c_youka.beiyong1 desc
+	</select>
+	
+	<!-- 查询所单个记录 -->
+	<select id="selectSingleCarYouka" parameterType="INTEGER" resultMap="BaseResultMap">
+		SELECT
+				youka_id,
+			   yongyou,
+			   totlyou,
+			   c_youka.beiyong1,
+			   c_youka.beiyong2,
+			   c_register.car_id,
+			   c_register.carnumber,
+			   c_register.useNature,
+			   c_you.you_id,
+			   c_you.younumber,
+			   c_you.department_id,
+			   department.department_name
+		FROM 
+			c_youka
+			LEFT JOIN c_register ON c_youka.car_id = c_register.car_id
+			LEFT JOIN c_you ON c_youka.you_id = c_you.you_id
+			LEFT JOIN department ON c_you.department_id = department.department_id
+		WHERE 
+			0 = 0
+			and youka_id = #{youkaId}
+	</select>
+	<!-- 查询所单个记录 -->
+	<select id="findByCarId" parameterType="INTEGER" resultMap="BaseResultMap">
+		SELECT
+				youka_id,
+			   SUM(yongyou) AS allyou,
+			   SUM(totlyou) AS alltomoney,
+			   c_youka.beiyong1,
+			   c_youka.beiyong2,
+			   c_register.car_id,
+			   c_register.carnumber,
+			   c_register.useNature,
+			   c_you.you_id,
+			   c_you.younumber,
+			   c_you.department_id,
+			   department.department_name
+		FROM 
+			c_youka
+			LEFT JOIN c_register ON c_youka.car_id = c_register.car_id
+			LEFT JOIN c_you ON c_youka.you_id = c_you.you_id
+			LEFT JOIN department ON c_you.department_id = department.department_id
+		WHERE 
+			0 = 0
+			and  c_register.car_id = #{Id}
+	</select>
+  <!-- 批量删除 -->
+	<delete id="deleteBatch">
+		DELETE
+		FROM
+			c_youka
+		WHERE
+			youka_id IN
+		<foreach collection="array" item="id" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</delete>
+	<select id="searchCarYoukaByCarYoukaDriverfrom" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+				youka_id,
+			   yongyou,
+			   totlyou,
+			   c_youka.beiyong1,
+			   c_youka.beiyong2,
+			   c_register.car_id,
+			   c_register.carnumber,
+			   c_register.useNature,
+			   c_you.you_id,
+			   c_you.younumber,
+			   c_you.department_id,
+			   department.department_name
+		FROM 
+			c_youka
+			LEFT JOIN c_register ON c_youka.car_id = c_register.car_id
+			LEFT JOIN c_you ON c_youka.you_id = c_you.you_id
+			LEFT JOIN department ON c_you.department_id = department.department_id
+		WHERE 
+			0 = 0 and
+			c_register.carnumber LIKE CONCAT( '%',#{approve},'%' ) 
+			order by c_youka.beiyong1 desc
+	</select>
+	
+	<select id="searchCarYoukaByCarYoukaDriverfrom1" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+				youka_id,
+			   yongyou,
+			   totlyou,
+			   c_youka.beiyong1,
+			   c_youka.beiyong2,
+			   c_register.car_id,
+			   c_register.carnumber,
+			   c_register.useNature,
+			   c_you.you_id,
+			   c_you.younumber,
+			   c_you.department_id,
+			   department.department_name
+		FROM 
+			c_youka
+			LEFT JOIN c_register ON c_youka.car_id = c_register.car_id
+			LEFT JOIN c_you ON c_youka.you_id = c_you.you_id
+			LEFT JOIN department ON c_you.department_id = department.department_id
+		WHERE 
+			0 = 0 and
+			c_you.department_id = #{0}
+			and
+			c_register.carnumber LIKE CONCAT( '%',#{1},'%' ) 
+			order by c_youka.beiyong1 desc
+	</select>
+	
+	<select id="searchCarYoukaByCarYoukaAA" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+				youka_id,
+			   yongyou,
+			   totlyou,
+			   c_youka.beiyong1,
+			   c_youka.beiyong2,
+			   c_register.car_id,
+			   c_register.carnumber,
+			   c_register.useNature,
+			   c_you.you_id,
+			   c_you.younumber,
+			   c_you.department_id,
+			   department.department_name
+		FROM 
+			c_youka
+			LEFT JOIN c_register ON c_youka.car_id = c_register.car_id
+			LEFT JOIN c_you ON c_youka.you_id = c_you.you_id
+			LEFT JOIN department ON c_you.department_id = department.department_id
+		WHERE 
+			0 = 0 and 
+			c_you.younumber LIKE CONCAT( '%',#{departmentName},'%' ) 
+			order by c_youka.beiyong1 desc
+	</select>
+	
+	<select id="searchCarYoukaByCarYoukaAA1" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+				youka_id,
+			   yongyou,
+			   totlyou,
+			   c_youka.beiyong1,
+			   c_youka.beiyong2,
+			   c_register.car_id,
+			   c_register.carnumber,
+			   c_register.useNature,
+			   c_you.you_id,
+			   c_you.younumber,
+			   c_you.department_id,
+			   department.department_name
+		FROM 
+			c_youka
+			LEFT JOIN c_register ON c_youka.car_id = c_register.car_id
+			LEFT JOIN c_you ON c_youka.you_id = c_you.you_id
+			LEFT JOIN department ON c_you.department_id = department.department_id
+		WHERE 
+			0 = 0 and 
+			c_you.department_id = #{0}
+			and
+			c_you.younumber LIKE CONCAT( '%',#{1},'%' ) 
+			order by c_youka.beiyong1 desc
+	</select>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    youka_id, you_id, car_id, yongyou, totlyou, beiyong1, beiyong2
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.hqu.production_ms.domain.CarYoukaExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from c_youka
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from c_youka
+    where youka_id = #{youkaId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from c_youka
+    where youka_id = #{youkaId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.hqu.production_ms.domain.CarYoukaExample" >
+    delete from c_youka
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.hqu.production_ms.domain.CarYouka" >
+    insert into c_youka (youka_id, you_id, car_id, 
+      yongyou, totlyou, beiyong1, 
+      beiyong2)
+    values (#{youkaId,jdbcType=INTEGER}, #{youId,jdbcType=INTEGER}, #{carId,jdbcType=INTEGER}, 
+      #{yongyou,jdbcType=DECIMAL}, #{totlyou,jdbcType=DECIMAL}, #{beiyong1,jdbcType=TIMESTAMP}, 
+      #{beiyong2,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="org.hqu.production_ms.domain.CarYouka" >
+    insert into c_youka
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="youkaId != null" >
+        youka_id,
+      </if>
+      <if test="youId != null" >
+        you_id,
+      </if>
+      <if test="carId != null" >
+        car_id,
+      </if>
+      <if test="yongyou != null" >
+        yongyou,
+      </if>
+      <if test="totlyou != null" >
+        totlyou,
+      </if>
+      <if test="beiyong1 != null" >
+        beiyong1,
+      </if>
+      <if test="beiyong2 != null" >
+        beiyong2,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="youkaId != null" >
+        #{youkaId,jdbcType=INTEGER},
+      </if>
+      <if test="youId != null" >
+        #{youId,jdbcType=INTEGER},
+      </if>
+      <if test="carId != null" >
+        #{carId,jdbcType=INTEGER},
+      </if>
+      <if test="yongyou != null" >
+        #{yongyou,jdbcType=DECIMAL},
+      </if>
+      <if test="totlyou != null" >
+        #{totlyou,jdbcType=DECIMAL},
+      </if>
+      <if test="beiyong1 != null" >
+        #{beiyong1,jdbcType=TIMESTAMP},
+      </if>
+      <if test="beiyong2 != null" >
+        #{beiyong2,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.hqu.production_ms.domain.CarYoukaExample" resultType="java.lang.Integer" >
+    select count(*) from c_youka
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update c_youka
+    <set >
+      <if test="record.youkaId != null" >
+        youka_id = #{record.youkaId,jdbcType=INTEGER},
+      </if>
+      <if test="record.youId != null" >
+        you_id = #{record.youId,jdbcType=INTEGER},
+      </if>
+      <if test="record.carId != null" >
+        car_id = #{record.carId,jdbcType=INTEGER},
+      </if>
+      <if test="record.yongyou != null" >
+        yongyou = #{record.yongyou,jdbcType=DECIMAL},
+      </if>
+      <if test="record.totlyou != null" >
+        totlyou = #{record.totlyou,jdbcType=DECIMAL},
+      </if>
+      <if test="record.beiyong1 != null" >
+        beiyong1 = #{record.beiyong1,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.beiyong2 != null" >
+        beiyong2 = #{record.beiyong2,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update c_youka
+    set youka_id = #{record.youkaId,jdbcType=INTEGER},
+      you_id = #{record.youId,jdbcType=INTEGER},
+      car_id = #{record.carId,jdbcType=INTEGER},
+      yongyou = #{record.yongyou,jdbcType=DECIMAL},
+      totlyou = #{record.totlyou,jdbcType=DECIMAL},
+      beiyong1 = #{record.beiyong1,jdbcType=TIMESTAMP},
+      beiyong2 = #{record.beiyong2,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.hqu.production_ms.domain.CarYouka" >
+    update c_youka
+    <set >
+      <if test="youId != null" >
+        you_id = #{youId,jdbcType=INTEGER},
+      </if>
+      <if test="carId != null" >
+        car_id = #{carId,jdbcType=INTEGER},
+      </if>
+      <if test="yongyou != null" >
+        yongyou = #{yongyou,jdbcType=DECIMAL},
+      </if>
+      <if test="totlyou != null" >
+        totlyou = #{totlyou,jdbcType=DECIMAL},
+      </if>
+      <if test="beiyong1 != null" >
+        beiyong1 = #{beiyong1,jdbcType=TIMESTAMP},
+      </if>
+      <if test="beiyong2 != null" >
+        beiyong2 = #{beiyong2,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where youka_id = #{youkaId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.hqu.production_ms.domain.CarYouka" >
+    update c_youka
+    set you_id = #{youId,jdbcType=INTEGER},
+      car_id = #{carId,jdbcType=INTEGER},
+      yongyou = #{yongyou,jdbcType=DECIMAL},
+      totlyou = #{totlyou,jdbcType=DECIMAL},
+      beiyong1 = #{beiyong1,jdbcType=TIMESTAMP},
+      beiyong2 = #{beiyong2,jdbcType=VARCHAR}
+    where youka_id = #{youkaId,jdbcType=INTEGER}
+  </update>
+</mapper>

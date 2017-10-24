@@ -1,0 +1,41 @@
+package org.hqu.production_ms.service;
+
+import java.util.List;
+
+import org.hqu.production_ms.domain.DriverCheck;
+import org.hqu.production_ms.domain.custom.CustomResult;
+import org.hqu.production_ms.domain.custom.EUDataGridResult;
+import org.hqu.production_ms.domain.po.DriverCheckPO;
+
+public interface DriverCheckService {
+
+	List<DriverCheck> find() throws Exception;  
+	
+	EUDataGridResult getList(int page, int rows, DriverCheck driverCheck) throws Exception;
+	
+	List<DriverCheck> find1(String id) throws Exception;  
+	
+	EUDataGridResult getList1(int page, int rows, DriverCheck driverCheck,String id) throws Exception;
+	
+	DriverCheck get(int string) throws Exception;
+	
+	CustomResult delete(int string) throws Exception;
+
+	CustomResult deleteBatch(int[] ids) throws Exception;
+
+	CustomResult insert(DriverCheckPO driverCheck) throws Exception;
+
+    //更新全部字段，不判断非空，直接进行更新
+    CustomResult updateAll(DriverCheckPO driverCheck) throws Exception;
+    
+    CustomResult update(DriverCheckPO driverCheck) throws Exception;
+    
+    
+	
+	EUDataGridResult searchDriverCheckBydrivernum(Integer page, Integer rows,
+			String drivernum) throws Exception;
+
+	EUDataGridResult searchDriverCheckBycarnum(Integer page, Integer rows,
+			String carnum) throws Exception;
+
+}

@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.hqu.production_ms.mapper.DriverCheckMapper" >
+  <resultMap id="BaseResultMap" type="org.hqu.production_ms.domain.DriverCheck" >
+    <id column="drive_check_id" property="driveCheckId" jdbcType="INTEGER" />
+    <result column="drivernum" property="drivernum" jdbcType="VARCHAR" />
+    <result column="drivername" property="drivername" jdbcType="VARCHAR" />
+    <result column="carnumber" property="carnumber" jdbcType="VARCHAR" />
+    <result column="kaohetime" property="kaohetime" jdbcType="TIMESTAMP" />
+    <result column="kaohescore" property="kaohescore" jdbcType="VARCHAR" />
+    <result column="koufenyinsu" property="koufenyinsu" jdbcType="VARCHAR" />
+  </resultMap>
+  
+   <!-- 扩展的sql -->
+  <!-- 查询所有记录 -->
+	<select id="find" parameterType="driverCheck" resultMap="BaseResultMap">
+		SELECT
+			drive_check_id,
+			carnumber,
+			kaohetime,
+			kaohescore,
+			koufenyinsu,
+			c_drive_check.drivernum,
+			c_driver.drvierName as drivername
+
+			
+		FROM 
+			c_drive_check  
+			left join c_driver  on c_driver.driverNum=c_drive_check.drivernum
+			ORDER BY kaohetime
+	</select>
+	
+	<!-- 查询所单个记录 -->
+	<select id="selectSingleDriverCheck" parameterType="INTEGER" resultMap="BaseResultMap">
+		SELECT
+		*
+		FROM 
+			c_drive_check 
+			
+			WHERE  drive_check_id  = #{driveCheckId}
+			ORDER BY kaohetime
+		
+	</select>
+	
+  <!-- 批量删除 -->
+	<delete id="deleteBatch">
+		DELETE
+		FROM
+			c_drive_check
+		WHERE
+			drive_check_id IN
+		<foreach collection="array" item="id" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</delete>
+  <select id="searchDriverCheckBydrivernum" parameterType="String" resultMap="BaseResultMap">
+		SELECT
+		*
+		FROM 
+			c_drive_check 
+			WHERE  drivernum  LIKE CONCAT( '%',#{drivernum},'%' ) 
+			
+	</select>
+	
+	<select id="searchDriverCheckBycarnum" parameterType="String" resultMap="BaseResultMap">
+		SELECT
+			*
+		FROM 
+			c_drive_check 
+			
+			WHERE  carnumber  LIKE CONCAT( '%',#{carnumber},'%' ) 
+			
+	</select>
+  
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    drive_check_id, drivernum, drivername, carnumber, kaohetime, kaohescore, koufenyinsu
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.hqu.production_ms.domain.DriverCheckExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from c_drive_check
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from c_drive_check
+    where drive_check_id = #{driveCheckId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from c_drive_check
+    where drive_check_id = #{driveCheckId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.hqu.production_ms.domain.DriverCheckExample" >
+    delete from c_drive_check
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.hqu.production_ms.domain.DriverCheck" >
+    insert into c_drive_check (drive_check_id, drivernum, drivername, 
+      carnumber, kaohetime, kaohescore, 
+      koufenyinsu)
+    values (#{driveCheckId,jdbcType=INTEGER}, #{drivernum,jdbcType=VARCHAR}, #{drivername,jdbcType=VARCHAR}, 
+      #{carnumber,jdbcType=VARCHAR}, #{kaohetime,jdbcType=TIMESTAMP}, #{kaohescore,jdbcType=VARCHAR}, 
+      #{koufenyinsu,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="org.hqu.production_ms.domain.DriverCheck" >
+    insert into c_drive_check
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="driveCheckId != null" >
+        drive_check_id,
+      </if>
+      <if test="drivernum != null" >
+        drivernum,
+      </if>
+      <if test="drivername != null" >
+        drivername,
+      </if>
+      <if test="carnumber != null" >
+        carnumber,
+      </if>
+      <if test="kaohetime != null" >
+        kaohetime,
+      </if>
+      <if test="kaohescore != null" >
+        kaohescore,
+      </if>
+      <if test="koufenyinsu != null" >
+        koufenyinsu,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="driveCheckId != null" >
+        #{driveCheckId,jdbcType=INTEGER},
+      </if>
+      <if test="drivernum != null" >
+        #{drivernum,jdbcType=VARCHAR},
+      </if>
+      <if test="drivername != null" >
+        #{drivername,jdbcType=VARCHAR},
+      </if>
+      <if test="carnumber != null" >
+        #{carnumber,jdbcType=VARCHAR},
+      </if>
+      <if test="kaohetime != null" >
+        #{kaohetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="kaohescore != null" >
+        #{kaohescore,jdbcType=VARCHAR},
+      </if>
+      <if test="koufenyinsu != null" >
+        #{koufenyinsu,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.hqu.production_ms.domain.DriverCheckExample" resultType="java.lang.Integer" >
+    select count(*) from c_drive_check
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update c_drive_check
+    <set >
+      <if test="record.driveCheckId != null" >
+        drive_check_id = #{record.driveCheckId,jdbcType=INTEGER},
+      </if>
+      <if test="record.drivernum != null" >
+        drivernum = #{record.drivernum,jdbcType=VARCHAR},
+      </if>
+      <if test="record.drivername != null" >
+        drivername = #{record.drivername,jdbcType=VARCHAR},
+      </if>
+      <if test="record.carnumber != null" >
+        carnumber = #{record.carnumber,jdbcType=VARCHAR},
+      </if>
+      <if test="record.kaohetime != null" >
+        kaohetime = #{record.kaohetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.kaohescore != null" >
+        kaohescore = #{record.kaohescore,jdbcType=VARCHAR},
+      </if>
+      <if test="record.koufenyinsu != null" >
+        koufenyinsu = #{record.koufenyinsu,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update c_drive_check
+    set drive_check_id = #{record.driveCheckId,jdbcType=INTEGER},
+      drivernum = #{record.drivernum,jdbcType=VARCHAR},
+      drivername = #{record.drivername,jdbcType=VARCHAR},
+      carnumber = #{record.carnumber,jdbcType=VARCHAR},
+      kaohetime = #{record.kaohetime,jdbcType=TIMESTAMP},
+      kaohescore = #{record.kaohescore,jdbcType=VARCHAR},
+      koufenyinsu = #{record.koufenyinsu,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.hqu.production_ms.domain.DriverCheck" >
+    update c_drive_check
+    <set >
+      <if test="drivernum != null" >
+        drivernum = #{drivernum,jdbcType=VARCHAR},
+      </if>
+      <if test="drivername != null" >
+        drivername = #{drivername,jdbcType=VARCHAR},
+      </if>
+      <if test="carnumber != null" >
+        carnumber = #{carnumber,jdbcType=VARCHAR},
+      </if>
+      <if test="kaohetime != null" >
+        kaohetime = #{kaohetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="kaohescore != null" >
+        kaohescore = #{kaohescore,jdbcType=VARCHAR},
+      </if>
+      <if test="koufenyinsu != null" >
+        koufenyinsu = #{koufenyinsu,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where drive_check_id = #{driveCheckId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.hqu.production_ms.domain.DriverCheck" >
+    update c_drive_check
+    set drivernum = #{drivernum,jdbcType=VARCHAR},
+      drivername = #{drivername,jdbcType=VARCHAR},
+      carnumber = #{carnumber,jdbcType=VARCHAR},
+      kaohetime = #{kaohetime,jdbcType=TIMESTAMP},
+      kaohescore = #{kaohescore,jdbcType=VARCHAR},
+      koufenyinsu = #{koufenyinsu,jdbcType=VARCHAR}
+    where drive_check_id = #{driveCheckId,jdbcType=INTEGER}
+  </update>
+</mapper>

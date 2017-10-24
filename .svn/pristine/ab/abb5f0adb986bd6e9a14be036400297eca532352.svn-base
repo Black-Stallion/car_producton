@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.hqu.production_ms.mapper.CarKeepApplyMapper" >
+  <resultMap id="BaseResultMap" type="org.hqu.production_ms.domain.CarKeepApply" >
+    <id column="apply_id" property="applyId" jdbcType="INTEGER" />
+    <result column="startDate" property="startdate" jdbcType="TIMESTAMP" />
+    <result column="endDate" property="enddate" jdbcType="TIMESTAMP" />
+    <result column="intervalKM" property="intervalkm" jdbcType="VARCHAR" />
+    <result column="repairType" property="repairtype" jdbcType="VARCHAR" />
+    <result column="supplierName" property="suppliername" jdbcType="VARCHAR" />
+    <result column="car_id" property="carId" jdbcType="INTEGER" />
+    <result column="carnum" property="carnum" jdbcType="VARCHAR" />
+    <result column="department_id" property="departmentId" jdbcType="VARCHAR" />
+    <result column="stats" property="stats" jdbcType="VARCHAR" />
+    <result column="applyname" property="applyname" jdbcType="VARCHAR" />
+    <result column="approve" property="approve" jdbcType="VARCHAR" />
+    <result column="dep" property="dep" jdbcType="VARCHAR" />
+    <result column="beiyong1" property="beiyong1" jdbcType="VARCHAR" />
+    <result column="beiyong2" property="beiyong2" jdbcType="VARCHAR" />
+  </resultMap>
+  <select id="find" parameterType="carApply" resultMap="BaseResultMap">
+		SELECT
+				*
+		FROM 
+			c_keepapply
+			order BY stats
+	</select>
+	
+	<select id="find1" parameterType="carApply" resultMap="BaseResultMap">
+		SELECT
+				*
+		FROM 
+			c_keepapply
+		WHERE 
+			0 = 0
+		<if test="departmentId!=null">
+			and department_id=#{departmentId}
+		</if>
+			and stats='段内处理'
+			order by applytime
+	</select>
+	
+	<select id="getXX" parameterType="carRegister" resultMap="BaseResultMap">
+		SELECT
+			*
+		FROM 
+			c_keepapply
+			order by applytime
+	</select>
+	<select id="findByDepartment" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+				*
+		FROM 
+			c_keepapply
+		WHERE 
+			0 = 0
+		<if test="departmentId!=null">
+			and department_id=#{departmentId}
+		</if>
+		order by applytime
+	</select>
+	
+	<select id="findByBian" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+			*
+		FROM 
+			c_keepapply
+		WHERE 
+			 carnum =#{carnum} 
+	</select>
+	
+	<!-- 查询所单个记录 -->
+	<select id="selectSingleApply" parameterType="INTEGER" resultMap="BaseResultMap">
+		SELECT
+			   *
+		FROM 
+			c_keepapply 
+		WHERE 
+			apply_id = #{applyId}
+	</select>
+	
+  <!-- 批量删除 -->
+	<delete id="deleteBatch">
+		DELETE
+		FROM
+			c_keepapply
+		WHERE
+			apply_id IN
+		<foreach collection="array" item="id" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</delete>
+	<select id="searchCarKeepApplyByCarKeepApplyDriverfrom" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+			   *
+		FROM 
+			c_keepapply
+		WHERE
+			<if test="departmentId!=null">
+				and department_id=#{departmentId}
+			</if>
+		AND
+			approve LIKE CONCAT( '%',#{approve},'%' ) 
+	</select>
+	
+	<select id="searchCarKeepApplyByCarKeepApplyAA" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+			  *
+		FROM 
+			c_keepapply
+		WHERE
+			dep LIKE CONCAT( '%',#{dep},'%' ) 
+	</select>
+	<select id="searchCarKeepApplyByCarKeepApplyName" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+			 *
+		FROM 
+			c_keepapply
+		WHERE
+			applyname LIKE CONCAT( '%',#{applyname},'%' ) 
+	</select>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    apply_id, startDate, endDate, intervalKM, repairType, supplierName, car_id, carnum, 
+    department_id, stats, applyname, approve, dep, beiyong1, beiyong2
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.hqu.production_ms.domain.CarKeepApplyExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from c_keepapply
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from c_keepapply
+    where apply_id = #{applyId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from c_keepapply
+    where apply_id = #{applyId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.hqu.production_ms.domain.CarKeepApplyExample" >
+    delete from c_keepapply
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.hqu.production_ms.domain.CarKeepApply" >
+    insert into c_keepapply (apply_id, startDate, endDate, 
+      intervalKM, repairType, supplierName, 
+      car_id, carnum, department_id, 
+      stats, applyname, approve, 
+      dep, beiyong1, beiyong2
+      )
+    values (#{applyId,jdbcType=INTEGER}, #{startdate,jdbcType=TIMESTAMP}, #{enddate,jdbcType=TIMESTAMP}, 
+      #{intervalkm,jdbcType=VARCHAR}, #{repairtype,jdbcType=VARCHAR}, #{suppliername,jdbcType=VARCHAR}, 
+      #{carId,jdbcType=INTEGER}, #{carnum,jdbcType=VARCHAR}, #{departmentId,jdbcType=VARCHAR}, 
+      #{stats,jdbcType=VARCHAR}, #{applyname,jdbcType=VARCHAR}, #{approve,jdbcType=VARCHAR}, 
+      #{dep,jdbcType=VARCHAR}, #{beiyong1,jdbcType=VARCHAR}, #{beiyong2,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="org.hqu.production_ms.domain.CarKeepApply" >
+    insert into c_keepapply
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="applyId != null" >
+        apply_id,
+      </if>
+      <if test="startdate != null" >
+        startDate,
+      </if>
+      <if test="enddate != null" >
+        endDate,
+      </if>
+      <if test="intervalkm != null" >
+        intervalKM,
+      </if>
+      <if test="repairtype != null" >
+        repairType,
+      </if>
+      <if test="suppliername != null" >
+        supplierName,
+      </if>
+      <if test="carId != null" >
+        car_id,
+      </if>
+      <if test="carnum != null" >
+        carnum,
+      </if>
+      <if test="departmentId != null" >
+        department_id,
+      </if>
+      <if test="stats != null" >
+        stats,
+      </if>
+      <if test="applyname != null" >
+        applyname,
+      </if>
+      <if test="approve != null" >
+        approve,
+      </if>
+      <if test="dep != null" >
+        dep,
+      </if>
+      <if test="beiyong1 != null" >
+        beiyong1,
+      </if>
+      <if test="beiyong2 != null" >
+        beiyong2,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="applyId != null" >
+        #{applyId,jdbcType=INTEGER},
+      </if>
+      <if test="startdate != null" >
+        #{startdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="enddate != null" >
+        #{enddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="intervalkm != null" >
+        #{intervalkm,jdbcType=VARCHAR},
+      </if>
+      <if test="repairtype != null" >
+        #{repairtype,jdbcType=VARCHAR},
+      </if>
+      <if test="suppliername != null" >
+        #{suppliername,jdbcType=VARCHAR},
+      </if>
+      <if test="carId != null" >
+        #{carId,jdbcType=INTEGER},
+      </if>
+      <if test="carnum != null" >
+        #{carnum,jdbcType=VARCHAR},
+      </if>
+      <if test="departmentId != null" >
+        #{departmentId,jdbcType=VARCHAR},
+      </if>
+      <if test="stats != null" >
+        #{stats,jdbcType=VARCHAR},
+      </if>
+      <if test="applyname != null" >
+        #{applyname,jdbcType=VARCHAR},
+      </if>
+      <if test="approve != null" >
+        #{approve,jdbcType=VARCHAR},
+      </if>
+      <if test="dep != null" >
+        #{dep,jdbcType=VARCHAR},
+      </if>
+      <if test="beiyong1 != null" >
+        #{beiyong1,jdbcType=VARCHAR},
+      </if>
+      <if test="beiyong2 != null" >
+        #{beiyong2,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.hqu.production_ms.domain.CarKeepApplyExample" resultType="java.lang.Integer" >
+    select count(*) from c_keepapply
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update c_keepapply
+    <set >
+      <if test="record.applyId != null" >
+        apply_id = #{record.applyId,jdbcType=INTEGER},
+      </if>
+      <if test="record.startdate != null" >
+        startDate = #{record.startdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.enddate != null" >
+        endDate = #{record.enddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.intervalkm != null" >
+        intervalKM = #{record.intervalkm,jdbcType=VARCHAR},
+      </if>
+      <if test="record.repairtype != null" >
+        repairType = #{record.repairtype,jdbcType=VARCHAR},
+      </if>
+      <if test="record.suppliername != null" >
+        supplierName = #{record.suppliername,jdbcType=VARCHAR},
+      </if>
+      <if test="record.carId != null" >
+        car_id = #{record.carId,jdbcType=INTEGER},
+      </if>
+      <if test="record.carnum != null" >
+        carnum = #{record.carnum,jdbcType=VARCHAR},
+      </if>
+      <if test="record.departmentId != null" >
+        department_id = #{record.departmentId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.stats != null" >
+        stats = #{record.stats,jdbcType=VARCHAR},
+      </if>
+      <if test="record.applyname != null" >
+        applyname = #{record.applyname,jdbcType=VARCHAR},
+      </if>
+      <if test="record.approve != null" >
+        approve = #{record.approve,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dep != null" >
+        dep = #{record.dep,jdbcType=VARCHAR},
+      </if>
+      <if test="record.beiyong1 != null" >
+        beiyong1 = #{record.beiyong1,jdbcType=VARCHAR},
+      </if>
+      <if test="record.beiyong2 != null" >
+        beiyong2 = #{record.beiyong2,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update c_keepapply
+    set apply_id = #{record.applyId,jdbcType=INTEGER},
+      startDate = #{record.startdate,jdbcType=TIMESTAMP},
+      endDate = #{record.enddate,jdbcType=TIMESTAMP},
+      intervalKM = #{record.intervalkm,jdbcType=VARCHAR},
+      repairType = #{record.repairtype,jdbcType=VARCHAR},
+      supplierName = #{record.suppliername,jdbcType=VARCHAR},
+      car_id = #{record.carId,jdbcType=INTEGER},
+      carnum = #{record.carnum,jdbcType=VARCHAR},
+      department_id = #{record.departmentId,jdbcType=VARCHAR},
+      stats = #{record.stats,jdbcType=VARCHAR},
+      applyname = #{record.applyname,jdbcType=VARCHAR},
+      approve = #{record.approve,jdbcType=VARCHAR},
+      dep = #{record.dep,jdbcType=VARCHAR},
+      beiyong1 = #{record.beiyong1,jdbcType=VARCHAR},
+      beiyong2 = #{record.beiyong2,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.hqu.production_ms.domain.CarKeepApply" >
+    update c_keepapply
+    <set >
+      <if test="startdate != null" >
+        startDate = #{startdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="enddate != null" >
+        endDate = #{enddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="intervalkm != null" >
+        intervalKM = #{intervalkm,jdbcType=VARCHAR},
+      </if>
+      <if test="repairtype != null" >
+        repairType = #{repairtype,jdbcType=VARCHAR},
+      </if>
+      <if test="suppliername != null" >
+        supplierName = #{suppliername,jdbcType=VARCHAR},
+      </if>
+      <if test="carId != null" >
+        car_id = #{carId,jdbcType=INTEGER},
+      </if>
+      <if test="carnum != null" >
+        carnum = #{carnum,jdbcType=VARCHAR},
+      </if>
+      <if test="departmentId != null" >
+        department_id = #{departmentId,jdbcType=VARCHAR},
+      </if>
+      <if test="stats != null" >
+        stats = #{stats,jdbcType=VARCHAR},
+      </if>
+      <if test="applyname != null" >
+        applyname = #{applyname,jdbcType=VARCHAR},
+      </if>
+      <if test="approve != null" >
+        approve = #{approve,jdbcType=VARCHAR},
+      </if>
+      <if test="dep != null" >
+        dep = #{dep,jdbcType=VARCHAR},
+      </if>
+      <if test="beiyong1 != null" >
+        beiyong1 = #{beiyong1,jdbcType=VARCHAR},
+      </if>
+      <if test="beiyong2 != null" >
+        beiyong2 = #{beiyong2,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where apply_id = #{applyId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.hqu.production_ms.domain.CarKeepApply" >
+    update c_keepapply
+    set startDate = #{startdate,jdbcType=TIMESTAMP},
+      endDate = #{enddate,jdbcType=TIMESTAMP},
+      intervalKM = #{intervalkm,jdbcType=VARCHAR},
+      repairType = #{repairtype,jdbcType=VARCHAR},
+      supplierName = #{suppliername,jdbcType=VARCHAR},
+      car_id = #{carId,jdbcType=INTEGER},
+      carnum = #{carnum,jdbcType=VARCHAR},
+      department_id = #{departmentId,jdbcType=VARCHAR},
+      stats = #{stats,jdbcType=VARCHAR},
+      applyname = #{applyname,jdbcType=VARCHAR},
+      approve = #{approve,jdbcType=VARCHAR},
+      dep = #{dep,jdbcType=VARCHAR},
+      beiyong1 = #{beiyong1,jdbcType=VARCHAR},
+      beiyong2 = #{beiyong2,jdbcType=VARCHAR}
+    where apply_id = #{applyId,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.hqu.production_ms.mapper.CarDeployMapper" >
+  <resultMap id="BaseResultMap" type="org.hqu.production_ms.domain.CarDeploy" >
+    <id column="deploy_id" property="deployId" jdbcType="INTEGER" />
+    <result column="car_id" property="carId" jdbcType="INTEGER" />
+    <result column="driver_id" property="driverId" jdbcType="INTEGER" />
+    <result column="deploy" property="deploy" jdbcType="TIMESTAMP" />
+    <result column="bei1" property="bei1" jdbcType="VARCHAR" />
+    <result column="bei2" property="bei2" jdbcType="VARCHAR" />
+    <result column="bei3" property="bei3" jdbcType="TIMESTAMP" />
+    <association property="carDriver" javaType="carDriver">
+		<id column="driver_id" property="driverId" jdbcType="INTEGER" />
+	    <result column="drvierName" property="drviername" jdbcType="VARCHAR" />
+	    <result column="birthday" property="birthday" jdbcType="DATE" />
+	    <result column="carType" property="cartype" jdbcType="VARCHAR" />
+	    <result column="driverNum" property="drivernum" jdbcType="VARCHAR" />
+	    <result column="ye" property="ye" jdbcType="VARCHAR" />
+	</association>
+	<association property="carRegister" javaType="carRegister">
+		<id column="car_id" property="carId" jdbcType="INTEGER" />
+	    <result column="carnumber" property="carnumber" jdbcType="VARCHAR" />
+	     <result column="useNature" property="usenature" jdbcType="VARCHAR" />
+	</association>
+  </resultMap>
+  <select id="find" parameterType="weigui" resultMap="BaseResultMap">
+		SELECT
+			deploy_id,
+			c_register.car_id,
+			c_register.carnumber,
+			c_register.useNature,
+			deploy,
+			bei1,
+			c_driver.driver_id,
+			c_driver.drvierName,
+			year(c_driver.birthday) as ye,
+			c_driver.carType,
+			c_driver.driverNum
+		FROM 
+			c_deploy  
+			LEFT JOIN c_register ON c_deploy.car_id = c_register.car_id
+		LEFT JOIN c_driver ON c_deploy.driver_id = c_driver.driver_id
+			ORDER BY deploy desc
+	</select>
+	 <select id="find1" parameterType="weigui" resultMap="BaseResultMap">
+		SELECT
+			deploy_id,
+			c_register.car_id,
+			c_register.carnumber,
+			c_register.useNature,
+			deploy,
+			bei1,
+			c_driver.driver_id,
+			c_driver.drvierName,
+			c_driver.birthday,
+			c_driver.carType,
+			c_driver.driverNum
+		FROM 
+			c_deploy  
+			LEFT JOIN c_register ON c_deploy.car_id = c_register.car_id
+		LEFT JOIN c_driver ON c_deploy.driver_id = c_driver.driver_id
+		where 
+		c_driver.department_id=#{departmentId}
+			ORDER BY deploy desc
+	</select>
+	<!-- 查询所单个记录 -->
+	<select id="selectSingleCarDeploy" parameterType="INTEGER" resultMap="BaseResultMap">
+		SELECT
+			deploy_id,
+			c_register.car_id,
+			c_register.carnumber,
+			c_register.useNature,
+			deploy,
+			bei1,
+			c_driver.driver_id,
+			c_driver.drvierName,
+			c_driver.birthday,
+			c_driver.carType,
+			c_driver.driverNum
+		FROM 
+			c_deploy  
+			LEFT JOIN c_register ON c_deploy.car_id = c_register.car_id
+		LEFT JOIN c_driver ON c_deploy.driver_id = c_driver.driver_id
+			WHERE  deploy_id  = #{weiguiId}
+			ORDER BY weiguitime
+		
+	</select>
+	
+  <!-- 批量删除 -->
+	<delete id="deleteBatch">
+		DELETE
+		FROM
+			c_deploy
+		WHERE
+			deploy_id IN
+		<foreach collection="array" item="id" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</delete>
+	<select id="searchCarDeployByCarDeployDriverfrom" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+			deploy_id,
+			c_register.car_id,
+			c_register.carnumber,
+			c_register.useNature,
+			deploy,
+			bei1,
+			c_driver.driver_id,
+			c_driver.drvierName,
+			year(c_driver.birthday) as ye,
+			c_driver.carType,
+			c_driver.driverNum
+		FROM 
+			c_deploy  
+			LEFT JOIN c_register ON c_deploy.car_id = c_register.car_id
+		LEFT JOIN c_driver ON c_deploy.driver_id = c_driver.driver_id
+		WHERE
+			c_register.carnumber LIKE CONCAT( '%',#{inorgan},'%' ) 
+			order by deploy desc 
+	</select>
+	
+	<select id="searchCarDeployByCarDeployAA" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+			deploy_id,
+			c_register.car_id,
+			c_register.carnumber,
+			c_register.useNature,
+			deploy,
+			bei1,
+			c_driver.driver_id,
+			c_driver.drvierName,
+			year(c_driver.birthday) as ye,
+			c_driver.carType,
+			c_driver.driverNum
+		FROM 
+			c_deploy  
+			LEFT JOIN c_register ON c_deploy.car_id = c_register.car_id
+		LEFT JOIN c_driver ON c_deploy.driver_id = c_driver.driver_id
+		WHERE
+			c_driver.drvierName like CONCAT( '%',#{outorgan},'%' )
+			order by deploy desc 
+	</select>
+	<select id="searchCarDeployByCarDeployDriverfrom1" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+			deploy_id,
+			c_register.car_id,
+			c_register.carnumber,
+			c_register.useNature,
+			deploy,
+			bei1,
+			c_driver.driver_id,
+			c_driver.drvierName,
+			year(c_driver.birthday) as ye,
+			c_driver.carType,
+			c_driver.driverNum
+		FROM 
+			c_deploy  
+			LEFT JOIN c_register ON c_deploy.car_id = c_register.car_id
+		LEFT JOIN c_driver ON c_deploy.driver_id = c_driver.driver_id
+		WHERE
+			c_driver.department_id=#{0}
+			and
+			c_register.carnumber LIKE CONCAT( '%',#{1},'%' ) 
+			order by deploy desc 
+	</select>
+	
+	<select id="searchCarDeployByCarDeployAA1" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+			deploy_id,
+			c_register.car_id,
+			c_register.carnumber,
+			c_register.useNature,
+			deploy,
+			bei1,
+			c_driver.driver_id,
+			c_driver.drvierName,
+			year(c_driver.birthday) as ye,
+			c_driver.carType,
+			c_driver.driverNum
+		FROM 
+			c_deploy  
+			LEFT JOIN c_register ON c_deploy.car_id = c_register.car_id
+		LEFT JOIN c_driver ON c_deploy.driver_id = c_driver.driver_id
+		WHERE
+			c_driver.department_id=#{0}
+			and
+			c_driver.drvierName like CONCAT( '%',#{1},'%' )
+			order by deploy desc 
+	</select>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    deploy_id, car_id, driver_id, deploy, bei1, bei2, bei3
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.hqu.production_ms.domain.CarDeployExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from c_deploy
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from c_deploy
+    where deploy_id = #{deployId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from c_deploy
+    where deploy_id = #{deployId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.hqu.production_ms.domain.CarDeployExample" >
+    delete from c_deploy
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.hqu.production_ms.domain.CarDeploy" >
+    insert into c_deploy (deploy_id, car_id, driver_id, 
+      deploy, bei1, bei2, 
+      bei3)
+    values (#{deployId,jdbcType=INTEGER}, #{carId,jdbcType=INTEGER}, #{driverId,jdbcType=INTEGER}, 
+      #{deploy,jdbcType=TIMESTAMP}, #{bei1,jdbcType=VARCHAR}, #{bei2,jdbcType=VARCHAR}, 
+      #{bei3,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="org.hqu.production_ms.domain.CarDeploy" >
+    insert into c_deploy
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="deployId != null" >
+        deploy_id,
+      </if>
+      <if test="carId != null" >
+        car_id,
+      </if>
+      <if test="driverId != null" >
+        driver_id,
+      </if>
+      <if test="deploy != null" >
+        deploy,
+      </if>
+      <if test="bei1 != null" >
+        bei1,
+      </if>
+      <if test="bei2 != null" >
+        bei2,
+      </if>
+      <if test="bei3 != null" >
+        bei3,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="deployId != null" >
+        #{deployId,jdbcType=INTEGER},
+      </if>
+      <if test="carId != null" >
+        #{carId,jdbcType=INTEGER},
+      </if>
+      <if test="driverId != null" >
+        #{driverId,jdbcType=INTEGER},
+      </if>
+      <if test="deploy != null" >
+        #{deploy,jdbcType=TIMESTAMP},
+      </if>
+      <if test="bei1 != null" >
+        #{bei1,jdbcType=VARCHAR},
+      </if>
+      <if test="bei2 != null" >
+        #{bei2,jdbcType=VARCHAR},
+      </if>
+      <if test="bei3 != null" >
+        #{bei3,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.hqu.production_ms.domain.CarDeployExample" resultType="java.lang.Integer" >
+    select count(*) from c_deploy
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update c_deploy
+    <set >
+      <if test="record.deployId != null" >
+        deploy_id = #{record.deployId,jdbcType=INTEGER},
+      </if>
+      <if test="record.carId != null" >
+        car_id = #{record.carId,jdbcType=INTEGER},
+      </if>
+      <if test="record.driverId != null" >
+        driver_id = #{record.driverId,jdbcType=INTEGER},
+      </if>
+      <if test="record.deploy != null" >
+        deploy = #{record.deploy,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.bei1 != null" >
+        bei1 = #{record.bei1,jdbcType=VARCHAR},
+      </if>
+      <if test="record.bei2 != null" >
+        bei2 = #{record.bei2,jdbcType=VARCHAR},
+      </if>
+      <if test="record.bei3 != null" >
+        bei3 = #{record.bei3,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update c_deploy
+    set deploy_id = #{record.deployId,jdbcType=INTEGER},
+      car_id = #{record.carId,jdbcType=INTEGER},
+      driver_id = #{record.driverId,jdbcType=INTEGER},
+      deploy = #{record.deploy,jdbcType=TIMESTAMP},
+      bei1 = #{record.bei1,jdbcType=VARCHAR},
+      bei2 = #{record.bei2,jdbcType=VARCHAR},
+      bei3 = #{record.bei3,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.hqu.production_ms.domain.CarDeploy" >
+    update c_deploy
+    <set >
+      <if test="carId != null" >
+        car_id = #{carId,jdbcType=INTEGER},
+      </if>
+      <if test="driverId != null" >
+        driver_id = #{driverId,jdbcType=INTEGER},
+      </if>
+      <if test="deploy != null" >
+        deploy = #{deploy,jdbcType=TIMESTAMP},
+      </if>
+      <if test="bei1 != null" >
+        bei1 = #{bei1,jdbcType=VARCHAR},
+      </if>
+      <if test="bei2 != null" >
+        bei2 = #{bei2,jdbcType=VARCHAR},
+      </if>
+      <if test="bei3 != null" >
+        bei3 = #{bei3,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where deploy_id = #{deployId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.hqu.production_ms.domain.CarDeploy" >
+    update c_deploy
+    set car_id = #{carId,jdbcType=INTEGER},
+      driver_id = #{driverId,jdbcType=INTEGER},
+      deploy = #{deploy,jdbcType=TIMESTAMP},
+      bei1 = #{bei1,jdbcType=VARCHAR},
+      bei2 = #{bei2,jdbcType=VARCHAR},
+      bei3 = #{bei3,jdbcType=TIMESTAMP}
+    where deploy_id = #{deployId,jdbcType=INTEGER}
+  </update>
+</mapper>

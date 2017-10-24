@@ -1,0 +1,95 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<link href="js/kindeditor-4.1.10/themes/default/default.css" type="text/css" rel="stylesheet">
+
+<link href="css/uploadfile.css" rel="stylesheet"> 
+<script src="js/jquery.uploadfile.js"></script>
+<script src="js/malsup.github.iojquery.form.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/kindeditor-4.1.10/kindeditor-all-min.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/kindeditor-4.1.10/lang/zh_CN.js"></script>
+
+<div style="padding:10px 10px 10px 10px">
+	<form id="carMaintenanceAddForm" class="carMaintenanceForm" method="post">
+	<center>
+	    <table cellpadding="5">
+	         <tr>
+    			<td>维护名称:</td>
+	            <td>
+	            	<input class="easyui-textbox" type="text" name="mname" data-options="required:true"></input>
+	             </td>
+	             <td>车型名称:</td>
+		            <td>
+	            	<input class="easyui-combobox" name="typeid"   panelHeight="auto" 
+    					data-options="valueField:'typeid',textField:'typename',
+    						url:'carType/get_data', editable:false, required:true" />
+    			</td>  
+	        </tr>
+	        <tr>
+    			<td>行驶公里</td>
+	            <td>
+	            	<input class="easyui-textbox" type="text" name="kilometre" data-options="required:true"></input>
+	             </td>
+	             <td>维护项目</td>
+	            <td>
+	            	<input class="easyui-textbox" type="text" name="mproject" data-options="required:true"></input>
+	             </td>
+	        </tr>
+	        <tr>
+					<td colspan="4"><div id="divOverTime">
+							<input type="button" id="btnAdd" class="easyui-linkbutton" size="30px" name="btnAdd"
+								value="添加" /> <br />
+						</div></td>	
+	        </tr>
+	    </table>
+	    <input type="hidden" name="carMaintenanceParams"/>
+	    </center>
+	</form>
+	<div style="padding:5px 0 0 65px">
+	    <a href="javascript:void(0)" class="easyui-linkbutton" onclick="submitCarMaintenanceAddForm()">提交</a>
+	    <a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearCarMaintenanceADDForm()">重置</a>
+	</div>
+</div>
+<script type="text/javascript">
+	$(function() {
+	$("#btnAdd")
+			.click(
+					function() {
+						
+						var text = "<span><br/>行驶公里(附加):<input type=\"text\" class=\"easyui-textbox\" data-options=\"required:true\" name=\"kilometre\"></input> ";
+						text = text+"维护项目:<input type=\"text\" class=\"easyui-textbox\" data-options=\"required:true\" name=\"mproject\"></input>&nbsp;&nbsp;";
+						text = text
+								+ "<input type=\"button\" onclick=\"btnDelete_onclick(this)\" class=\"easyui-linkbutton\" id=\"btnDelete\" name=\"btnDelete\" value=\"删除\" />";
+						text = text + "<br/></span>";
+						$("#divOverTime").append(text);
+						
+					});
+	});
+
+	function btnDelete_onclick(obj) {
+	$(obj).parent().remove();
+	}
+	//提交表单
+	function submitCarMaintenanceAddForm(){
+		//有效性验证
+		if(!$('#carMaintenanceAddForm').form('validate')){
+			$.messager.alert('提示','表单还未填写完成!');
+			return ;
+		}
+		//ajax的post方式提交表单
+		//$("#carMaintenanceAddForm").serialize()将表单序列号为key-value形式的字符串
+		$.post("carMaintenance/insert",$("#carMaintenanceAddForm").serialize(), function(data){
+			if(data.status == 200){
+				$.messager.alert('提示','新增技术特性成功!');
+				clearCarMaintenanceADDForm();
+				$("#carMaintenanceAddWindow").window('close');
+				$("#carMaintenanceList").datagrid("reload");
+			}else{
+				$.messager.alert('提示',data.msg);
+			}
+		});
+	}
+	
+	function clearCarMaintenanceADDForm(){
+		$('#carMaintenanceAddForm').form('reset');
+	}
+	
+</script>

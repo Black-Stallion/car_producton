@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.hqu.production_ms.mapper.CarRemoveMapper" >
+  <resultMap id="BaseResultMap" type="org.hqu.production_ms.domain.CarRemove" >
+    <id column="remove_id" property="removeId" jdbcType="INTEGER" />
+    <result column="removeTime" property="removetime" jdbcType="TIMESTAMP" />
+    <result column="inOrgan" property="inorgan" jdbcType="VARCHAR" />
+    <result column="outOrgan" property="outorgan" jdbcType="VARCHAR" />
+    <result column="oldNum" property="oldnum" jdbcType="VARCHAR" />
+    <result column="newNum" property="newnum" jdbcType="VARCHAR" />
+    <result column="car_id" property="carId" jdbcType="INTEGER" />
+    <result column="removeNum" property="removenum" jdbcType="VARCHAR" />
+    <result column="stats" property="stats" jdbcType="VARCHAR" />
+    <result column="notes" property="notes" jdbcType="VARCHAR" />
+    <result column="rbeiyong1" property="rbeiyong1" jdbcType="VARCHAR" />
+    <result column="rbieyong2" property="rbieyong2" jdbcType="VARCHAR" />
+  </resultMap>
+  <select id="find" parameterType="carTechnical" resultMap="BaseResultMap">
+		SELECT
+		   *
+		FROM 
+			c_remove
+			 ORDER BY 
+				removeTime
+	</select>
+	
+	<!-- 查询所单个记录 -->
+	<select id="selectSingleCarRemove" parameterType="INTEGER" resultMap="BaseResultMap">
+		SELECT
+		   *
+		FROM 
+			c_remove
+		WHERE
+		 remove_id = #{removeId}
+	</select>
+	
+  <!-- 批量删除 -->
+	<delete id="deleteBatch">
+		DELETE
+		FROM
+			c_remove
+		WHERE
+			remove_id IN
+		<foreach collection="array" item="id" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</delete>
+	<select id="searchCarRemoveByCarRemoveDriverfrom" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+		   *
+		FROM 
+			c_remove
+		WHERE
+			inorgan LIKE CONCAT( '%',#{inorgan},'%' ) 
+	</select>
+	
+	<select id="searchCarRemoveByCarRemoveAA" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+		   *
+		FROM 
+			c_remove
+		WHERE
+			outorgan = CONCAT( '%',#{outorgan},'%' )
+	</select>
+	<select id="searchCarRemoveByCarRemoveName" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+		   *
+		FROM 
+			c_remove
+		WHERE
+			newNum = CONCAT( '%',#{newnum},'%' ) 
+	</select>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    remove_id, removeTime, inOrgan, outOrgan, oldNum, newNum, car_id, removeNum, stats, 
+    notes, rbeiyong1, rbieyong2
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.hqu.production_ms.domain.CarRemoveExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from c_remove
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from c_remove
+    where remove_id = #{removeId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from c_remove
+    where remove_id = #{removeId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.hqu.production_ms.domain.CarRemoveExample" >
+    delete from c_remove
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.hqu.production_ms.domain.CarRemove" >
+    insert into c_remove (remove_id, removeTime, inOrgan, 
+      outOrgan, oldNum, newNum, 
+      car_id, removeNum, stats, 
+      notes, rbeiyong1, rbieyong2
+      )
+    values (#{removeId,jdbcType=INTEGER}, #{removetime,jdbcType=TIMESTAMP}, #{inorgan,jdbcType=VARCHAR}, 
+      #{outorgan,jdbcType=VARCHAR}, #{oldnum,jdbcType=VARCHAR}, #{newnum,jdbcType=VARCHAR}, 
+      #{carId,jdbcType=INTEGER}, #{removenum,jdbcType=VARCHAR}, #{stats,jdbcType=VARCHAR}, 
+      #{notes,jdbcType=VARCHAR}, #{rbeiyong1,jdbcType=VARCHAR}, #{rbieyong2,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="org.hqu.production_ms.domain.CarRemove" >
+    insert into c_remove
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="removeId != null" >
+        remove_id,
+      </if>
+      <if test="removetime != null" >
+        removeTime,
+      </if>
+      <if test="inorgan != null" >
+        inOrgan,
+      </if>
+      <if test="outorgan != null" >
+        outOrgan,
+      </if>
+      <if test="oldnum != null" >
+        oldNum,
+      </if>
+      <if test="newnum != null" >
+        newNum,
+      </if>
+      <if test="carId != null" >
+        car_id,
+      </if>
+      <if test="removenum != null" >
+        removeNum,
+      </if>
+      <if test="stats != null" >
+        stats,
+      </if>
+      <if test="notes != null" >
+        notes,
+      </if>
+      <if test="rbeiyong1 != null" >
+        rbeiyong1,
+      </if>
+      <if test="rbieyong2 != null" >
+        rbieyong2,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="removeId != null" >
+        #{removeId,jdbcType=INTEGER},
+      </if>
+      <if test="removetime != null" >
+        #{removetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="inorgan != null" >
+        #{inorgan,jdbcType=VARCHAR},
+      </if>
+      <if test="outorgan != null" >
+        #{outorgan,jdbcType=VARCHAR},
+      </if>
+      <if test="oldnum != null" >
+        #{oldnum,jdbcType=VARCHAR},
+      </if>
+      <if test="newnum != null" >
+        #{newnum,jdbcType=VARCHAR},
+      </if>
+      <if test="carId != null" >
+        #{carId,jdbcType=INTEGER},
+      </if>
+      <if test="removenum != null" >
+        #{removenum,jdbcType=VARCHAR},
+      </if>
+      <if test="stats != null" >
+        #{stats,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null" >
+        #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="rbeiyong1 != null" >
+        #{rbeiyong1,jdbcType=VARCHAR},
+      </if>
+      <if test="rbieyong2 != null" >
+        #{rbieyong2,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.hqu.production_ms.domain.CarRemoveExample" resultType="java.lang.Integer" >
+    select count(*) from c_remove
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update c_remove
+    <set >
+      <if test="record.removeId != null" >
+        remove_id = #{record.removeId,jdbcType=INTEGER},
+      </if>
+      <if test="record.removetime != null" >
+        removeTime = #{record.removetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.inorgan != null" >
+        inOrgan = #{record.inorgan,jdbcType=VARCHAR},
+      </if>
+      <if test="record.outorgan != null" >
+        outOrgan = #{record.outorgan,jdbcType=VARCHAR},
+      </if>
+      <if test="record.oldnum != null" >
+        oldNum = #{record.oldnum,jdbcType=VARCHAR},
+      </if>
+      <if test="record.newnum != null" >
+        newNum = #{record.newnum,jdbcType=VARCHAR},
+      </if>
+      <if test="record.carId != null" >
+        car_id = #{record.carId,jdbcType=INTEGER},
+      </if>
+      <if test="record.removenum != null" >
+        removeNum = #{record.removenum,jdbcType=VARCHAR},
+      </if>
+      <if test="record.stats != null" >
+        stats = #{record.stats,jdbcType=VARCHAR},
+      </if>
+      <if test="record.notes != null" >
+        notes = #{record.notes,jdbcType=VARCHAR},
+      </if>
+      <if test="record.rbeiyong1 != null" >
+        rbeiyong1 = #{record.rbeiyong1,jdbcType=VARCHAR},
+      </if>
+      <if test="record.rbieyong2 != null" >
+        rbieyong2 = #{record.rbieyong2,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update c_remove
+    set remove_id = #{record.removeId,jdbcType=INTEGER},
+      removeTime = #{record.removetime,jdbcType=TIMESTAMP},
+      inOrgan = #{record.inorgan,jdbcType=VARCHAR},
+      outOrgan = #{record.outorgan,jdbcType=VARCHAR},
+      oldNum = #{record.oldnum,jdbcType=VARCHAR},
+      newNum = #{record.newnum,jdbcType=VARCHAR},
+      car_id = #{record.carId,jdbcType=INTEGER},
+      removeNum = #{record.removenum,jdbcType=VARCHAR},
+      stats = #{record.stats,jdbcType=VARCHAR},
+      notes = #{record.notes,jdbcType=VARCHAR},
+      rbeiyong1 = #{record.rbeiyong1,jdbcType=VARCHAR},
+      rbieyong2 = #{record.rbieyong2,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.hqu.production_ms.domain.CarRemove" >
+    update c_remove
+    <set >
+      <if test="removetime != null" >
+        removeTime = #{removetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="inorgan != null" >
+        inOrgan = #{inorgan,jdbcType=VARCHAR},
+      </if>
+      <if test="outorgan != null" >
+        outOrgan = #{outorgan,jdbcType=VARCHAR},
+      </if>
+      <if test="oldnum != null" >
+        oldNum = #{oldnum,jdbcType=VARCHAR},
+      </if>
+      <if test="newnum != null" >
+        newNum = #{newnum,jdbcType=VARCHAR},
+      </if>
+      <if test="carId != null" >
+        car_id = #{carId,jdbcType=INTEGER},
+      </if>
+      <if test="removenum != null" >
+        removeNum = #{removenum,jdbcType=VARCHAR},
+      </if>
+      <if test="stats != null" >
+        stats = #{stats,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null" >
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="rbeiyong1 != null" >
+        rbeiyong1 = #{rbeiyong1,jdbcType=VARCHAR},
+      </if>
+      <if test="rbieyong2 != null" >
+        rbieyong2 = #{rbieyong2,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where remove_id = #{removeId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.hqu.production_ms.domain.CarRemove" >
+    update c_remove
+    set removeTime = #{removetime,jdbcType=TIMESTAMP},
+      inOrgan = #{inorgan,jdbcType=VARCHAR},
+      outOrgan = #{outorgan,jdbcType=VARCHAR},
+      oldNum = #{oldnum,jdbcType=VARCHAR},
+      newNum = #{newnum,jdbcType=VARCHAR},
+      car_id = #{carId,jdbcType=INTEGER},
+      removeNum = #{removenum,jdbcType=VARCHAR},
+      stats = #{stats,jdbcType=VARCHAR},
+      notes = #{notes,jdbcType=VARCHAR},
+      rbeiyong1 = #{rbeiyong1,jdbcType=VARCHAR},
+      rbieyong2 = #{rbieyong2,jdbcType=VARCHAR}
+    where remove_id = #{removeId,jdbcType=INTEGER}
+  </update>
+</mapper>

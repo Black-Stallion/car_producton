@@ -1,0 +1,137 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<link href="js/kindeditor-4.1.10/themes/default/default.css" type="text/css" rel="stylesheet">
+
+<link href="css/uploadfile.css" rel="stylesheet"> 
+<script src="js/jquery.uploadfile.js"></script>
+<script src="js/malsup.github.iojquery.form.js"></script>
+
+<script type="text/javascript" charset="utf-8" src="js/kindeditor-4.1.10/kindeditor-all-min.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/kindeditor-4.1.10/lang/zh_CN.js"></script>
+
+<div style="padding:10px 10px 10px 10px">
+	<form id="carSendEditForm" method="post">
+	<input type="hidden" name="sendId"/>
+	    <center>
+	    <table cellpadding="5">
+		    <tr>
+	            <td width="150px">已通过编号:</td>
+	            <td width="200px">
+	            	<input  class="easyui-textbox" type="text" name="sendnums" data-options="editable:false, required:true" />
+	            </td>
+	            <td width="120px">第一责任人:</td>
+	            <td width="250px">
+	            	<input  class="easyui-textbox" type="text" name="firstduty"  data-options="editable:false, required:true" />
+	            </td>
+	        </tr>
+	        <tr>
+	            <td>派车人:</td>
+	            <td>
+	            	<input  class="easyui-textbox" type="text" name="senduser" data-options="editable:false, required:true" />
+	            </td>
+	             <td>用车人:</td> 
+    				<td>
+	            	<input class="easyui-textbox" type="text" name="usercarpeople" data-options="editable:false, required:true" />
+    			</td> 
+	        </tr>
+	        <tr>
+	            <td >天气:</td>
+	            <td>
+	            <input class="easyui-textbox" type="text" name="tianqi" ></input>
+	             </td>
+	            <td >安全监督岗:</td>
+	            <td>
+	            	<input class="easyui-textbox" type="text" name="safe"></input>
+	            </td>
+	        </tr>
+	        <tr>
+    			<td>派单日期:</td>
+	            <td><input class="easyui-datetimebox" name="senddate"     
+        			data-options="required:true,showSeconds:true" value="date.format('yyyy-MM-dd')" style="width:150px"> 
+        			</td>
+        			<td>返回日期:</td>
+	            <td><input class="easyui-datetimebox" name="endcardate"     
+        			data-options="required:true,showSeconds:true" value="date.format('yyyy-MM-dd')" style="width:150px"> 
+        			</td>
+	        </tr>
+	        <tr>
+    			<td>行走公里:</td>
+	            <td colspan ="3">开始:&nbsp;<input class="easyui-textbox" name="firstkm" data-options="required:true" size="25">&nbsp;公里
+	                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 结束:&nbsp;<input class="easyui-textbox" name="endkm" data-options="required:true" size="25">公里</td>
+	        </tr>
+	        <tr>
+    			<td >出车:</td>
+			            <td colspan="3">
+			            出车前:<input class="easyui-textbox" name="chucheq" data-options="required:true" size="16">
+			           &nbsp;行驶中:<input class="easyui-textbox" name="xingshiz" data-options="required:true" size="16">
+			          &nbsp;收车后:<input class="easyui-textbox" name="shoucheh" data-options="required:true" size="16"></td>
+			       </tr>
+	        <tr>
+	            <td>注意事项:</td>
+	            <td colspan="3">
+	                <textarea style="width:200px;height:100px;visibility:hidden;" name="note"></textarea>
+	            </td>
+	             </tr>
+	        <tr>
+	            <td>任务地点及路线:</td>
+	            <td colspan="3">
+	                <textarea style="width:200px;height:10px;visibility:hidden;" name="road"></textarea>
+	            </td>
+	        </tr>
+	        <tr>
+	         <td>事故记录:</td>
+	            <td colspan="3">
+	                <textarea style="width:200px;height:100px;visibility:hidden;" name="shigujl"></textarea>
+	            </td>
+	             </tr>
+	        <tr>
+	            <td>备注:</td>
+	            <td colspan="3">
+	                <textarea style="width:200px;height:100px;visibility:hidden;" name="notes"></textarea>
+	            </td>
+	        </tr>
+	    </table>
+	     </center>
+	</form>
+	<div style="padding:5px 0 0 65px">
+	    <a href="javascript:void(0)" class="easyui-linkbutton" onclick="submitCarSendEditForm()">提交</a>
+	</div>
+</div>
+<script type="text/javascript">
+		var send2AddEditor;
+		var send2AddEditor1;
+		var send2AddEditor2;
+		var send2AddEditor3;
+		$(function(){
+			//加载文件上传插件
+			
+			
+			//send2AddEditor = TAOTAO.createEditor("#send2AddForm [name=file]");
+			send2AddEditor = KindEditor.create("#carSendEditForm [name=notes]", TT.kingEditorParams);
+			send2AddEditor1 = KindEditor.create("#carSendEditForm [name=note]", TT.kingEditorParams);
+			send2AddEditor2 = KindEditor.create("#carSendEditForm [name=shigujl]", TT.kingEditorParams);
+			send2AddEditor3 = KindEditor.create("#carSendEditForm [name=road]", TT.kingEditorParams);
+		});
+	
+	//提交表单
+	function submitCarSendEditForm(){
+		if(!$('#carSendEditForm').form('validate')){
+			$.messager.alert('提示','表单还未填写完成!');
+			return ;
+		}
+		send2AddEditor.sync();
+		send2AddEditor1.sync();
+		send2AddEditor2.sync();
+		send2AddEditor3.sync();
+		$.post("carSend/update_all",$("#carSendEditForm").serialize(), function(data){
+			if(data.status == 200){
+				$.messager.alert('提示','修改派车单成功!','info',function(){
+					$("#carSendEditWindow").window('close');
+					$("#carSendList").datagrid("reload");
+				});
+			}else{
+				$.messager.alert('提示', data.msg);
+			}
+		});
+	}
+	
+</script>

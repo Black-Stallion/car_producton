@@ -1,0 +1,51 @@
+package org.hqu.production_ms.mapper;
+
+import java.util.List;
+import org.apache.ibatis.annotations.Param;
+import org.hqu.production_ms.domain.BaoYangWarn;
+import org.hqu.production_ms.domain.BaoYangWarnExample;
+import org.hqu.production_ms.domain.po.BaoYangWarnPO;
+
+public interface BaoYangWarnMapper {
+	
+	//扩展的mapper接口方法
+		int deleteBatch(int[] ids);
+		
+		List<BaoYangWarn> find();
+		
+		List<BaoYangWarn> searchBaoYangWarnByCheckyear (int year);
+
+		List<BaoYangWarn> searchBaoYangWarnByBaoYangWarnCarId (String carnumber);
+		
+		BaoYangWarn selectSingleBaoYangWarn(int warnId);
+			
+			
+			//逆向工程生成的mapper接口
+    int countByExample(BaoYangWarnExample example);
+
+    int deleteByExample(BaoYangWarnExample example);
+
+    int deleteByPrimaryKey(Integer warnId);
+
+    int insert(BaoYangWarnPO record);
+
+    int insertSelective(BaoYangWarn record);
+
+    List<BaoYangWarn> selectByExample(BaoYangWarnExample example);
+
+    BaoYangWarn selectByPrimaryKey(Integer warnId);
+
+    int updateByExampleSelective(@Param("record") BaoYangWarn record, @Param("example") BaoYangWarnExample example);
+
+    int updateByExample(@Param("record") BaoYangWarn record, @Param("example") BaoYangWarnExample example);
+
+    int updateByPrimaryKeySelective(BaoYangWarn record);
+
+    int updateByPrimaryKey(BaoYangWarn record);
+    
+    int updateByPrimaryKey(BaoYangWarnPO baoYangWarn);
+
+   	int updateByPrimaryKeySelective(BaoYangWarnPO baoYangWarn);
+   	
+   	int updateStatus(int record);
+}

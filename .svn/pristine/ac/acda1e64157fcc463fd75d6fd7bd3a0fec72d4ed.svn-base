@@ -1,0 +1,193 @@
+package org.hqu.production_ms.controller;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.validation.Valid;
+
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
+import org.hqu.production_ms.domain.Weigui;
+import org.hqu.production_ms.domain.custom.ActiveUser;
+import org.hqu.production_ms.domain.custom.CustomResult;
+import org.hqu.production_ms.domain.custom.EUDataGridResult;
+import org.hqu.production_ms.domain.po.WeiguiPO;
+import org.hqu.production_ms.service.WeiguiService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+@Controller
+@RequestMapping("/weigui")
+public class WeiguiController {
+
+	@Autowired
+	private WeiguiService weiguiService;
+	
+	@RequestMapping("/get/{weiguiId}")
+	@ResponseBody
+	public Weigui getItemById(@PathVariable int weiguiId) throws Exception{
+		Weigui weigui = weiguiService.get(weiguiId);
+		return weigui;
+	}
+	
+	@RequestMapping("/get_data")
+	@ResponseBody
+	public List<Weigui> getData() throws Exception{
+		 List<Weigui> list = weiguiService.find();
+		return list;
+	}
+	
+	@RequestMapping("/find")
+	public String find() throws Exception{
+		return "weigui_list";                                                                                                                                                                                                                                                                                                 
+	}
+	
+	@RequestMapping("/add_judge")
+	@ResponseBody
+	public Map<String,Object> WeiguiAddJudge() throws Exception{
+		//从shiro的session中取activeUser
+		Subject subject = SecurityUtils.getSubject();
+		//取身份信息
+		ActiveUser activeUser = (ActiveUser) subject.getPrincipal();
+		Map<String,Object> map = new HashMap<String,Object>(); 
+		if(!activeUser.getUserStatus().equals("1")){
+			map.put("msg", "您的账户已被锁定，请切换账户登录！");
+		}else if(!activeUser.getRoleStatus().equals("1")){
+			map.put("msg", "当前角色已被锁定，请切换账户登录！");
+		}else{
+			if(!subject.isPermitted("weigui:add")){
+				map.put("msg", "您没有权限，请切换用户登录！");
+			}
+		}
+		return map;
+	}
+	
+	@RequestMapping("/add")
+	public String add() throws Exception{
+		return "weigui_add";
+	}
+	
+	@RequestMapping("/edit_judge")
+	@ResponseBody
+	public Map<String,Object> WeiguiEditJudge() throws Exception{
+		Subject subject = SecurityUtils.getSubject();
+		ActiveUser activeUser = (ActiveUser) subject.getPrincipal();
+		Map<String,Object> map = new HashMap<String,Object>();
+		if(!activeUser.getUserStatus().equals("1")){
+			map.put("msg", "您的账户已被锁定，请切换账户登录！");
+		}else if(!activeUser.getRoleStatus().equals("1")){
+			map.put("msg", "当前角色已被锁定，请切换账户登录！");
+		}else{
+			if(!subject.isPermitted("weigui:edit")){
+				map.put("msg", "您没有权限，请切换用户登录！");
+			}
+		}
+		return map;
+	}
+	
+	@RequestMapping("/edit")
+	public String edit() throws Exception{
+		return "weigui_edit";
+	}
+	
+	@RequestMapping("/list")
+	@ResponseBody
+	public EUDataGridResult getList(Integer page, Integer rows, Weigui weigui) throws Exception{
+		EUDataGridResult result = weiguiService.getList(page, rows, weigui);
+		return result;
+	}
+	
+	@RequestMapping(value="/insert", method=RequestMethod.POST)
+	@ResponseBody
+	private CustomResult insert(@Valid WeiguiPO weigui, BindingResult bindingResult) throws Exception {
+		CustomResult result;
+		if(bindingResult.hasErrors()){
+			FieldError fieldError = bindingResult.getFieldError();
+			System.out.println(fieldError.getDefaultMessage());
+			return CustomResult.build(100, fieldError.getDefaultMessage());
+		}else{
+			System.out.println(weigui);
+			result = weiguiService.insert(weigui);
+		}
+		
+		return result;
+	}
+	
+	@RequestMapping(value="/update")
+	@ResponseBody
+	private CustomResult update(@Valid WeiguiPO weigui, BindingResult bindingResult) throws Exception {
+		if(bindingResult.hasErrors()){
+			FieldError fieldError = bindingResult.getFieldError();
+			return CustomResult.build(100, fieldError.getDefaultMessage());
+		}
+		return weiguiService.update(weigui);
+	}
+	
+	@RequestMapping(value="/update_all")
+	@ResponseBody
+	private CustomResult updateAll(@Valid WeiguiPO weigui, BindingResult bindingResult) throws Exception {
+		if(bindingResult.hasErrors()){
+			FieldError fieldError = bindingResult.getFieldError();
+			return CustomResult.build(100, fieldError.getDefaultMessage());
+		}
+		return weiguiService.updateAll(weigui);
+	}
+	
+	@RequestMapping("/delete_judge")
+	@ResponseBody
+	public Map<String,Object> WeiguiDeleteJudge() throws Exception{
+		Subject subject = SecurityUtils.getSubject();
+		ActiveUser activeUser = (ActiveUser) subject.getPrincipal();
+		Map<String,Object> map = new HashMap<String,Object>();
+		if(!activeUser.getUserStatus().equals("1")){
+			map.put("msg", "您的账户已被锁定，请切换账户登录！");
+		}else if(!activeUser.getRoleStatus().equals("1")){
+			map.put("msg", "当前角色已被锁定，请切换账户登录！");
+		}else{
+			if(!subject.isPermitted("weigui:delete")){
+				map.put("msg", "您没有权限，请切换用户登录！");
+			}
+		}
+		return map;
+	}
+	
+	@RequestMapping(value="/delete")
+	@ResponseBody
+	private CustomResult delete(int id) throws Exception {
+		CustomResult result = weiguiService.delete(id);
+		return result;
+	}
+	
+	@RequestMapping(value="/delete_batch")
+	@ResponseBody
+	private CustomResult deleteBatch(int[] ids) throws Exception {
+		CustomResult result = weiguiService.deleteBatch(ids);
+		return result;
+	}
+	
+	//搜索
+	@RequestMapping("/search_Weigui_by_drivernum")
+	@ResponseBody
+	public EUDataGridResult searchWeiguiBydrivernum(Integer page, Integer rows, String drivernum) 
+			throws Exception{
+		EUDataGridResult result = weiguiService.searchWeiguiBydrivernum(page, rows, drivernum);
+		return result;
+	}
+	
+	//搜索
+	@RequestMapping("/search_Weigui_by_carnum")
+	@ResponseBody
+	public EUDataGridResult searchWeiguiBycarnum(Integer page, Integer rows, String carnum) 
+			throws Exception{
+		EUDataGridResult result = weiguiService.searchWeiguiBycarnum(page, rows, carnum);
+		return result;
+	}
+	
+}

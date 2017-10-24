@@ -1,0 +1,437 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.hqu.production_ms.mapper.CarYouMapper" >
+  <resultMap id="BaseResultMap" type="org.hqu.production_ms.domain.CarYou" >
+    <id column="you_id" property="youId" jdbcType="INTEGER" />
+    <result column="younumber" property="younumber" jdbcType="VARCHAR" />
+    <result column="department_id" property="departmentId" jdbcType="VARCHAR" />
+    <result column="beiyong1" property="beiyong1" jdbcType="VARCHAR" />
+    <result column="beiyong2" property="beiyong2" jdbcType="DECIMAL" />
+    <result column="bei1" property="bei1" jdbcType="DECIMAL" />
+    <result column="you" property="you" jdbcType="DECIMAL" />
+    <result column="money" property="money" jdbcType="DECIMAL" />
+    <association property="department" javaType="department">
+		<id column="department_id" property="departmentId" jdbcType="VARCHAR" />
+	    <result column="department_name" property="departmentName" jdbcType="VARCHAR" />
+	    <result column="fatherdep" property="fatherdep" jdbcType="VARCHAR" />
+	    <result column="level" property="level" jdbcType="INTEGER" />
+	</association>
+  </resultMap>
+  <select id="find" parameterType="carYou" resultMap="BaseResultMap">
+		SELECT
+			t1.you_id,
+			   younumber,
+			   t1.beiyong1,
+			   t1.beiyong2,
+			    department.fatherdep,
+				department.level,
+			   department.department_id,
+			   department.department_name,
+			   SUM(t2.yongyou) AS you,
+			   SUM(t2.totlyou) AS money
+		FROM 
+			(c_you t1 
+			LEFT JOIN department ON t1.`department_id` = department.department_id), c_youka t2
+			WHERE t1.`you_id` = t2.`you_id`
+			GROUP BY t1.`you_id`
+	</select>
+	<update id="updateByYouId" parameterType="org.hqu.production_ms.domain.CarYou">
+		update 
+		c_you 
+		set 
+		 beiyong2 = #{beiyong2,jdbcType=DECIMAL}
+			where  
+				 c_you.you_id = #{youId,jdbcType=INTEGER}
+	</update>
+	<select id="find1" parameterType="String" resultMap="BaseResultMap">
+		SELECT
+			   t1.you_id,
+			   younumber,
+			   t1.beiyong1,
+			   t1.beiyong2,
+			    department.fatherdep,
+				department.level,
+			   department.department_id,
+			   department.department_name,
+			   SUM(t2.yongyou) AS you,
+			   SUM(t2.totlyou) AS money
+		FROM 
+			(c_you t1 
+			LEFT JOIN department ON t1.`department_id` = department.department_id), c_youka t2
+			WHERE t1.`you_id` = t2.`you_id`
+			and t1.department_id= #{departmentId}
+			GROUP BY t1.`you_id`
+	</select>
+	<select id="find3" parameterType="carYou" resultMap="BaseResultMap">
+		SELECT
+			you_id,
+			   younumber,
+			   beiyong1,
+			   beiyong2,
+			    department.fatherdep,
+				department.level,
+			   department.department_id,
+			   department.department_name
+		FROM 
+			c_you 
+			LEFT JOIN department ON c_you.department_id = department.department_id
+	</select>
+	
+	<select id="find4" parameterType="String" resultMap="BaseResultMap">
+		SELECT
+			you_id,
+			   younumber,
+			   beiyong1,
+			   beiyong2,
+			    department.fatherdep,
+				department.level,
+			   department.department_id,
+			   department.department_name
+		FROM 
+			c_you 
+			LEFT JOIN department ON c_you.department_id = department.department_id
+			where
+				department.department_id=#{departmentId}
+			
+	</select>
+	<select id="find5" parameterType="carYou" resultMap="BaseResultMap">
+		SELECT
+			you_id,
+			   younumber,
+			   beiyong1,
+			   beiyong2,
+			    department.fatherdep,
+				department.level,
+			   department.department_id,
+			   department.department_name
+		FROM 
+			c_you 
+			LEFT JOIN department ON c_you.department_id = department.department_id
+			where
+			beiyong1 ='1'
+	</select>
+	
+	<select id="find6" parameterType="String" resultMap="BaseResultMap">
+		SELECT
+			you_id,
+			   younumber,
+			   beiyong1,
+			   beiyong2,
+			    department.fatherdep,
+				department.level,
+			   department.department_id,
+			   department.department_name
+		FROM 
+			c_you 
+			LEFT JOIN department ON c_you.department_id = department.department_id
+			where
+			beiyong1 ='1'
+			and
+				department.department_id=#{departmentId}
+			
+	</select>
+	<!-- 查询所单个记录 -->
+	<select id="selectSingleCarYou" parameterType="INTEGER" resultMap="BaseResultMap">
+		SELECT
+			t1.you_id,
+			   younumber,
+			   t1.beiyong1,
+			   t1.beiyong2,
+			    department.fatherdep,
+				department.level,
+			   department.department_id,
+			   department.department_name,
+			   SUM(t2.yongyou) AS you,
+			   SUM(t2.totlyou) AS money
+		FROM 
+			(c_you t1 
+			LEFT JOIN department ON t1.`department_id` = department.department_id), c_youka t2
+			WHERE t1.`you_id` = t2.`you_id`
+			and t1.you_id = #{youId}
+			
+	</select>
+	<select id="selectSingleCarYou1" parameterType="String" resultMap="BaseResultMap">
+		SELECT
+				you_id,
+			   younumber,
+			   beiyong1,
+			   beiyong2,
+			    department.fatherdep,
+				department.level,
+			   department.department_id,
+			   department.department_name
+		FROM 
+			c_you 
+			LEFT JOIN department ON c_you.department_id = department.department_id
+			where
+			beiyong1 ='1'
+			and 
+			younumber =#{id}
+			
+	</select>
+  <!-- 批量删除 -->
+	<delete id="deleteBatch">
+		DELETE
+		FROM
+			c_you
+		WHERE
+			you_id IN
+		<foreach collection="array" item="id" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</delete>
+	<select id="searchCarYouByCarYouDriverfrom" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+			t1.you_id,
+			   younumber,
+			   t1.beiyong1,
+			   t1.beiyong2,
+			    department.fatherdep,
+				department.level,
+			   department.department_id,
+			   department.department_name,
+			   SUM(t2.yongyou) AS you,
+			   SUM(t2.totlyou) AS money
+		FROM 
+			(c_you t1 
+			LEFT JOIN department ON t1.`department_id` = department.department_id), c_youka t2
+			WHERE t1.`you_id` = t2.`you_id`
+			and younumber LIKE CONCAT( '%',#{1},'%' ) 
+			GROUP BY t1.`you_id`
+	</select>
+	<select id="searchCarYouByCarYouDriverfrom1" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+			t1.you_id,
+			   younumber,
+			   t1.beiyong1,
+			   t1.beiyong2,
+			    department.fatherdep,
+				department.level,
+			   department.department_id,
+			   department.department_name,
+			   SUM(t2.yongyou) AS you,
+			   SUM(t2.totlyou) AS money
+		FROM 
+			(c_you t1 
+			LEFT JOIN department ON t1.`department_id` = department.department_id), c_youka t2
+			WHERE t1.`you_id` = t2.`you_id`
+			and t1.department_id=#{0}
+			and younumber LIKE CONCAT( '%',#{1},'%' ) 
+			GROUP BY t1.`you_id`
+	</select>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    you_id, younumber, department_id, beiyong1, beiyong2, bei1
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.hqu.production_ms.domain.CarYouExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from c_you
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from c_you
+    where you_id = #{youId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from c_you
+    where you_id = #{youId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.hqu.production_ms.domain.CarYouExample" >
+    delete from c_you
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.hqu.production_ms.domain.CarYou" >
+    insert into c_you (you_id, younumber, department_id, 
+      beiyong1, beiyong2, bei1
+      )
+    values (#{youId,jdbcType=INTEGER}, #{younumber,jdbcType=VARCHAR}, #{departmentId,jdbcType=VARCHAR}, 
+      #{beiyong1,jdbcType=VARCHAR}, #{beiyong2,jdbcType=DECIMAL}, #{bei1,jdbcType=DECIMAL}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="org.hqu.production_ms.domain.CarYou" >
+    insert into c_you
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="youId != null" >
+        you_id,
+      </if>
+      <if test="younumber != null" >
+        younumber,
+      </if>
+      <if test="departmentId != null" >
+        department_id,
+      </if>
+      <if test="beiyong1 != null" >
+        beiyong1,
+      </if>
+      <if test="beiyong2 != null" >
+        beiyong2,
+      </if>
+      <if test="bei1 != null" >
+        bei1,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="youId != null" >
+        #{youId,jdbcType=INTEGER},
+      </if>
+      <if test="younumber != null" >
+        #{younumber,jdbcType=VARCHAR},
+      </if>
+      <if test="departmentId != null" >
+        #{departmentId,jdbcType=VARCHAR},
+      </if>
+      <if test="beiyong1 != null" >
+        #{beiyong1,jdbcType=VARCHAR},
+      </if>
+      <if test="beiyong2 != null" >
+        #{beiyong2,jdbcType=DECIMAL},
+      </if>
+      <if test="bei1 != null" >
+        #{bei1,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.hqu.production_ms.domain.CarYouExample" resultType="java.lang.Integer" >
+    select count(*) from c_you
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update c_you
+    <set >
+      <if test="record.youId != null" >
+        you_id = #{record.youId,jdbcType=INTEGER},
+      </if>
+      <if test="record.younumber != null" >
+        younumber = #{record.younumber,jdbcType=VARCHAR},
+      </if>
+      <if test="record.departmentId != null" >
+        department_id = #{record.departmentId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.beiyong1 != null" >
+        beiyong1 = #{record.beiyong1,jdbcType=VARCHAR},
+      </if>
+      <if test="record.beiyong2 != null" >
+        beiyong2 = #{record.beiyong2,jdbcType=DECIMAL},
+      </if>
+      <if test="record.bei1 != null" >
+        bei1 = #{record.bei1,jdbcType=DECIMAL},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update c_you
+    set you_id = #{record.youId,jdbcType=INTEGER},
+      younumber = #{record.younumber,jdbcType=VARCHAR},
+      department_id = #{record.departmentId,jdbcType=VARCHAR},
+      beiyong1 = #{record.beiyong1,jdbcType=VARCHAR},
+      beiyong2 = #{record.beiyong2,jdbcType=DECIMAL},
+      bei1 = #{record.bei1,jdbcType=DECIMAL}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.hqu.production_ms.domain.CarYou" >
+    update c_you
+    <set >
+      <if test="younumber != null" >
+        younumber = #{younumber,jdbcType=VARCHAR},
+      </if>
+      <if test="departmentId != null" >
+        department_id = #{departmentId,jdbcType=VARCHAR},
+      </if>
+      <if test="beiyong1 != null" >
+        beiyong1 = #{beiyong1,jdbcType=VARCHAR},
+      </if>
+      <if test="beiyong2 != null" >
+        beiyong2 = #{beiyong2,jdbcType=DECIMAL},
+      </if>
+      <if test="bei1 != null" >
+        bei1 = #{bei1,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where you_id = #{youId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.hqu.production_ms.domain.CarYou" >
+    update c_you
+    set younumber = #{younumber,jdbcType=VARCHAR},
+      department_id = #{departmentId,jdbcType=VARCHAR},
+      beiyong1 = #{beiyong1,jdbcType=VARCHAR}
+    where you_id = #{youId,jdbcType=INTEGER}
+  </update>
+</mapper>

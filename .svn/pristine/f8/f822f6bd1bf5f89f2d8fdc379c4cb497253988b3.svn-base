@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.hqu.production_ms.mapper.DriverStudeyMapper" >
+  <resultMap id="BaseResultMap" type="org.hqu.production_ms.domain.DriverStudey" >
+    <id column="study_id" property="studyId" jdbcType="INTEGER" />
+    <result column="stutime" property="stutime" jdbcType="TIMESTAMP" />
+    <result column="zhuchiren" property="zhuchiren" jdbcType="VARCHAR" />
+    <result column="yingdao" property="yingdao" jdbcType="VARCHAR" />
+    <result column="shidao" property="shidao" jdbcType="VARCHAR" />
+    <result column="shidaoname" property="shidaoname" jdbcType="VARCHAR" />
+    <result column="weidaoname" property="weidaoname" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+  </resultMap>
+  
+   <!-- 扩展的sql -->
+  <!-- 查询所有记录 -->
+	<select id="find" parameterType="driverStudey" resultMap="BaseResultMap">
+		SELECT
+		*
+		FROM 
+			c_study 
+			
+			ORDER BY stutime
+	</select>
+	
+	<!-- 查询所单个记录 -->
+	<select id="selectSingleDriverStudey" parameterType="INTEGER" resultMap="BaseResultMap">
+		SELECT
+			*
+		FROM 
+			c_study 
+			
+			WHERE  study_id = #{studyId}
+			ORDER BY stutime
+		
+	</select>
+	
+  <!-- 批量删除 -->
+	<delete id="deleteBatch">
+		DELETE
+		FROM
+			c_study
+		WHERE
+			study_id IN
+		<foreach collection="array" item="id" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</delete>
+  
+  
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    study_id, stutime, zhuchiren, yingdao, shidao, shidaoname, weidaoname, content
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.hqu.production_ms.domain.DriverStudeyExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from c_study
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from c_study
+    where study_id = #{studyId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from c_study
+    where study_id = #{studyId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.hqu.production_ms.domain.DriverStudeyExample" >
+    delete from c_study
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.hqu.production_ms.domain.DriverStudey" >
+    insert into c_study (study_id, stutime, zhuchiren, 
+      yingdao, shidao, shidaoname, 
+      weidaoname, content)
+    values (#{studyId,jdbcType=INTEGER}, #{stutime,jdbcType=TIMESTAMP}, #{zhuchiren,jdbcType=VARCHAR}, 
+      #{yingdao,jdbcType=VARCHAR}, #{shidao,jdbcType=VARCHAR}, #{shidaoname,jdbcType=VARCHAR}, 
+      #{weidaoname,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="org.hqu.production_ms.domain.DriverStudey" >
+    insert into c_study
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="studyId != null" >
+        study_id,
+      </if>
+      <if test="stutime != null" >
+        stutime,
+      </if>
+      <if test="zhuchiren != null" >
+        zhuchiren,
+      </if>
+      <if test="yingdao != null" >
+        yingdao,
+      </if>
+      <if test="shidao != null" >
+        shidao,
+      </if>
+      <if test="shidaoname != null" >
+        shidaoname,
+      </if>
+      <if test="weidaoname != null" >
+        weidaoname,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="studyId != null" >
+        #{studyId,jdbcType=INTEGER},
+      </if>
+      <if test="stutime != null" >
+        #{stutime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zhuchiren != null" >
+        #{zhuchiren,jdbcType=VARCHAR},
+      </if>
+      <if test="yingdao != null" >
+        #{yingdao,jdbcType=VARCHAR},
+      </if>
+      <if test="shidao != null" >
+        #{shidao,jdbcType=VARCHAR},
+      </if>
+      <if test="shidaoname != null" >
+        #{shidaoname,jdbcType=VARCHAR},
+      </if>
+      <if test="weidaoname != null" >
+        #{weidaoname,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.hqu.production_ms.domain.DriverStudeyExample" resultType="java.lang.Integer" >
+    select count(*) from c_study
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update c_study
+    <set >
+      <if test="record.studyId != null" >
+        study_id = #{record.studyId,jdbcType=INTEGER},
+      </if>
+      <if test="record.stutime != null" >
+        stutime = #{record.stutime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.zhuchiren != null" >
+        zhuchiren = #{record.zhuchiren,jdbcType=VARCHAR},
+      </if>
+      <if test="record.yingdao != null" >
+        yingdao = #{record.yingdao,jdbcType=VARCHAR},
+      </if>
+      <if test="record.shidao != null" >
+        shidao = #{record.shidao,jdbcType=VARCHAR},
+      </if>
+      <if test="record.shidaoname != null" >
+        shidaoname = #{record.shidaoname,jdbcType=VARCHAR},
+      </if>
+      <if test="record.weidaoname != null" >
+        weidaoname = #{record.weidaoname,jdbcType=VARCHAR},
+      </if>
+      <if test="record.content != null" >
+        content = #{record.content,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update c_study
+    set study_id = #{record.studyId,jdbcType=INTEGER},
+      stutime = #{record.stutime,jdbcType=TIMESTAMP},
+      zhuchiren = #{record.zhuchiren,jdbcType=VARCHAR},
+      yingdao = #{record.yingdao,jdbcType=VARCHAR},
+      shidao = #{record.shidao,jdbcType=VARCHAR},
+      shidaoname = #{record.shidaoname,jdbcType=VARCHAR},
+      weidaoname = #{record.weidaoname,jdbcType=VARCHAR},
+      content = #{record.content,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.hqu.production_ms.domain.DriverStudey" >
+    update c_study
+    <set >
+      <if test="stutime != null" >
+        stutime = #{stutime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="zhuchiren != null" >
+        zhuchiren = #{zhuchiren,jdbcType=VARCHAR},
+      </if>
+      <if test="yingdao != null" >
+        yingdao = #{yingdao,jdbcType=VARCHAR},
+      </if>
+      <if test="shidao != null" >
+        shidao = #{shidao,jdbcType=VARCHAR},
+      </if>
+      <if test="shidaoname != null" >
+        shidaoname = #{shidaoname,jdbcType=VARCHAR},
+      </if>
+      <if test="weidaoname != null" >
+        weidaoname = #{weidaoname,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where study_id = #{studyId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.hqu.production_ms.domain.DriverStudey" >
+    update c_study
+    set stutime = #{stutime,jdbcType=TIMESTAMP},
+      zhuchiren = #{zhuchiren,jdbcType=VARCHAR},
+      yingdao = #{yingdao,jdbcType=VARCHAR},
+      shidao = #{shidao,jdbcType=VARCHAR},
+      shidaoname = #{shidaoname,jdbcType=VARCHAR},
+      weidaoname = #{weidaoname,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR}
+    where study_id = #{studyId,jdbcType=INTEGER}
+  </update>
+</mapper>

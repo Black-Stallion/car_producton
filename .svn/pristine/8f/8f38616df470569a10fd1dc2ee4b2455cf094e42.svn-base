@@ -1,0 +1,803 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.hqu.production_ms.mapper.CarSpecialMapper" >
+  <resultMap id="BaseResultMap" type="org.hqu.production_ms.domain.CarSpecial" >
+    <id column="car_id" property="carId" jdbcType="INTEGER" />
+    <result column="dengJiZSID" property="dengjizsid" jdbcType="VARCHAR" />
+    <result column="sheBeiID" property="shebeiid" jdbcType="VARCHAR" />
+    <result column="username" property="username" jdbcType="VARCHAR" />
+    <result column="jiGan" property="jigan" jdbcType="VARCHAR" />
+    <result column="dengjiTiem" property="dengjitiem" jdbcType="TIMESTAMP" />
+    <result column="dengjiID" property="dengjiid" jdbcType="VARCHAR" />
+    <result column="carCJH" property="carcjh" jdbcType="VARCHAR" />
+    <result column="color" property="color" jdbcType="VARCHAR" />
+    <result column="useNature" property="usenature" jdbcType="VARCHAR" />
+    <result column="carWay" property="carway" jdbcType="VARCHAR" />
+    <result column="manufactureDate" property="manufacturedate" jdbcType="TIMESTAMP" />
+    <result column="issueOrgan" property="issueorgan" jdbcType="VARCHAR" />
+    <result column="issueDate" property="issuedate" jdbcType="TIMESTAMP" />
+    <result column="buycarapproval" property="buycarapproval" jdbcType="VARCHAR" />
+    <result column="newSource" property="newsource" jdbcType="VARCHAR" />
+    <result column="carPrice" property="carprice" jdbcType="DECIMAL" />
+    <result column="oldcarPrice" property="oldcarprice" jdbcType="DECIMAL" />
+    <result column="supplier" property="supplier" jdbcType="VARCHAR" />
+    <result column="phone" property="phone" jdbcType="INTEGER" />
+    <result column="image" property="image" jdbcType="VARCHAR" />
+    <result column="carnumber" property="carnumber" jdbcType="VARCHAR" />
+     <association property="carType" javaType="carType">
+		<id column="typeId" property="typeid" jdbcType="INTEGER" />
+	    <result column="typename" property="typename" jdbcType="VARCHAR" />
+	</association>
+	<association property="department" javaType="department">
+		<id column="department_id" property="departmentId" jdbcType="VARCHAR" />
+	    <result column="department_name" property="departmentName" jdbcType="VARCHAR" />
+	    <result column="fatherdep" property="fatherdep" jdbcType="VARCHAR" />
+	</association>
+  </resultMap>
+  <select id="find" parameterType="carSpecial" resultMap="BaseResultMap">
+		SELECT
+			   car_id ,
+			   dengJiZSID,
+			   sheBeiID,
+			   username,
+			   jiGan,
+			   dengjiTiem,
+			   dengjiID,
+			   carnumber,
+			   carCJH,
+			   color,
+			   useNature,
+			   carWay,
+			   manufactureDate,
+			   issueOrgan,
+			   issueDate,
+			   buycarapproval,
+			   newSource,
+			   carPrice,
+			   oldcarPrice,
+			   supplier,
+			   phone,
+			   image,
+			   c_register.typeId,
+			   typename,
+			   department.department_id,
+			   department_name,
+			   fatherdep
+		FROM 
+			c_register
+			LEFT JOIN c_type ON c_register.typeId = c_type.typeId
+			LEFT JOIN department ON c_register.department_id = department.department_id
+		WHERE 
+			useNature = '公用车'
+	</select>
+	<select id="find1" parameterType="carSpecial" resultMap="BaseResultMap">
+		SELECT
+			   car_id ,
+			   dengJiZSID,
+			   sheBeiID,
+			   username,
+			   jiGan,
+			   dengjiTiem,
+			   dengjiID,
+			   carnumber,
+			   carCJH,
+			   color,
+			   useNature,
+			   carWay,
+			   manufactureDate,
+			   issueOrgan,
+			   issueDate,
+			   buycarapproval,
+			   newSource,
+			   carPrice,
+			   oldcarPrice,
+			   supplier,
+			   phone,
+			   image,
+			   c_register.typeId,
+			   typename,
+			   department.department_id,
+			   department_name,
+			   fatherdep
+		FROM 
+			c_register
+			LEFT JOIN c_type ON c_register.typeId = c_type.typeId
+			LEFT JOIN department ON c_register.department_id = department.department_id
+		WHERE 
+			useNature = '专用车'
+	</select>
+	<select id="get" parameterType="carSpecial" resultMap="BaseResultMap">
+		SELECT
+			*
+		FROM 
+			c_register
+		GROUP BY 
+			usenature
+	</select>
+	<select id="findByNature" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+			 car_id ,
+			   dengJiZSID,
+			   sheBeiID,
+			   username,
+			   jiGan,
+			   dengjiTiem,
+			   dengjiID,
+			   carnumber,
+			   carCJH,
+			   color,
+			   useNature,
+			   carWay,
+			   manufactureDate,
+			   issueOrgan,
+			   issueDate,
+			   buycarapproval,
+			   newSource,
+			   carPrice,
+			   oldcarPrice,
+			   supplier,
+			   phone,
+			   image,
+			   c_register.typeId,
+			   typename,
+			   department.department_id,
+			   department_name,
+			   fatherdep
+		FROM 
+			c_register
+			LEFT JOIN c_type ON c_register.typeId = c_type.typeId
+			LEFT JOIN department ON c_register.department_id = department.department_id
+		WHERE 
+			usenature=#{usenature}
+	</select>
+	
+	<!-- 查询所单个记录 -->
+	<select id="selectSingleCarSpecial" parameterType="INTEGER" resultMap="BaseResultMap">
+		SELECT
+			 	car_id ,
+			   dengJiZSID,
+			   sheBeiID,
+			   username,
+			   jiGan,
+			   dengjiTiem,
+			   dengjiID,
+			   carnumber,
+			   carCJH,
+			   color,
+			   useNature,
+			   carWay,
+			   manufactureDate,
+			   issueOrgan,
+			   issueDate,
+			   buycarapproval,
+			   newSource,
+			   carPrice,
+			   oldcarPrice,
+			   supplier,
+			   phone,
+			   image,
+			   c_register.typeId,
+			   typename,
+			   c_register.department_id,
+			   department_name,
+			   fatherdep
+		FROM 
+			c_register
+			LEFT JOIN c_type ON c_register.typeId = c_type.typeId
+			LEFT JOIN department ON c_register.department_id = department.department_id
+		WHERE  
+			car_id = #{carId}
+	</select>
+	
+  <!-- 批量删除 -->
+	<delete id="deleteBatch">
+		DELETE
+		FROM
+			c_register
+		WHERE
+			car_id IN
+		<foreach collection="array" item="id" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</delete>
+	<select id="searchCarSpecialByCarSpecialDriverfrom" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+			 car_id ,
+			   dengJiZSID,
+			   sheBeiID,
+			   username,
+			   jiGan,
+			   dengjiTiem,
+			   dengjiID,
+			   carnumber,
+			   carCJH,
+			   color,
+			   useNature,
+			   carWay,
+			   manufactureDate,
+			   issueOrgan,
+			   issueDate,
+			   buycarapproval,
+			   newSource,
+			   carPrice,
+			   oldcarPrice,
+			   supplier,
+			   phone,
+			   image,
+			   c_register.typeId,
+			   typename,
+			   c_register.department_id,
+			   department_name,
+			   fatherdep
+		FROM 
+			c_register
+			LEFT JOIN c_type ON c_register.typeId = c_type.typeId
+			LEFT JOIN department ON c_register.department_id = department.department_id
+		WHERE
+			department_id=#{departmentId} 
+		AND
+			username LIKE CONCAT( '%',#{username},'%' ) 
+	</select>
+	
+	<select id="searchCarSpecialByCarSpecialAA" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+			 car_id ,
+			   dengJiZSID,
+			   sheBeiID,
+			   username,
+			   jiGan,
+			   dengjiTiem,
+			   dengjiID,
+			   carnumber,
+			   carCJH,
+			   color,
+			   useNature,
+			   carWay,
+			   manufactureDate,
+			   issueOrgan,
+			   issueDate,
+			   buycarapproval,
+			   newSource,
+			   carPrice,
+			   oldcarPrice,
+			   supplier,
+			   phone,
+			   image,
+			   c_register.typeId,
+			   typename,
+			   c_register.department_id,
+			   department_name,
+			   fatherdep
+		FROM 
+			c_register
+			LEFT JOIN c_type ON c_register.typeId = c_type.typeId
+			LEFT JOIN department ON c_register.department_id = department.department_id
+		WHERE
+			department_id=#{departmentId} 
+		AND
+			departmentName LIKE CONCAT( '%',#{departmentName},'%' ) 
+	</select>
+	<select id="searchCarSpecialByCarSpecialName" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+			 car_id ,
+			   dengJiZSID,
+			   sheBeiID,
+			   username,
+			   jiGan,
+			   dengjiTiem,
+			   dengjiID,
+			   carnumber,
+			   carCJH,
+			   color,
+			   useNature,
+			   carWay,
+			   manufactureDate,
+			   issueOrgan,
+			   issueDate,
+			   buycarapproval,
+			   newSource,
+			   carPrice,
+			   oldcarPrice,
+			   supplier,
+			   phone,
+			   image,
+			   c_register.typeId,
+			   typename,
+			   c_register.department_id,
+			   department_name,
+			   fatherdep
+		FROM 
+			c_register
+			LEFT JOIN c_type ON c_register.typeId = c_type.typeId
+			LEFT JOIN c_departmenttype ON c_register.department_id = department.department_id
+		WHERE
+			
+		WHERE
+			department_id=#{departmentId} 
+		AND
+			driverFrom LIKE CONCAT( '%',#{typename},'%' ) 
+	</select>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    car_id, dengJiZSID, sheBeiID, username, jiGan, dengjiTiem, dengjiID, carCJH, color, 
+    useNature, carWay, manufactureDate, issueOrgan, issueDate, buycarapproval, newSource, 
+    carPrice, oldcarPrice, supplier, phone, image, typeId, department_id, carnumber
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.hqu.production_ms.domain.CarSpecialExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from c_register
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from c_register
+    where car_id = #{carId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from c_register
+    where car_id = #{carId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.hqu.production_ms.domain.CarSpecialExample" >
+    delete from c_register
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.hqu.production_ms.domain.CarSpecial" >
+    insert into c_register (car_id, dengJiZSID, sheBeiID, 
+      username, jiGan, dengjiTiem, 
+      dengjiID, carCJH, color, 
+      useNature, carWay, manufactureDate, 
+      issueOrgan, issueDate, buycarapproval, 
+      newSource, carPrice, oldcarPrice, 
+      supplier, phone, image, 
+      typeId, department_id, carnumber
+      )
+    values (#{carId,jdbcType=INTEGER}, #{dengjizsid,jdbcType=VARCHAR}, #{shebeiid,jdbcType=VARCHAR}, 
+      #{username,jdbcType=VARCHAR}, #{jigan,jdbcType=VARCHAR}, #{dengjitiem,jdbcType=TIMESTAMP}, 
+      #{dengjiid,jdbcType=VARCHAR}, #{carcjh,jdbcType=VARCHAR}, #{color,jdbcType=VARCHAR}, 
+      #{usenature,jdbcType=VARCHAR}, #{carway,jdbcType=VARCHAR}, #{manufacturedate,jdbcType=TIMESTAMP}, 
+      #{issueorgan,jdbcType=VARCHAR}, #{issuedate,jdbcType=TIMESTAMP}, #{buycarapproval,jdbcType=VARCHAR}, 
+      #{newsource,jdbcType=VARCHAR}, #{carprice,jdbcType=DECIMAL}, #{oldcarprice,jdbcType=DECIMAL}, 
+      #{supplier,jdbcType=VARCHAR}, #{phone,jdbcType=INTEGER}, #{image,jdbcType=VARCHAR}, 
+      #{typeid,jdbcType=INTEGER}, #{departmentId,jdbcType=VARCHAR}, #{carnumber,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="org.hqu.production_ms.domain.CarSpecial" >
+    insert into c_register
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="carId != null" >
+        car_id,
+      </if>
+      <if test="dengjizsid != null" >
+        dengJiZSID,
+      </if>
+      <if test="shebeiid != null" >
+        sheBeiID,
+      </if>
+      <if test="username != null" >
+        username,
+      </if>
+      <if test="jigan != null" >
+        jiGan,
+      </if>
+      <if test="dengjitiem != null" >
+        dengjiTiem,
+      </if>
+      <if test="dengjiid != null" >
+        dengjiID,
+      </if>
+      <if test="carcjh != null" >
+        carCJH,
+      </if>
+      <if test="color != null" >
+        color,
+      </if>
+      <if test="usenature != null" >
+        useNature,
+      </if>
+      <if test="carway != null" >
+        carWay,
+      </if>
+      <if test="manufacturedate != null" >
+        manufactureDate,
+      </if>
+      <if test="issueorgan != null" >
+        issueOrgan,
+      </if>
+      <if test="issuedate != null" >
+        issueDate,
+      </if>
+      <if test="buycarapproval != null" >
+        buycarapproval,
+      </if>
+      <if test="newsource != null" >
+        newSource,
+      </if>
+      <if test="carprice != null" >
+        carPrice,
+      </if>
+      <if test="oldcarprice != null" >
+        oldcarPrice,
+      </if>
+      <if test="supplier != null" >
+        supplier,
+      </if>
+      <if test="phone != null" >
+        phone,
+      </if>
+      <if test="image != null" >
+        image,
+      </if>
+      <if test="typeid != null" >
+        typeId,
+      </if>
+      <if test="departmentId != null" >
+        department_id,
+      </if>
+      <if test="carnumber != null" >
+        carnumber,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="carId != null" >
+        #{carId,jdbcType=INTEGER},
+      </if>
+      <if test="dengjizsid != null" >
+        #{dengjizsid,jdbcType=VARCHAR},
+      </if>
+      <if test="shebeiid != null" >
+        #{shebeiid,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null" >
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="jigan != null" >
+        #{jigan,jdbcType=VARCHAR},
+      </if>
+      <if test="dengjitiem != null" >
+        #{dengjitiem,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dengjiid != null" >
+        #{dengjiid,jdbcType=VARCHAR},
+      </if>
+      <if test="carcjh != null" >
+        #{carcjh,jdbcType=VARCHAR},
+      </if>
+      <if test="color != null" >
+        #{color,jdbcType=VARCHAR},
+      </if>
+      <if test="usenature != null" >
+        #{usenature,jdbcType=VARCHAR},
+      </if>
+      <if test="carway != null" >
+        #{carway,jdbcType=VARCHAR},
+      </if>
+      <if test="manufacturedate != null" >
+        #{manufacturedate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="issueorgan != null" >
+        #{issueorgan,jdbcType=VARCHAR},
+      </if>
+      <if test="issuedate != null" >
+        #{issuedate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="buycarapproval != null" >
+        #{buycarapproval,jdbcType=VARCHAR},
+      </if>
+      <if test="newsource != null" >
+        #{newsource,jdbcType=VARCHAR},
+      </if>
+      <if test="carprice != null" >
+        #{carprice,jdbcType=DECIMAL},
+      </if>
+      <if test="oldcarprice != null" >
+        #{oldcarprice,jdbcType=DECIMAL},
+      </if>
+      <if test="supplier != null" >
+        #{supplier,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        #{phone,jdbcType=INTEGER},
+      </if>
+      <if test="image != null" >
+        #{image,jdbcType=VARCHAR},
+      </if>
+      <if test="typeid != null" >
+        #{typeid,jdbcType=INTEGER},
+      </if>
+      <if test="departmentId != null" >
+        #{departmentId,jdbcType=VARCHAR},
+      </if>
+      <if test="carnumber != null" >
+        #{carnumber,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.hqu.production_ms.domain.CarSpecialExample" resultType="java.lang.Integer" >
+    select count(*) from c_register
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update c_register
+    <set >
+      <if test="record.carId != null" >
+        car_id = #{record.carId,jdbcType=INTEGER},
+      </if>
+      <if test="record.dengjizsid != null" >
+        dengJiZSID = #{record.dengjizsid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.shebeiid != null" >
+        sheBeiID = #{record.shebeiid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.username != null" >
+        username = #{record.username,jdbcType=VARCHAR},
+      </if>
+      <if test="record.jigan != null" >
+        jiGan = #{record.jigan,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dengjitiem != null" >
+        dengjiTiem = #{record.dengjitiem,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.dengjiid != null" >
+        dengjiID = #{record.dengjiid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.carcjh != null" >
+        carCJH = #{record.carcjh,jdbcType=VARCHAR},
+      </if>
+      <if test="record.color != null" >
+        color = #{record.color,jdbcType=VARCHAR},
+      </if>
+      <if test="record.usenature != null" >
+        useNature = #{record.usenature,jdbcType=VARCHAR},
+      </if>
+      <if test="record.carway != null" >
+        carWay = #{record.carway,jdbcType=VARCHAR},
+      </if>
+      <if test="record.manufacturedate != null" >
+        manufactureDate = #{record.manufacturedate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.issueorgan != null" >
+        issueOrgan = #{record.issueorgan,jdbcType=VARCHAR},
+      </if>
+      <if test="record.issuedate != null" >
+        issueDate = #{record.issuedate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.buycarapproval != null" >
+        buycarapproval = #{record.buycarapproval,jdbcType=VARCHAR},
+      </if>
+      <if test="record.newsource != null" >
+        newSource = #{record.newsource,jdbcType=VARCHAR},
+      </if>
+      <if test="record.carprice != null" >
+        carPrice = #{record.carprice,jdbcType=DECIMAL},
+      </if>
+      <if test="record.oldcarprice != null" >
+        oldcarPrice = #{record.oldcarprice,jdbcType=DECIMAL},
+      </if>
+      <if test="record.supplier != null" >
+        supplier = #{record.supplier,jdbcType=VARCHAR},
+      </if>
+      <if test="record.phone != null" >
+        phone = #{record.phone,jdbcType=INTEGER},
+      </if>
+      <if test="record.image != null" >
+        image = #{record.image,jdbcType=VARCHAR},
+      </if>
+      <if test="record.typeid != null" >
+        typeId = #{record.typeid,jdbcType=INTEGER},
+      </if>
+      <if test="record.departmentId != null" >
+        department_id = #{record.departmentId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.carnumber != null" >
+        carnumber = #{record.carnumber,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update c_register
+    set car_id = #{record.carId,jdbcType=INTEGER},
+      dengJiZSID = #{record.dengjizsid,jdbcType=VARCHAR},
+      sheBeiID = #{record.shebeiid,jdbcType=VARCHAR},
+      username = #{record.username,jdbcType=VARCHAR},
+      jiGan = #{record.jigan,jdbcType=VARCHAR},
+      dengjiTiem = #{record.dengjitiem,jdbcType=TIMESTAMP},
+      dengjiID = #{record.dengjiid,jdbcType=VARCHAR},
+      carCJH = #{record.carcjh,jdbcType=VARCHAR},
+      color = #{record.color,jdbcType=VARCHAR},
+      useNature = #{record.usenature,jdbcType=VARCHAR},
+      carWay = #{record.carway,jdbcType=VARCHAR},
+      manufactureDate = #{record.manufacturedate,jdbcType=TIMESTAMP},
+      issueOrgan = #{record.issueorgan,jdbcType=VARCHAR},
+      issueDate = #{record.issuedate,jdbcType=TIMESTAMP},
+      buycarapproval = #{record.buycarapproval,jdbcType=VARCHAR},
+      newSource = #{record.newsource,jdbcType=VARCHAR},
+      carPrice = #{record.carprice,jdbcType=DECIMAL},
+      oldcarPrice = #{record.oldcarprice,jdbcType=DECIMAL},
+      supplier = #{record.supplier,jdbcType=VARCHAR},
+      phone = #{record.phone,jdbcType=INTEGER},
+      image = #{record.image,jdbcType=VARCHAR},
+      typeId = #{record.typeid,jdbcType=INTEGER},
+      department_id = #{record.departmentId,jdbcType=VARCHAR},
+      carnumber = #{record.carnumber,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.hqu.production_ms.domain.CarSpecial" >
+    update c_register
+    <set >
+      <if test="dengjizsid != null" >
+        dengJiZSID = #{dengjizsid,jdbcType=VARCHAR},
+      </if>
+      <if test="shebeiid != null" >
+        sheBeiID = #{shebeiid,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null" >
+        username = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="jigan != null" >
+        jiGan = #{jigan,jdbcType=VARCHAR},
+      </if>
+      <if test="dengjitiem != null" >
+        dengjiTiem = #{dengjitiem,jdbcType=TIMESTAMP},
+      </if>
+      <if test="dengjiid != null" >
+        dengjiID = #{dengjiid,jdbcType=VARCHAR},
+      </if>
+      <if test="carcjh != null" >
+        carCJH = #{carcjh,jdbcType=VARCHAR},
+      </if>
+      <if test="color != null" >
+        color = #{color,jdbcType=VARCHAR},
+      </if>
+      <if test="usenature != null" >
+        useNature = #{usenature,jdbcType=VARCHAR},
+      </if>
+      <if test="carway != null" >
+        carWay = #{carway,jdbcType=VARCHAR},
+      </if>
+      <if test="manufacturedate != null" >
+        manufactureDate = #{manufacturedate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="issueorgan != null" >
+        issueOrgan = #{issueorgan,jdbcType=VARCHAR},
+      </if>
+      <if test="issuedate != null" >
+        issueDate = #{issuedate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="buycarapproval != null" >
+        buycarapproval = #{buycarapproval,jdbcType=VARCHAR},
+      </if>
+      <if test="newsource != null" >
+        newSource = #{newsource,jdbcType=VARCHAR},
+      </if>
+      <if test="carprice != null" >
+        carPrice = #{carprice,jdbcType=DECIMAL},
+      </if>
+      <if test="oldcarprice != null" >
+        oldcarPrice = #{oldcarprice,jdbcType=DECIMAL},
+      </if>
+      <if test="supplier != null" >
+        supplier = #{supplier,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        phone = #{phone,jdbcType=INTEGER},
+      </if>
+      <if test="image != null" >
+        image = #{image,jdbcType=VARCHAR},
+      </if>
+      <if test="typeid != null" >
+        typeId = #{typeid,jdbcType=INTEGER},
+      </if>
+      <if test="departmentId != null" >
+        department_id = #{departmentId,jdbcType=VARCHAR},
+      </if>
+      <if test="carnumber != null" >
+        carnumber = #{carnumber,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where car_id = #{carId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.hqu.production_ms.domain.CarSpecial" >
+    update c_register
+    set dengJiZSID = #{dengjizsid,jdbcType=VARCHAR},
+      sheBeiID = #{shebeiid,jdbcType=VARCHAR},
+      username = #{username,jdbcType=VARCHAR},
+      jiGan = #{jigan,jdbcType=VARCHAR},
+      dengjiTiem = #{dengjitiem,jdbcType=TIMESTAMP},
+      dengjiID = #{dengjiid,jdbcType=VARCHAR},
+      carCJH = #{carcjh,jdbcType=VARCHAR},
+      color = #{color,jdbcType=VARCHAR},
+      useNature = #{usenature,jdbcType=VARCHAR},
+      carWay = #{carway,jdbcType=VARCHAR},
+      manufactureDate = #{manufacturedate,jdbcType=TIMESTAMP},
+      issueOrgan = #{issueorgan,jdbcType=VARCHAR},
+      issueDate = #{issuedate,jdbcType=TIMESTAMP},
+      buycarapproval = #{buycarapproval,jdbcType=VARCHAR},
+      newSource = #{newsource,jdbcType=VARCHAR},
+      carPrice = #{carprice,jdbcType=DECIMAL},
+      oldcarPrice = #{oldcarprice,jdbcType=DECIMAL},
+      supplier = #{supplier,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=INTEGER},
+      image = #{image,jdbcType=VARCHAR},
+      typeId = #{typeid,jdbcType=INTEGER},
+      department_id = #{departmentId,jdbcType=VARCHAR},
+      carnumber = #{carnumber,jdbcType=VARCHAR}
+    where car_id = #{carId,jdbcType=INTEGER}
+  </update>
+</mapper>

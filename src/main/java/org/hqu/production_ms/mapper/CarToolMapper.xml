@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.hqu.production_ms.mapper.CarToolMapper" >
+  <resultMap id="BaseResultMap" type="org.hqu.production_ms.domain.CarTool" >
+    <id column="tool_id" property="toolId" jdbcType="INTEGER" />
+    <result column="norms" property="norms" jdbcType="VARCHAR" />
+    <result column="nums" property="nums" jdbcType="VARCHAR" />
+    <result column="notes" property="notes" jdbcType="VARCHAR" />
+    <result column="toolname" property="toolname" jdbcType="VARCHAR" />
+    <result column="toolzj" property="toolzj" jdbcType="VARCHAR" />
+    <result column="nums1" property="nums1" jdbcType="VARCHAR" />
+    <result column="notes1" property="notes1" jdbcType="VARCHAR" />
+	<association property="carRegister" javaType="carRegister">
+		<id column="car_id" property="carId" jdbcType="INTEGER" />
+	    <result column="carnumber" property="carnumber" jdbcType="VARCHAR" />
+	    <result column="useNature" property="usenature" jdbcType="VARCHAR" />
+	</association>
+  </resultMap>
+  <select id="find" parameterType="carTechnical" resultMap="BaseResultMap">
+		SELECT
+			tool_id,
+			toolname,
+			toolzj,
+			norms,
+			nums,
+			notes,
+			nums1,
+			notes1,
+			c_register.car_id,
+			carnumber,
+			useNature
+		FROM 
+			c_tool
+			LEFT JOIN c_register ON c_tool.car_id = c_register.car_id
+			 ORDER BY tool_id
+	</select>
+
+	<select id="find1" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+			tool_id,
+			toolname,
+			toolzj,
+			nums1,
+			notes1,
+			norms,
+			nums,
+			notes,
+			c_register.car_id,
+			carnumber,
+			useNature
+		FROM 
+			c_tool
+			LEFT JOIN c_register ON c_tool.car_id = c_register.car_id
+		WHERE
+			c_register.department_id = #{departmentId}
+	</select>
+	<!-- 查询所单个记录 -->
+	<select id="selectSingleCarTechnical" parameterType="INTEGER" resultMap="BaseResultMap">
+		SELECT
+			tool_id,
+			toolzj,
+			norms,
+			nums1,
+			notes1,
+			toolname,
+			nums,
+			notes,
+			c_register.car_id,
+			carnumber
+		FROM 
+			c_tool
+			LEFT JOIN c_register ON c_tool.car_id = c_register.car_id
+		WHERE  tool_id = #{toolId}
+	</select>
+	
+  <!-- 批量删除 -->
+	<delete id="deleteBatch">
+		DELETE
+		FROM
+			c_tool
+		WHERE
+			tool_id IN
+		<foreach collection="array" item="id" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</delete>
+	<select id="searchCarToolByCarToolDriverfrom" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+			tool_id,
+			toolname,
+			toolzj,
+			norms,
+			nums,
+			notes,
+			nums1,
+			notes1,
+			c_register.car_id,
+			carnumber,
+			useNature
+		FROM 
+			c_tool
+			LEFT JOIN c_register ON c_tool.car_id = c_register.car_id
+		WHERE
+			c_register.carnumber LIKE CONCAT( '%',#{carnumber},'%' ) 
+	</select>
+
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    tool_id, norms, nums, notes, car_id, toolname, toolzj, nums1, notes1
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.hqu.production_ms.domain.CarToolExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from c_tool
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from c_tool
+    where tool_id = #{toolId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from c_tool
+    where tool_id = #{toolId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.hqu.production_ms.domain.CarToolExample" >
+    delete from c_tool
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.hqu.production_ms.domain.CarTool" >
+    insert into c_tool (tool_id, norms, nums, 
+      notes, car_id, toolname, 
+      toolzj, nums1, notes1
+      )
+    values (#{toolId,jdbcType=INTEGER}, #{norms,jdbcType=VARCHAR}, #{nums,jdbcType=VARCHAR}, 
+      #{notes,jdbcType=VARCHAR}, #{carId,jdbcType=INTEGER}, #{toolname,jdbcType=VARCHAR}, 
+      #{toolzj,jdbcType=VARCHAR}, #{nums1,jdbcType=VARCHAR}, #{notes1,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="org.hqu.production_ms.domain.CarTool" >
+    insert into c_tool
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="toolId != null" >
+        tool_id,
+      </if>
+      <if test="norms != null" >
+        norms,
+      </if>
+      <if test="nums != null" >
+        nums,
+      </if>
+      <if test="notes != null" >
+        notes,
+      </if>
+      <if test="carId != null" >
+        car_id,
+      </if>
+      <if test="toolname != null" >
+        toolname,
+      </if>
+      <if test="toolzj != null" >
+        toolzj,
+      </if>
+      <if test="nums1 != null" >
+        nums1,
+      </if>
+      <if test="notes1 != null" >
+        notes1,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="toolId != null" >
+        #{toolId,jdbcType=INTEGER},
+      </if>
+      <if test="norms != null" >
+        #{norms,jdbcType=VARCHAR},
+      </if>
+      <if test="nums != null" >
+        #{nums,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null" >
+        #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="carId != null" >
+        #{carId,jdbcType=INTEGER},
+      </if>
+      <if test="toolname != null" >
+        #{toolname,jdbcType=VARCHAR},
+      </if>
+      <if test="toolzj != null" >
+        #{toolzj,jdbcType=VARCHAR},
+      </if>
+      <if test="nums1 != null" >
+        #{nums1,jdbcType=VARCHAR},
+      </if>
+      <if test="notes1 != null" >
+        #{notes1,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.hqu.production_ms.domain.CarToolExample" resultType="java.lang.Integer" >
+    select count(*) from c_tool
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update c_tool
+    <set >
+      <if test="record.toolId != null" >
+        tool_id = #{record.toolId,jdbcType=INTEGER},
+      </if>
+      <if test="record.norms != null" >
+        norms = #{record.norms,jdbcType=VARCHAR},
+      </if>
+      <if test="record.nums != null" >
+        nums = #{record.nums,jdbcType=VARCHAR},
+      </if>
+      <if test="record.notes != null" >
+        notes = #{record.notes,jdbcType=VARCHAR},
+      </if>
+      <if test="record.carId != null" >
+        car_id = #{record.carId,jdbcType=INTEGER},
+      </if>
+      <if test="record.toolname != null" >
+        toolname = #{record.toolname,jdbcType=VARCHAR},
+      </if>
+      <if test="record.toolzj != null" >
+        toolzj = #{record.toolzj,jdbcType=VARCHAR},
+      </if>
+      <if test="record.nums1 != null" >
+        nums1 = #{record.nums1,jdbcType=VARCHAR},
+      </if>
+      <if test="record.notes1 != null" >
+        notes1 = #{record.notes1,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update c_tool
+    set tool_id = #{record.toolId,jdbcType=INTEGER},
+      norms = #{record.norms,jdbcType=VARCHAR},
+      nums = #{record.nums,jdbcType=VARCHAR},
+      notes = #{record.notes,jdbcType=VARCHAR},
+      car_id = #{record.carId,jdbcType=INTEGER},
+      toolname = #{record.toolname,jdbcType=VARCHAR},
+      toolzj = #{record.toolzj,jdbcType=VARCHAR},
+      nums1 = #{record.nums1,jdbcType=VARCHAR},
+      notes1 = #{record.notes1,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.hqu.production_ms.domain.CarTool" >
+    update c_tool
+    <set >
+      <if test="norms != null" >
+        norms = #{norms,jdbcType=VARCHAR},
+      </if>
+      <if test="nums != null" >
+        nums = #{nums,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null" >
+        notes = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="carId != null" >
+        car_id = #{carId,jdbcType=INTEGER},
+      </if>
+      <if test="toolname != null" >
+        toolname = #{toolname,jdbcType=VARCHAR},
+      </if>
+      <if test="toolzj != null" >
+        toolzj = #{toolzj,jdbcType=VARCHAR},
+      </if>
+      <if test="nums1 != null" >
+        nums1 = #{nums1,jdbcType=VARCHAR},
+      </if>
+      <if test="notes1 != null" >
+        notes1 = #{notes1,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where tool_id = #{toolId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.hqu.production_ms.domain.CarTool" >
+    update c_tool
+    set norms = #{norms,jdbcType=VARCHAR},
+      nums = #{nums,jdbcType=VARCHAR},
+      notes = #{notes,jdbcType=VARCHAR},
+      car_id = #{carId,jdbcType=INTEGER},
+      toolname = #{toolname,jdbcType=VARCHAR},
+      toolzj = #{toolzj,jdbcType=VARCHAR},
+      nums1 = #{nums1,jdbcType=VARCHAR},
+      notes1 = #{notes1,jdbcType=VARCHAR}
+    where tool_id = #{toolId,jdbcType=INTEGER}
+  </update>
+</mapper>

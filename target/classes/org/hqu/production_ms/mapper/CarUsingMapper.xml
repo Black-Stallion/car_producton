@@ -1,0 +1,601 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.hqu.production_ms.mapper.CarUsingMapper" >
+  <resultMap id="BaseResultMap" type="org.hqu.production_ms.domain.CarUsing" >
+    <id column="using_id" property="usingId" jdbcType="INTEGER" />
+    <result column="usingyear" property="usingyear" jdbcType="INTEGER" />
+    <result column="usingMonth" property="usingmonth" jdbcType="INTEGER" />
+    <result column="monthNumbers" property="monthnumbers" jdbcType="VARCHAR" />
+    <result column="monthKM" property="monthkm" jdbcType="VARCHAR" />
+    <result column="monthTime" property="monthtime" jdbcType="VARCHAR" />
+    <result column="monthDays" property="monthdays" jdbcType="VARCHAR" />
+    <result column="monthRY" property="monthry" jdbcType="VARCHAR" />
+    <result column="monthRHY" property="monthrhy" jdbcType="VARCHAR" />
+    <result column="haoyou" property="haoyou" jdbcType="VARCHAR" />
+    <result column="kindscost" property="kindscost" jdbcType="VARCHAR" />
+    <result column="note" property="note" jdbcType="VARCHAR" />
+    <association property="carRegister" javaType="carRegister">
+		<id column="car_id" property="carId" jdbcType="INTEGER" />
+	    <result column="carnumber" property="carnumber" jdbcType="VARCHAR" />
+	    <result column="useNature" property="usenature" jdbcType="VARCHAR" />
+	</association>
+	<association property="department" javaType="department">
+		<id column="department_id" property="departmentId" jdbcType="VARCHAR" />
+	    <result column="department_name" property="departmentName" jdbcType="VARCHAR" />
+	    <result column="fatherdep" property="fatherdep" jdbcType="VARCHAR" />
+	    <result column="level" property="level" jdbcType="INTEGER" />
+	</association>
+  </resultMap>
+  
+   <!-- 扩展的sql -->
+  <!-- 查询所有记录 -->
+	<select id="find" parameterType="carUsing" resultMap="BaseResultMap">
+		SELECT
+			using_id,
+			usingyear,
+			usingMonth,
+			monthNumbers,
+			monthKM,
+			monthTime,
+			monthDays,
+			monthRY,
+			monthRHY,
+			haoyou,
+			kindscost,
+			c_car_using.note,
+			c_register.car_id,
+			 carnumber,
+			c_register.useNature,
+			department.department_name
+		FROM 
+			c_car_using 
+			LEFT JOIN c_register ON c_register.car_id = c_car_using.car_id
+			LEFT JOIN department ON c_register.department_id = department.department_id
+			ORDER BY usingyear desc
+	</select>
+	<select id="find1" parameterType="String" resultMap="BaseResultMap">
+		SELECT
+			using_id,
+			usingyear,
+			usingMonth,
+			monthNumbers,
+			monthKM,
+			monthTime,
+			monthDays,
+			monthRY,
+			monthRHY,
+			haoyou,
+			kindscost,
+			c_car_using.note,
+			c_register.car_id,
+			 carnumber,
+			c_register.useNature,
+			department.department_name
+		FROM 
+			c_car_using 
+			LEFT JOIN c_register ON c_register.car_id = c_car_using.car_id
+			LEFT JOIN department ON c_register.department_id = department.department_id
+			where 
+			c_register.department_id = #{departmentId}
+			ORDER BY usingyear desc
+	</select>
+	<!-- 查询所单个记录 -->
+	<select id="selectSingleCarUsing" parameterType="INTEGER" resultMap="BaseResultMap">
+		SELECT
+			using_id,
+			usingyear,
+			usingMonth,
+			monthNumbers,
+			monthKM,
+			monthTime,
+			monthDays,
+			monthRY,
+			monthRHY,
+			haoyou,
+			kindscost,
+			c_car_using.note,
+			c_register.car_id,
+			 carnumber,
+			c_register.useNature,
+			department.department_name
+		FROM 
+			c_car_using 
+			LEFT JOIN c_register ON c_register.car_id = c_car_using.car_id
+			LEFT JOIN department ON c_register.department_id = department.department_id
+			WHERE  using_id = #{usingId}
+			ORDER BY usingyear desc
+		
+	</select>
+	
+  <!-- 批量删除 -->
+	<delete id="deleteBatch">
+		DELETE
+		FROM
+			c_car_using
+		WHERE
+			using_id IN
+		<foreach collection="array" item="id" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</delete>
+	<select id="searchCarUsingByUsingyear" parameterType="Integer" resultMap="BaseResultMap">
+		SELECT
+			using_id,
+			usingyear,
+			usingMonth,
+			monthNumbers,
+			monthKM,
+			monthTime,
+			monthDays,
+			monthRY,
+			monthRHY,
+			haoyou,
+			kindscost,
+			c_car_using.note,
+			c_register.car_id,
+			 carnumber,
+			c_register.useNature,
+			department.department_name
+		FROM 
+			c_car_using 
+			LEFT JOIN c_register ON c_register.car_id = c_car_using.car_id
+			LEFT JOIN department ON c_register.department_id = department.department_id
+			WHERE  usingyear = #{usingyear}
+			
+	</select>
+	
+	<select id="searchCarUsingByCarUsingCarId" parameterType="Integer" resultMap="BaseResultMap">
+		SELECT
+			using_id,
+			usingyear,
+			usingMonth,
+			monthNumbers,
+			monthKM,
+			monthTime,
+			monthDays,
+			monthRY,
+			monthRHY,
+			haoyou,
+			kindscost,
+			c_car_using.note,
+			c_register.car_id,
+			 carnumber,
+			c_register.useNature,
+			department.department_name
+		FROM 
+			c_car_using 
+			LEFT JOIN c_register ON c_register.car_id = c_car_using.car_id
+			LEFT JOIN department ON c_register.department_id = department.department_id
+			where 
+			c_register.car_id = #{carId}
+			ORDER BY usingyear desc
+	</select>
+	<select id="searchCarUsingBy1" parameterType="String" resultMap="BaseResultMap">
+		SELECT
+			using_id,
+			usingyear,
+			usingMonth,
+			monthNumbers,
+			monthKM,
+			monthTime,
+			monthDays,
+			monthRY,
+			monthRHY,
+			haoyou,
+			kindscost,
+			c_car_using.note,
+			c_register.car_id,
+			 carnumber,
+			c_register.useNature,
+			department.department_name
+		FROM 
+			c_car_using 
+			LEFT JOIN c_register ON c_register.car_id = c_car_using.car_id
+			LEFT JOIN department ON c_register.department_id = department.department_id
+			where 
+			c_register.carnumber LIKE CONCAT( '%',#{carnumber},'%' )
+			ORDER BY usingyear desc
+	</select>
+	<select id="searchCarUsingBy2" parameterType="String" resultMap="BaseResultMap">
+		SELECT
+			using_id,
+			usingyear,
+			usingMonth,
+			monthNumbers,
+			monthKM,
+			monthTime,
+			monthDays,
+			monthRY,
+			monthRHY,
+			haoyou,
+			kindscost,
+			c_car_using.note,
+			c_register.car_id,
+			 carnumber,
+			c_register.useNature,
+			department.department_name
+		FROM 
+			c_car_using 
+			LEFT JOIN c_register ON c_register.car_id = c_car_using.car_id
+			LEFT JOIN department ON c_register.department_id = department.department_id
+			where 
+			department.department_name LIKE CONCAT( '%',#{departmentName},'%' )
+			ORDER BY usingyear desc
+	</select>
+	<select id="searchCarUsingBy1s" parameterType="String" resultMap="BaseResultMap">
+		SELECT
+			using_id,
+			usingyear,
+			usingMonth,
+			monthNumbers,
+			monthKM,
+			monthTime,
+			monthDays,
+			monthRY,
+			monthRHY,
+			haoyou,
+			kindscost,
+			c_car_using.note,
+			c_register.car_id,
+			 carnumber,
+			c_register.useNature,
+			department.department_name
+		FROM 
+			c_car_using 
+			LEFT JOIN c_register ON c_register.car_id = c_car_using.car_id
+			LEFT JOIN department ON c_register.department_id = department.department_id
+			where 
+			c_register.department_id = #{0}
+			and
+			c_register.carnumber LIKE CONCAT( '%',#{1},'%' )
+			ORDER BY usingyear desc
+	</select>
+	<select id="searchCarUsingBy2s" parameterType="String" resultMap="BaseResultMap">
+		SELECT
+			using_id,
+			usingyear,
+			usingMonth,
+			monthNumbers,
+			monthKM,
+			monthTime,
+			monthDays,
+			monthRY,
+			monthRHY,
+			haoyou,
+			kindscost,
+			c_car_using.note,
+			c_register.car_id,
+			 carnumber,
+			c_register.useNature,
+			department.department_name
+		FROM 
+			c_car_using 
+			LEFT JOIN c_register ON c_register.car_id = c_car_using.car_id
+			LEFT JOIN department ON c_register.department_id = department.department_id
+			where 
+			c_register.department_id = #{0}
+			and
+			department.department_name LIKE CONCAT( '%',#{1},'%' )
+			ORDER BY usingyear desc
+	</select>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    using_id, usingyear, usingMonth, monthNumbers, monthKM, monthTime, monthDays, monthRY, 
+    monthRHY, haoyou, kindscost, note, car_id
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.hqu.production_ms.domain.CarUsingExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from c_car_using
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from c_car_using
+    where using_id = #{usingId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from c_car_using
+    where using_id = #{usingId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.hqu.production_ms.domain.CarUsingExample" >
+    delete from c_car_using
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.hqu.production_ms.domain.CarUsing" >
+    insert into c_car_using (using_id, usingyear, usingMonth, 
+      monthNumbers, monthKM, monthTime, 
+      monthDays, monthRY, monthRHY, 
+      haoyou, kindscost, note, 
+      car_id)
+    values (#{usingId,jdbcType=INTEGER}, #{usingyear,jdbcType=INTEGER}, #{usingmonth,jdbcType=INTEGER}, 
+      #{monthnumbers,jdbcType=VARCHAR}, #{monthkm,jdbcType=VARCHAR}, #{monthtime,jdbcType=VARCHAR}, 
+      #{monthdays,jdbcType=VARCHAR}, #{monthry,jdbcType=VARCHAR}, #{monthrhy,jdbcType=VARCHAR}, 
+      #{haoyou,jdbcType=VARCHAR}, #{kindscost,jdbcType=VARCHAR}, #{note,jdbcType=VARCHAR}, 
+      #{carId,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="org.hqu.production_ms.domain.CarUsing" >
+    insert into c_car_using
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="usingId != null" >
+        using_id,
+      </if>
+      <if test="usingyear != null" >
+        usingyear,
+      </if>
+      <if test="usingmonth != null" >
+        usingMonth,
+      </if>
+      <if test="monthnumbers != null" >
+        monthNumbers,
+      </if>
+      <if test="monthkm != null" >
+        monthKM,
+      </if>
+      <if test="monthtime != null" >
+        monthTime,
+      </if>
+      <if test="monthdays != null" >
+        monthDays,
+      </if>
+      <if test="monthry != null" >
+        monthRY,
+      </if>
+      <if test="monthrhy != null" >
+        monthRHY,
+      </if>
+      <if test="haoyou != null" >
+        haoyou,
+      </if>
+      <if test="kindscost != null" >
+        kindscost,
+      </if>
+      <if test="note != null" >
+        note,
+      </if>
+      <if test="carId != null" >
+        car_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="usingId != null" >
+        #{usingId,jdbcType=INTEGER},
+      </if>
+      <if test="usingyear != null" >
+        #{usingyear,jdbcType=INTEGER},
+      </if>
+      <if test="usingmonth != null" >
+        #{usingmonth,jdbcType=INTEGER},
+      </if>
+      <if test="monthnumbers != null" >
+        #{monthnumbers,jdbcType=VARCHAR},
+      </if>
+      <if test="monthkm != null" >
+        #{monthkm,jdbcType=VARCHAR},
+      </if>
+      <if test="monthtime != null" >
+        #{monthtime,jdbcType=VARCHAR},
+      </if>
+      <if test="monthdays != null" >
+        #{monthdays,jdbcType=VARCHAR},
+      </if>
+      <if test="monthry != null" >
+        #{monthry,jdbcType=VARCHAR},
+      </if>
+      <if test="monthrhy != null" >
+        #{monthrhy,jdbcType=VARCHAR},
+      </if>
+      <if test="haoyou != null" >
+        #{haoyou,jdbcType=VARCHAR},
+      </if>
+      <if test="kindscost != null" >
+        #{kindscost,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null" >
+        #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="carId != null" >
+        #{carId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.hqu.production_ms.domain.CarUsingExample" resultType="java.lang.Integer" >
+    select count(*) from c_car_using
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update c_car_using
+    <set >
+      <if test="record.usingId != null" >
+        using_id = #{record.usingId,jdbcType=INTEGER},
+      </if>
+      <if test="record.usingyear != null" >
+        usingyear = #{record.usingyear,jdbcType=INTEGER},
+      </if>
+      <if test="record.usingmonth != null" >
+        usingMonth = #{record.usingmonth,jdbcType=INTEGER},
+      </if>
+      <if test="record.monthnumbers != null" >
+        monthNumbers = #{record.monthnumbers,jdbcType=VARCHAR},
+      </if>
+      <if test="record.monthkm != null" >
+        monthKM = #{record.monthkm,jdbcType=VARCHAR},
+      </if>
+      <if test="record.monthtime != null" >
+        monthTime = #{record.monthtime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.monthdays != null" >
+        monthDays = #{record.monthdays,jdbcType=VARCHAR},
+      </if>
+      <if test="record.monthry != null" >
+        monthRY = #{record.monthry,jdbcType=VARCHAR},
+      </if>
+      <if test="record.monthrhy != null" >
+        monthRHY = #{record.monthrhy,jdbcType=VARCHAR},
+      </if>
+      <if test="record.haoyou != null" >
+        haoyou = #{record.haoyou,jdbcType=VARCHAR},
+      </if>
+      <if test="record.kindscost != null" >
+        kindscost = #{record.kindscost,jdbcType=VARCHAR},
+      </if>
+      <if test="record.note != null" >
+        note = #{record.note,jdbcType=VARCHAR},
+      </if>
+      <if test="record.carId != null" >
+        car_id = #{record.carId,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update c_car_using
+    set using_id = #{record.usingId,jdbcType=INTEGER},
+      usingyear = #{record.usingyear,jdbcType=INTEGER},
+      usingMonth = #{record.usingmonth,jdbcType=INTEGER},
+      monthNumbers = #{record.monthnumbers,jdbcType=VARCHAR},
+      monthKM = #{record.monthkm,jdbcType=VARCHAR},
+      monthTime = #{record.monthtime,jdbcType=VARCHAR},
+      monthDays = #{record.monthdays,jdbcType=VARCHAR},
+      monthRY = #{record.monthry,jdbcType=VARCHAR},
+      monthRHY = #{record.monthrhy,jdbcType=VARCHAR},
+      haoyou = #{record.haoyou,jdbcType=VARCHAR},
+      kindscost = #{record.kindscost,jdbcType=VARCHAR},
+      note = #{record.note,jdbcType=VARCHAR},
+      car_id = #{record.carId,jdbcType=INTEGER}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.hqu.production_ms.domain.CarUsing" >
+    update c_car_using
+    <set >
+      <if test="usingyear != null" >
+        usingyear = #{usingyear,jdbcType=INTEGER},
+      </if>
+      <if test="usingmonth != null" >
+        usingMonth = #{usingmonth,jdbcType=INTEGER},
+      </if>
+      <if test="monthnumbers != null" >
+        monthNumbers = #{monthnumbers,jdbcType=VARCHAR},
+      </if>
+      <if test="monthkm != null" >
+        monthKM = #{monthkm,jdbcType=VARCHAR},
+      </if>
+      <if test="monthtime != null" >
+        monthTime = #{monthtime,jdbcType=VARCHAR},
+      </if>
+      <if test="monthdays != null" >
+        monthDays = #{monthdays,jdbcType=VARCHAR},
+      </if>
+      <if test="monthry != null" >
+        monthRY = #{monthry,jdbcType=VARCHAR},
+      </if>
+      <if test="monthrhy != null" >
+        monthRHY = #{monthrhy,jdbcType=VARCHAR},
+      </if>
+      <if test="haoyou != null" >
+        haoyou = #{haoyou,jdbcType=VARCHAR},
+      </if>
+      <if test="kindscost != null" >
+        kindscost = #{kindscost,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null" >
+        note = #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="carId != null" >
+        car_id = #{carId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where using_id = #{usingId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.hqu.production_ms.domain.CarUsing" >
+    update c_car_using
+    set usingyear = #{usingyear,jdbcType=INTEGER},
+      usingMonth = #{usingmonth,jdbcType=INTEGER},
+      monthNumbers = #{monthnumbers,jdbcType=VARCHAR},
+      monthKM = #{monthkm,jdbcType=VARCHAR},
+      monthTime = #{monthtime,jdbcType=VARCHAR},
+      monthDays = #{monthdays,jdbcType=VARCHAR},
+      monthRY = #{monthry,jdbcType=VARCHAR},
+      monthRHY = #{monthrhy,jdbcType=VARCHAR},
+      haoyou = #{haoyou,jdbcType=VARCHAR},
+      kindscost = #{kindscost,jdbcType=VARCHAR},
+      note = #{note,jdbcType=VARCHAR},
+      car_id = #{carId,jdbcType=INTEGER}
+    where using_id = #{usingId,jdbcType=INTEGER}
+  </update>
+</mapper>

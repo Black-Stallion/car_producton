@@ -1,0 +1,75 @@
+package org.hqu.production_ms.domain;
+
+import java.util.Date;
+
+public class DriverRecord {
+    private Integer driveRecordId;
+
+    private Date kaohetime;
+
+    private String drivernum;
+
+    private String drivername;
+
+    private String drivestart;
+
+    private String driveend;
+
+    private String total;
+
+    public Integer getDriveRecordId() {
+        return driveRecordId;
+    }
+
+    public void setDriveRecordId(Integer driveRecordId) {
+        this.driveRecordId = driveRecordId;
+    }
+
+    public Date getKaohetime() {
+        return kaohetime;
+    }
+
+    public void setKaohetime(Date kaohetime) {
+        this.kaohetime = kaohetime;
+    }
+
+    public String getDrivernum() {
+        return drivernum;
+    }
+
+    public void setDrivernum(String drivernum) {
+        this.drivernum = drivernum == null ? null : drivernum.trim();
+    }
+
+    public String getDrivername() {
+        return drivername;
+    }
+
+    public void setDrivername(String drivername) {
+        this.drivername = drivername == null ? null : drivername.trim();
+    }
+
+    public String getDrivestart() {
+        return drivestart;
+    }
+
+    public void setDrivestart(String drivestart) {
+        this.drivestart = drivestart == null ? null : drivestart.trim();
+    }
+
+    public String getDriveend() {
+        return driveend;
+    }
+
+    public void setDriveend(String driveend) {
+        this.driveend = driveend == null ? null : driveend.trim();
+    }
+
+    public String getTotal() {
+        return total;
+    }
+
+    public void setTotal(String total) {
+        this.total = total == null ? null : total.trim();
+    }
+}

@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.hqu.production_ms.mapper.CarDriverMapper" >
+  <resultMap id="BaseResultMap" type="org.hqu.production_ms.domain.CarDriver" >
+    <id column="driver_id" property="driverId" jdbcType="INTEGER" />
+    <result column="drvierName" property="drviername" jdbcType="VARCHAR" />
+    <result column="sex" property="sex" jdbcType="INTEGER" />
+    <result column="birthday" property="birthday" jdbcType="TIMESTAMP" />
+    <result column="culture" property="culture" jdbcType="VARCHAR" />
+    <result column="driverNum" property="drivernum" jdbcType="VARCHAR" />
+    <result column="workTime" property="worktime" jdbcType="TIMESTAMP" />
+    <result column="firstZheng" property="firstzheng" jdbcType="VARCHAR" />
+    <result column="issueOrgan" property="issueorgan" jdbcType="VARCHAR" />
+    <result column="carType" property="cartype" jdbcType="VARCHAR" />
+ 	<result column="department_name" property="departmentName" jdbcType="VARCHAR" />
+  </resultMap>
+  <select id="find" parameterType="carDriver" resultMap="BaseResultMap">
+		SELECT
+			*
+		FROM 
+			c_driver
+			
+	</select>
+	
+	<!-- 查询所单个记录 -->
+	<select id="selectSingleCarDriver" parameterType="INTEGER" resultMap="BaseResultMap">
+		SELECT
+			*
+		FROM 
+			c_driver
+			
+		WHERE  driver_id = #{driverId}
+	</select>
+	
+  <!-- 批量删除 -->
+	<delete id="deleteBatch">
+		DELETE
+		FROM
+			c_driver
+		WHERE
+			driver_id IN
+		<foreach collection="array" item="id" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</delete>
+	<select id="searchCarDriverByCarDriverDriverfrom" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+			*
+		FROM 
+			c_driver
+			
+		WHERE
+			drvierName LIKE CONCAT( '%',#{drvierName},'%' ) 
+	</select>
+	
+	<select id="searchCarDriverByCarDriverAA" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+			*
+		FROM 
+			c_driver
+			
+		WHERE
+			department_name = CONCAT( '%',#{departmentName},'%' )
+	</select>
+	<select id="searchCarDriverByCarDriverName" parameterType="String" resultMap="BaseResultMap">
+		SELECT
+			*
+		FROM 
+			c_driver
+			
+		WHERE
+			driverNum = CONCAT( '%',#{drivernum},'%' ) 
+	</select>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    driver_id, drvierName, sex, birthday, culture, driverNum, workTime, firstZheng, issueOrgan, 
+    department_name, carType
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.hqu.production_ms.domain.CarDriverExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from c_driver
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from c_driver
+    where driver_id = #{driverId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from c_driver
+    where driver_id = #{driverId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.hqu.production_ms.domain.CarDriverExample" >
+    delete from c_driver
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.hqu.production_ms.domain.CarDriver" >
+    insert into c_driver (driver_id, drvierName, sex, 
+      birthday, culture, driverNum, 
+      workTime, firstZheng, issueOrgan, 
+      department_name, carType)
+    values (#{driverId,jdbcType=INTEGER}, #{drviername,jdbcType=VARCHAR}, #{sex,jdbcType=INTEGER}, 
+      #{birthday,jdbcType=TIMESTAMP}, #{culture,jdbcType=VARCHAR}, #{drivernum,jdbcType=VARCHAR}, 
+      #{worktime,jdbcType=TIMESTAMP}, #{firstzheng,jdbcType=VARCHAR}, #{issueorgan,jdbcType=VARCHAR}, 
+      #{departmentName,jdbcType=VARCHAR}, #{cartype,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="org.hqu.production_ms.domain.CarDriver" >
+    insert into c_driver
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="driverId != null" >
+        driver_id,
+      </if>
+      <if test="drviername != null" >
+        drvierName,
+      </if>
+      <if test="sex != null" >
+        sex,
+      </if>
+      <if test="birthday != null" >
+        birthday,
+      </if>
+      <if test="culture != null" >
+        culture,
+      </if>
+      <if test="drivernum != null" >
+        driverNum,
+      </if>
+      <if test="worktime != null" >
+        workTime,
+      </if>
+      <if test="firstzheng != null" >
+        firstZheng,
+      </if>
+      <if test="issueorgan != null" >
+        issueOrgan,
+      </if>
+      <if test="departmentName != null" >
+        department_name,
+      </if>
+      <if test="carType != null" >
+        carType,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="driverId != null" >
+        #{driverId,jdbcType=INTEGER},
+      </if>
+      <if test="drviername != null" >
+        #{drviername,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null" >
+        #{sex,jdbcType=INTEGER},
+      </if>
+      <if test="birthday != null" >
+        #{birthday,jdbcType=TIMESTAMP},
+      </if>
+      <if test="culture != null" >
+        #{culture,jdbcType=VARCHAR},
+      </if>
+      <if test="drivernum != null" >
+        #{drivernum,jdbcType=VARCHAR},
+      </if>
+      <if test="worktime != null" >
+        #{worktime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="firstzheng != null" >
+        #{firstzheng,jdbcType=VARCHAR},
+      </if>
+      <if test="issueorgan != null" >
+        #{issueorgan,jdbcType=VARCHAR},
+      </if>
+      <if test="departmentName != null" >
+        #{departmentName,jdbcType=VARCHAR},
+      </if>
+      <if test="cartype != null" >
+        #{cartype,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.hqu.production_ms.domain.CarDriverExample" resultType="java.lang.Integer" >
+    select count(*) from c_driver
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update c_driver
+    <set >
+      <if test="record.driverId != null" >
+        driver_id = #{record.driverId,jdbcType=INTEGER},
+      </if>
+      <if test="record.drviername != null" >
+        drvierName = #{record.drviername,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sex != null" >
+        sex = #{record.sex,jdbcType=INTEGER},
+      </if>
+      <if test="record.birthday != null" >
+        birthday = #{record.birthday,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.culture != null" >
+        culture = #{record.culture,jdbcType=VARCHAR},
+      </if>
+      <if test="record.drivernum != null" >
+        driverNum = #{record.drivernum,jdbcType=VARCHAR},
+      </if>
+      <if test="record.worktime != null" >
+        workTime = #{record.worktime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.firstzheng != null" >
+        firstZheng = #{record.firstzheng,jdbcType=VARCHAR},
+      </if>
+      <if test="record.issueorgan != null" >
+        issueOrgan = #{record.issueorgan,jdbcType=VARCHAR},
+      </if>
+      <if test="record.departmentName != null" >
+        department_name = #{record.departmentName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.cartype != null" >
+        carType = #{record.cartype,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update c_driver
+    set driver_id = #{record.driverId,jdbcType=INTEGER},
+      drvierName = #{record.drviername,jdbcType=VARCHAR},
+      sex = #{record.sex,jdbcType=INTEGER},
+      birthday = #{record.birthday,jdbcType=TIMESTAMP},
+      culture = #{record.culture,jdbcType=VARCHAR},
+      driverNum = #{record.drivernum,jdbcType=VARCHAR},
+      workTime = #{record.worktime,jdbcType=TIMESTAMP},
+      firstZheng = #{record.firstzheng,jdbcType=VARCHAR},
+      issueOrgan = #{record.issueorgan,jdbcType=VARCHAR},
+      department_name = #{record.departmentName,jdbcType=VARCHAR},
+      carType = #{record.cartype,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.hqu.production_ms.domain.CarDriver" >
+    update c_driver
+    <set >
+      <if test="drviername != null" >
+        drvierName = #{drviername,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null" >
+        sex = #{sex,jdbcType=INTEGER},
+      </if>
+      <if test="birthday != null" >
+        birthday = #{birthday,jdbcType=TIMESTAMP},
+      </if>
+      <if test="culture != null" >
+        culture = #{culture,jdbcType=VARCHAR},
+      </if>
+      <if test="drivernum != null" >
+        driverNum = #{drivernum,jdbcType=VARCHAR},
+      </if>
+      <if test="worktime != null" >
+        workTime = #{worktime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="firstzheng != null" >
+        firstZheng = #{firstzheng,jdbcType=VARCHAR},
+      </if>
+      <if test="issueorgan != null" >
+        issueOrgan = #{issueorgan,jdbcType=VARCHAR},
+      </if>
+      <if test="departmentName != null" >
+        department_name = #{departmentName,jdbcType=VARCHAR},
+      </if>
+      <if test="cartype != null" >
+        carType = #{cartype,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where driver_id = #{driverId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.hqu.production_ms.domain.CarDriver" >
+    update c_driver
+    set drvierName = #{drviername,jdbcType=VARCHAR},
+      sex = #{sex,jdbcType=INTEGER},
+      birthday = #{birthday,jdbcType=TIMESTAMP},
+      culture = #{culture,jdbcType=VARCHAR},
+      driverNum = #{drivernum,jdbcType=VARCHAR},
+      workTime = #{worktime,jdbcType=TIMESTAMP},
+      firstZheng = #{firstzheng,jdbcType=VARCHAR},
+      issueOrgan = #{issueorgan,jdbcType=VARCHAR},
+      department_name = #{departmentName,jdbcType=VARCHAR},
+      carType = #{cartype,jdbcType=VARCHAR}
+    where driver_id = #{driverId,jdbcType=INTEGER}
+  </update>
+</mapper>

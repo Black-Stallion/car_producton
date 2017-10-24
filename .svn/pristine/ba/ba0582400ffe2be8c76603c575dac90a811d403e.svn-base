@@ -1,0 +1,149 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<link href="js/kindeditor-4.1.10/themes/default/default.css" type="text/css" rel="stylesheet">
+
+<link href="css/uploadfile.css" rel="stylesheet"> 
+<script src="js/jquery.uploadfile.js"></script>
+<script src="js/malsup.github.iojquery.form.js"></script>
+
+<script type="text/javascript" charset="utf-8" src="js/kindeditor-4.1.10/kindeditor-all-min.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/kindeditor-4.1.10/lang/zh_CN.js"></script>
+<div style="padding:10px 10px 10px 10px">
+	<form id="carDieEditForm" class="carDieForm" method="post">
+		<input type="hidden" name="dieId"/>
+	    <center>
+	    <table cellpadding="5">
+	     <tr>
+	            <td>车架号:</td>
+	            <td>
+	            	<input class="easyui-combobox" id="41diecarsCombox" name="rbeiyong1" data-options="required:true,editable:false" panelHeight="auto" size="9px" />
+	            	<input  id="rbeiyong1" type="hidden"/>
+    				<input class="easyui-combobox" id="41diecarNumbersCombox" name="newnum"  data-options="required:true,editable:false" panelHeight="auto" size="10px"/>  
+    				<input id="newnum" type="hidden"/>
+    				</td>
+	        </tr>
+	        <tr>
+	            <td>填写人:</td>
+	            <td>
+	            	<input  class="easyui-combobox" name="rbieyong2" panelHeight="auto"
+	            	data-options="valueField:'username',textField:'username',
+    						url:'user/find_data', editable:false, required:true" />
+	            </td>
+	        </tr>
+	       <tr>
+	            <td>回收单位:</td>
+	             <td>
+	            	<input class="easyui-combobox" id="51diedepartmenComboxz1" data-options="required:true" panelHeight="auto" size="9px" />
+	            	<input name="departmentFrist" id="departmentFrist" type="hidden"/>
+    				<input class="easyui-combobox" id="51diedepartmentz1" panelHeight="auto" size="10px"/>  
+    				<input name="outorgan" id="outorgan" type="hidden"/>
+	            </td>
+	        </tr>
+	         <tr>
+	            <td>残值:</td>
+	            <td>
+	            	<input class="easyui-textbox" type="text" name="stats" data-options="required:true"></input>
+	            </td>
+	        </tr>
+	        <tr>
+	            <td>分局批文:</td>
+	            <td>
+	            	<input class="easyui-textbox" type="text" name="removenum" style="width: 200px;"></input>
+	            </td>
+	        </tr>
+	         <tr>
+	            <td>回收证号:</td>
+	            <td>
+	            	<input class="easyui-textbox" type="text" name="inorgan" style="width: 200px;"></input>
+	            </td>
+	        </tr>
+	        <tr>
+	            <td>报废日期:</td>
+	            <td>
+	            	<input class="easyui-datetimebox" name="removetime"     
+        			data-options="required:true,showSeconds:true" value="date.format('yyyy-MM-dd hh:mm:ss')" style="width:150px"></input>
+	            </td>
+	        </tr>
+	        
+	          <tr>
+        	<td>回收证明附件:</td>
+	            <td>
+	                 <!-- <iframe src="file_upload.jsp"></iframe>  -->
+	                 <div id="dieEditFileUploader">上传文件</div>
+	                 <input type="hidden" id="dieEditFile" name="notes"/>
+	            </td>
+	        </tr>
+	    </table>
+	     </center>
+	</form>
+	<div style="padding:5px 0 0 55px">
+	    <a href="javascript:void(0)" class="easyui-linkbutton" onclick="submitCarInEditForm()">提交</a>
+	</div>
+</div>
+<script type="text/javascript">
+	
+	function submitCarInEditForm(){
+		if(!$('#carDieEditForm').form('validate')){
+			$.messager.alert('提示','表单还未填写完成!');
+			return ;
+		}
+		
+		$.post("carDie/update_all",$("#carDieEditForm").serialize(), function(data){
+			if(data.status == 200){
+				$.messager.alert('提示','修改信息成功!','info',function(){
+					$("#carDieEditWindow").window('close');
+					$("#carDieList").datagrid("reload");
+				});
+			}else{
+				$.messager.alert('提示', data.msg);
+			}
+		});
+	}
+	$('#51diedepartmenComboxz1').combobox({  
+        url: "department/get_data_first",  
+        editable:false,  
+        valueField:'departmentName',   
+        textField:'departmentName',  
+        panelHeight:'auto',  
+        onSelect : function(data){  
+            $('#departmentFrist').val(data.departmentId);  
+            $('#outorgan').val(data.departmentName);  
+            var fatherdep= $('#departmentFrist').val();
+          
+            $('#51diedepartmentz1').combobox({  
+               
+                url:"department/get_data_second/"+fatherdep,  
+                valueField:'departmentName',  
+                textField:'departmentName' ,
+                editable:false,
+                onSelect : function(data1){  
+                  $('#outorgan').val(data1.departmentName);  
+                }
+           
+            }).combobox('clear');  
+        }  
+    });  
+	$('#41diecarsCombox').combobox({  
+        url: "carPublic/get_data",  
+        editable:false,  
+        valueField:'usenature',   
+        textField:'usenature',  
+        panelHeight:'auto',  
+        onSelect : function(data){  
+            $('#rbeiyong1').val(data.usenature);  
+            var fatherdep= $('#rbeiyong1').val();
+          
+            $('#41diecarNumbersCombox').combobox({  
+               
+                url:"carPublic/find_nature/"+fatherdep,  
+                valueField:'carnumber',  
+                textField:'carnumber' ,
+                panelHeight:'auto',  
+                editable:false,
+                onSelect : function(data1){  
+                  $('#newnum').val(data1.carnumber);  
+                }
+           
+            }).combobox('clear');  
+        }  
+    });  
+</script>

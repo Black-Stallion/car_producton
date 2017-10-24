@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.hqu.production_ms.mapper.CarHandoverMapper" >
+  <resultMap id="BaseResultMap" type="org.hqu.production_ms.domain.CarHandover" >
+    <id column="handover_id" property="handoverId" jdbcType="INTEGER" />
+    <result column="handoverTime" property="handovertime" jdbcType="TIMESTAMP" />
+    <result column="handoverNote" property="handovernote" jdbcType="VARCHAR" />
+    <result column="oldCarUser" property="oldcaruser" jdbcType="VARCHAR" />
+    <result column="newCarUser" property="newcaruser" jdbcType="VARCHAR" />
+    <result column="car_id" property="carId" jdbcType="INTEGER" />
+    <result column="querenDate" property="querendate" jdbcType="TIMESTAMP" />
+    <result column="state" property="state" jdbcType="VARCHAR" />
+    <result column="carNumber" property="carnumber" jdbcType="VARCHAR" />
+    <result column="hbeiyong1" property="hbeiyong1" jdbcType="VARCHAR" />
+    <result column="hbieyong2" property="hbieyong2" jdbcType="VARCHAR" />
+  </resultMap>
+  <select id="find" parameterType="carTechnical" resultMap="BaseResultMap">
+		SELECT
+		   *
+		FROM 
+			c_handover
+		WHERE
+			 ORDER BY 
+				querenDate
+	</select>
+	<select id="find1" parameterType="String" resultMap="BaseResultMap">
+		SELECT
+		   *
+		FROM 
+			c_handover
+		WHERE
+			 ORDER BY 
+				querenDate
+	</select>
+	
+	<!-- 查询所单个记录 -->
+	<select id="selectSingleCarHandover" parameterType="INTEGER" resultMap="BaseResultMap">
+		SELECT
+		   *
+		FROM 
+			c_handover
+		WHERE
+		 handover_id = #{handoverId}
+	</select>
+	
+  <!-- 批量删除 -->
+	<delete id="deleteBatch">
+		DELETE
+		FROM
+			c_handover
+		WHERE
+			handover_id IN
+		<foreach collection="array" item="id" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</delete>
+	<select id="searchCarHandoverByCarHandoverDriverfrom" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+		   *
+		FROM 
+			c_handover
+		WHERE
+			oldcaruser LIKE CONCAT( '%',#{oldcaruser},'%' ) 
+	</select>
+	
+	<select id="searchCarHandoverByCarHandoverAA" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+		   *
+		FROM 
+			c_handover
+		WHERE
+			newCarUser = CONCAT( '%',#{newcaruser},'%' )
+	</select>
+	<select id="searchCarHandoverByCarHandoverName" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+		   *
+		FROM 
+			c_handover
+		WHERE
+			carNumber = CONCAT( '%',#{carnumber},'%' ) 
+	</select>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    handover_id, handoverTime, handoverNote, oldCarUser, newCarUser, car_id, querenDate, 
+    state, carNumber, hbeiyong1, hbieyong2
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.hqu.production_ms.domain.CarHandoverExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from c_handover
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from c_handover
+    where handover_id = #{handoverId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from c_handover
+    where handover_id = #{handoverId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.hqu.production_ms.domain.CarHandoverExample" >
+    delete from c_handover
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.hqu.production_ms.domain.CarHandover" >
+    insert into c_handover (handover_id, handoverTime, handoverNote, 
+      oldCarUser, newCarUser, car_id, 
+      querenDate, state, carNumber, 
+      hbeiyong1, hbieyong2)
+    values (#{handoverId,jdbcType=INTEGER}, #{handovertime,jdbcType=TIMESTAMP}, #{handovernote,jdbcType=VARCHAR}, 
+      #{oldcaruser,jdbcType=VARCHAR}, #{newcaruser,jdbcType=VARCHAR}, #{carId,jdbcType=INTEGER}, 
+      #{querendate,jdbcType=TIMESTAMP}, #{state,jdbcType=VARCHAR}, #{carnumber,jdbcType=VARCHAR}, 
+      #{hbeiyong1,jdbcType=VARCHAR}, #{hbieyong2,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="org.hqu.production_ms.domain.CarHandover" >
+    insert into c_handover
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="handoverId != null" >
+        handover_id,
+      </if>
+      <if test="handovertime != null" >
+        handoverTime,
+      </if>
+      <if test="handovernote != null" >
+        handoverNote,
+      </if>
+      <if test="oldcaruser != null" >
+        oldCarUser,
+      </if>
+      <if test="newcaruser != null" >
+        newCarUser,
+      </if>
+      <if test="carId != null" >
+        car_id,
+      </if>
+      <if test="querendate != null" >
+        querenDate,
+      </if>
+      <if test="state != null" >
+        state,
+      </if>
+      <if test="carnumber != null" >
+        carNumber,
+      </if>
+      <if test="hbeiyong1 != null" >
+        hbeiyong1,
+      </if>
+      <if test="hbieyong2 != null" >
+        hbieyong2,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="handoverId != null" >
+        #{handoverId,jdbcType=INTEGER},
+      </if>
+      <if test="handovertime != null" >
+        #{handovertime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="handovernote != null" >
+        #{handovernote,jdbcType=VARCHAR},
+      </if>
+      <if test="oldcaruser != null" >
+        #{oldcaruser,jdbcType=VARCHAR},
+      </if>
+      <if test="newcaruser != null" >
+        #{newcaruser,jdbcType=VARCHAR},
+      </if>
+      <if test="carId != null" >
+        #{carId,jdbcType=INTEGER},
+      </if>
+      <if test="querendate != null" >
+        #{querendate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="state != null" >
+        #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="carnumber != null" >
+        #{carnumber,jdbcType=VARCHAR},
+      </if>
+      <if test="hbeiyong1 != null" >
+        #{hbeiyong1,jdbcType=VARCHAR},
+      </if>
+      <if test="hbieyong2 != null" >
+        #{hbieyong2,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.hqu.production_ms.domain.CarHandoverExample" resultType="java.lang.Integer" >
+    select count(*) from c_handover
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update c_handover
+    <set >
+      <if test="record.handoverId != null" >
+        handover_id = #{record.handoverId,jdbcType=INTEGER},
+      </if>
+      <if test="record.handovertime != null" >
+        handoverTime = #{record.handovertime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.handovernote != null" >
+        handoverNote = #{record.handovernote,jdbcType=VARCHAR},
+      </if>
+      <if test="record.oldcaruser != null" >
+        oldCarUser = #{record.oldcaruser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.newcaruser != null" >
+        newCarUser = #{record.newcaruser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.carId != null" >
+        car_id = #{record.carId,jdbcType=INTEGER},
+      </if>
+      <if test="record.querendate != null" >
+        querenDate = #{record.querendate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.state != null" >
+        state = #{record.state,jdbcType=VARCHAR},
+      </if>
+      <if test="record.carnumber != null" >
+        carNumber = #{record.carnumber,jdbcType=VARCHAR},
+      </if>
+      <if test="record.hbeiyong1 != null" >
+        hbeiyong1 = #{record.hbeiyong1,jdbcType=VARCHAR},
+      </if>
+      <if test="record.hbieyong2 != null" >
+        hbieyong2 = #{record.hbieyong2,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update c_handover
+    set handover_id = #{record.handoverId,jdbcType=INTEGER},
+      handoverTime = #{record.handovertime,jdbcType=TIMESTAMP},
+      handoverNote = #{record.handovernote,jdbcType=VARCHAR},
+      oldCarUser = #{record.oldcaruser,jdbcType=VARCHAR},
+      newCarUser = #{record.newcaruser,jdbcType=VARCHAR},
+      car_id = #{record.carId,jdbcType=INTEGER},
+      querenDate = #{record.querendate,jdbcType=TIMESTAMP},
+      state = #{record.state,jdbcType=VARCHAR},
+      carNumber = #{record.carnumber,jdbcType=VARCHAR},
+      hbeiyong1 = #{record.hbeiyong1,jdbcType=VARCHAR},
+      hbieyong2 = #{record.hbieyong2,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.hqu.production_ms.domain.CarHandover" >
+    update c_handover
+    <set >
+      <if test="handovertime != null" >
+        handoverTime = #{handovertime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="handovernote != null" >
+        handoverNote = #{handovernote,jdbcType=VARCHAR},
+      </if>
+      <if test="oldcaruser != null" >
+        oldCarUser = #{oldcaruser,jdbcType=VARCHAR},
+      </if>
+      <if test="newcaruser != null" >
+        newCarUser = #{newcaruser,jdbcType=VARCHAR},
+      </if>
+      <if test="carId != null" >
+        car_id = #{carId,jdbcType=INTEGER},
+      </if>
+      <if test="querendate != null" >
+        querenDate = #{querendate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="state != null" >
+        state = #{state,jdbcType=VARCHAR},
+      </if>
+      <if test="carnumber != null" >
+        carNumber = #{carnumber,jdbcType=VARCHAR},
+      </if>
+      <if test="hbeiyong1 != null" >
+        hbeiyong1 = #{hbeiyong1,jdbcType=VARCHAR},
+      </if>
+      <if test="hbieyong2 != null" >
+        hbieyong2 = #{hbieyong2,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where handover_id = #{handoverId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.hqu.production_ms.domain.CarHandover" >
+    update c_handover
+    set handoverTime = #{handovertime,jdbcType=TIMESTAMP},
+      handoverNote = #{handovernote,jdbcType=VARCHAR},
+      oldCarUser = #{oldcaruser,jdbcType=VARCHAR},
+      newCarUser = #{newcaruser,jdbcType=VARCHAR},
+      car_id = #{carId,jdbcType=INTEGER},
+      querenDate = #{querendate,jdbcType=TIMESTAMP},
+      state = #{state,jdbcType=VARCHAR},
+      carNumber = #{carnumber,jdbcType=VARCHAR},
+      hbeiyong1 = #{hbeiyong1,jdbcType=VARCHAR},
+      hbieyong2 = #{hbieyong2,jdbcType=VARCHAR}
+    where handover_id = #{handoverId,jdbcType=INTEGER}
+  </update>
+</mapper>

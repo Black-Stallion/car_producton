@@ -1,0 +1,200 @@
+package org.hqu.production_ms.controller;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.validation.Valid;
+
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
+import org.hqu.production_ms.domain.CarTechnical;
+import org.hqu.production_ms.domain.custom.ActiveUser;
+import org.hqu.production_ms.domain.custom.CustomResult;
+import org.hqu.production_ms.domain.custom.EUDataGridResult;
+import org.hqu.production_ms.domain.po.CarTechnicalPO;
+import org.hqu.production_ms.service.CarTechnicalService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+@Controller
+@RequestMapping("/carTechnical")
+public class CarTechnicalController {
+	@Autowired
+	private CarTechnicalService carTechnicalService;
+	
+	@RequestMapping("/get/{carTechnicalId}")
+	@ResponseBody
+	public CarTechnical getItemById(@PathVariable int technicalId) throws Exception{
+		CarTechnical carTechnical = carTechnicalService.get(technicalId);
+		return carTechnical;
+	}
+	
+	@RequestMapping("/get_data")
+	@ResponseBody
+	public List<CarTechnical> getData() throws Exception{
+		 List<CarTechnical> list = carTechnicalService.find();
+		return list;
+	}
+	
+	@RequestMapping("/find")
+	public String find() throws Exception{
+		return "carTechnical_list";                                                                                                                                                                                                                                                                                                 
+	}
+	
+	@RequestMapping("/add_judge")
+	@ResponseBody
+	public Map<String,Object> carTechnicalAddJudge() throws Exception{
+		//从shiro的session中取activeUser
+		Subject subject = SecurityUtils.getSubject();
+		//取身份信息
+		ActiveUser activeUser = (ActiveUser) subject.getPrincipal();
+		Map<String,Object> map = new HashMap<String,Object>(); 
+		if(!activeUser.getUserStatus().equals("1")){
+			map.put("msg", "您的账户已被锁定，请切换账户登录！");
+		}else if(!activeUser.getRoleStatus().equals("1")){
+			map.put("msg", "当前角色已被锁定，请切换账户登录！");
+		}else{
+			if(!subject.isPermitted("carTechnical:add")){
+				map.put("msg", "您没有权限，请切换用户登录！");
+			}
+		}
+		return map;
+	}
+	
+	@RequestMapping("/add")
+	public String add() throws Exception{
+		return "carTechnical_add";
+	}
+	
+	@RequestMapping("/edit_judge")
+	@ResponseBody
+	public Map<String,Object> carTechnicalEditJudge() throws Exception{
+		Subject subject = SecurityUtils.getSubject();
+		ActiveUser activeUser = (ActiveUser) subject.getPrincipal();
+		Map<String,Object> map = new HashMap<String,Object>();
+		if(!activeUser.getUserStatus().equals("1")){
+			map.put("msg", "您的账户已被锁定，请切换账户登录！");
+		}else if(!activeUser.getRoleStatus().equals("1")){
+			map.put("msg", "当前角色已被锁定，请切换账户登录！");
+		}else{
+			if(!subject.isPermitted("carTechnical:edit")){
+				map.put("msg", "您没有权限，请切换用户登录！");
+			}
+		}
+		return map;
+	}
+	
+	@RequestMapping("/edit")
+	public String edit() throws Exception{
+		return "carTechnical_edit";
+	}
+	
+	@RequestMapping("/list")
+	@ResponseBody
+	public EUDataGridResult getList(Integer page, Integer rows, CarTechnical carTechnical) throws Exception{
+		EUDataGridResult result = carTechnicalService.getList(page, rows, carTechnical);
+		return result;
+	}
+	
+	@RequestMapping(value="/insert", method=RequestMethod.POST)
+	@ResponseBody
+	private CustomResult insert(@Valid CarTechnicalPO carTechnical, BindingResult bindingResult) throws Exception {
+		CustomResult result;
+		if(bindingResult.hasErrors()){
+			FieldError fieldError = bindingResult.getFieldError();
+			System.out.println(fieldError.getDefaultMessage());
+			return CustomResult.build(100, fieldError.getDefaultMessage());
+		}else{
+			System.out.println(carTechnical);
+			result = carTechnicalService.insert(carTechnical);
+		}
+		
+		return result;
+	}
+	
+	@RequestMapping(value="/update")
+	@ResponseBody
+	private CustomResult update(@Valid CarTechnicalPO cCarTechnical, BindingResult bindingResult) throws Exception {
+		if(bindingResult.hasErrors()){
+			FieldError fieldError = bindingResult.getFieldError();
+			return CustomResult.build(100, fieldError.getDefaultMessage());
+		}
+		return carTechnicalService.update(cCarTechnical);
+	}
+	
+	@RequestMapping(value="/update_all")
+	@ResponseBody
+	private CustomResult updateAll(@Valid CarTechnicalPO cCarTechnical, BindingResult bindingResult) throws Exception {
+		if(bindingResult.hasErrors()){
+			FieldError fieldError = bindingResult.getFieldError();
+			return CustomResult.build(100, fieldError.getDefaultMessage());
+		}
+		return carTechnicalService.updateAll(cCarTechnical);
+	}
+	
+	@RequestMapping("/delete_judge")
+	@ResponseBody
+	public Map<String,Object> carTechnicalDeleteJudge() throws Exception{
+		Subject subject = SecurityUtils.getSubject();
+		ActiveUser activeUser = (ActiveUser) subject.getPrincipal();
+		Map<String,Object> map = new HashMap<String,Object>();
+		if(!activeUser.getUserStatus().equals("1")){
+			map.put("msg", "您的账户已被锁定，请切换账户登录！");
+		}else if(!activeUser.getRoleStatus().equals("1")){
+			map.put("msg", "当前角色已被锁定，请切换账户登录！");
+		}else{
+			if(!subject.isPermitted("carTechnical:delete")){
+				map.put("msg", "您没有权限，请切换用户登录！");
+			}
+		}
+		return map;
+	}
+	
+	@RequestMapping(value="/delete")
+	@ResponseBody
+	private CustomResult delete(int id) throws Exception {
+		CustomResult result = carTechnicalService.delete(id);
+		return result;
+	}
+	
+	@RequestMapping(value="/delete_batch")
+	@ResponseBody
+	private CustomResult deleteBatch(int[] ids) throws Exception {
+		CustomResult result = carTechnicalService.deleteBatch(ids);
+		return result;
+	}
+	
+	//搜索
+	@RequestMapping("/search_carTechnical_by_brand")
+	@ResponseBody
+	public EUDataGridResult searchCarTechnicalByCarTechnicalBrand(Integer page, Integer rows, String searchValue) 
+			throws Exception{
+		EUDataGridResult result = carTechnicalService.searchCarTechnicalByCarTechnicalBrand(page, rows, searchValue);
+		return result;
+	}
+	
+	//搜索
+	@RequestMapping("/search_carTechnical_by_carxh")
+	@ResponseBody
+	public EUDataGridResult searchCarTechnicalByCarTechnicalCarXH(Integer page, Integer rows, String searchValue) 
+			throws Exception{
+		EUDataGridResult result = carTechnicalService.searchCarTechnicalByCarTechnicalCarXH(page, rows, searchValue);
+		return result;
+	}
+	
+	//搜索
+	@RequestMapping("/search_carTechnical_by_checknums")
+	@ResponseBody
+	public EUDataGridResult searchCarTechnicalByDepartmentCheckNums(Integer page, Integer rows, String searchValue) 
+			throws Exception{
+		EUDataGridResult result = carTechnicalService.searchCarTechnicalByCheckNums(page, rows, searchValue);
+		return result;
+	}
+}

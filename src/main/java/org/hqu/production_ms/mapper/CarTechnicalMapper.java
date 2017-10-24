@@ -1,0 +1,48 @@
+package org.hqu.production_ms.mapper;
+
+import java.util.List;
+import org.apache.ibatis.annotations.Param;
+import org.hqu.production_ms.domain.CarTechnical;
+import org.hqu.production_ms.domain.CarTechnicalExample;
+import org.hqu.production_ms.domain.po.CarTechnicalPO;
+
+public interface CarTechnicalMapper {
+	//扩展的mapper接口方法
+	int deleteBatch(int[] ids);
+	
+	List<CarTechnical> find();
+	//List<CarTechnical> find1(Integer technicalId);
+	List<CarTechnical> find1(String id);
+	
+	List<CarTechnical> searchCarTechnicalByCarTechnicalDriverfrom(String brand);
+
+	List<CarTechnical> searchCarTechnicalByCarTechnicalAA(String checkNums);
+
+	List<CarTechnical> searchCarTechnicalByCarTechnicalName(String carXH);
+	
+	CarTechnical selectSingleCarTechnical(int carTechnicalId);
+		//逆向工程生成的mapper接口
+    int countByExample(CarTechnicalExample example);
+
+    int deleteByExample(CarTechnicalExample example);
+
+    int deleteByPrimaryKey(Integer technicalId);
+
+    int insert(CarTechnicalPO record);
+
+    int insertSelective(CarTechnical record);
+
+    List<CarTechnical> selectByExample(CarTechnicalExample example);
+
+    CarTechnical selectByPrimaryKey(Integer technicalId);
+
+    int updateByExampleSelective(@Param("record") CarTechnical record, @Param("example") CarTechnicalExample example);
+
+    int updateByExample(@Param("record") CarTechnical record, @Param("example") CarTechnicalExample example);
+
+    int updateByPrimaryKeySelective(CarTechnicalPO record);
+
+    int updateByPrimaryKey(CarTechnicalPO record);
+
+	
+}

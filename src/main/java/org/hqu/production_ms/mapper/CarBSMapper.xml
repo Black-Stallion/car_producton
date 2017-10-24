@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.hqu.production_ms.mapper.CarBSMapper" >
+  <resultMap id="BaseResultMap" type="org.hqu.production_ms.domain.CarBS" >
+    <result column="baoyang_id" property="baoyangId" jdbcType="INTEGER" />
+    <result column="id" property="id" jdbcType="INTEGER" />
+    <result column="dd" property="dd" jdbcType="DOUBLE" />
+    <result column="notes" property="notes" jdbcType="VARCHAR" />
+    <result column="carnum" property="carnum" jdbcType="VARCHAR" />
+    <result column="lm" property="lm" jdbcType="VARCHAR" />
+  </resultMap>
+  <select id="find" parameterType="carBs" resultMap="BaseResultMap">
+		SELECT
+  t1.baoyang_id AS baoyang_id,
+  t2.id        AS id,
+  t2.dd         AS dd,
+  t1.notes     AS notes,
+  t2.carnum     AS carnum,
+  t1.lm         AS lm
+FROM c_baoyang t1
+   JOIN (SELECT
+        c_send.car_id AS id,
+        c_register.carnumber AS carnum,
+        c_send.department_id AS did,
+         SUM(c_send.endkm - c_send.firstkm) AS dd
+         FROM c_send
+           LEFT JOIN c_apply ON c_send.apply_id = c_apply.apply_id
+           LEFT JOIN c_register ON c_send.car_id = c_register.car_id
+         GROUP BY id) t2
+WHERE t2.id = t1.car_id
+       AND 
+       t2.dd > (t1.lm-50)
+	</select>
+	<select id="find1" parameterType="String" resultMap="BaseResultMap">
+		SELECT
+  t1.baoyang_id AS baoyang_id,
+  t2.id        AS id,
+  t2.carnum     AS carnum,
+  t2.dd         AS dd,
+  t1.notes     AS notes,
+  t1.lm         AS lm
+FROM c_baoyang t1
+   JOIN (SELECT
+        c_send.car_id AS id,
+        c_register.carnumber AS carnum,
+        c_send.department_id AS did,
+         SUM(c_send.endkm - c_send.firstkm) AS dd
+         FROM c_send
+           LEFT JOIN c_apply ON c_send.apply_id = c_apply.apply_id
+           LEFT JOIN c_register ON c_send.car_id = c_register.car_id
+         GROUP BY id) t2
+	WHERE t2.id = t1.car_id
+       AND 
+       t2.dd > (t1.lm-50)
+       and 
+       t2.did = #{id}
+	</select>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    baoyang_id, id, dd, notes, lm
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.hqu.production_ms.domain.CarBSExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from carbs
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <delete id="deleteByExample" parameterType="org.hqu.production_ms.domain.CarBSExample" >
+    delete from carbs
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.hqu.production_ms.domain.CarBS" >
+    insert into carbs (baoyang_id, id, dd, 
+      notes, lm)
+    values (#{baoyangId,jdbcType=INTEGER}, #{id,jdbcType=INTEGER}, #{dd,jdbcType=DOUBLE}, 
+      #{notes,jdbcType=VARCHAR}, #{lm,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="org.hqu.production_ms.domain.CarBS" >
+    insert into carbs
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="baoyangId != null" >
+        baoyang_id,
+      </if>
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="dd != null" >
+        dd,
+      </if>
+      <if test="notes != null" >
+        notes,
+      </if>
+      <if test="lm != null" >
+        lm,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="baoyangId != null" >
+        #{baoyangId,jdbcType=INTEGER},
+      </if>
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="dd != null" >
+        #{dd,jdbcType=DOUBLE},
+      </if>
+      <if test="notes != null" >
+        #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="lm != null" >
+        #{lm,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.hqu.production_ms.domain.CarBSExample" resultType="java.lang.Integer" >
+    select count(*) from carbs
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update carbs
+    <set >
+      <if test="record.baoyangId != null" >
+        baoyang_id = #{record.baoyangId,jdbcType=INTEGER},
+      </if>
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.dd != null" >
+        dd = #{record.dd,jdbcType=DOUBLE},
+      </if>
+      <if test="record.notes != null" >
+        notes = #{record.notes,jdbcType=VARCHAR},
+      </if>
+      <if test="record.lm != null" >
+        lm = #{record.lm,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update carbs
+    set baoyang_id = #{record.baoyangId,jdbcType=INTEGER},
+      id = #{record.id,jdbcType=INTEGER},
+      dd = #{record.dd,jdbcType=DOUBLE},
+      notes = #{record.notes,jdbcType=VARCHAR},
+      lm = #{record.lm,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+</mapper>

@@ -1,0 +1,186 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<link href="js/kindeditor-4.1.10/themes/default/default.css" type="text/css" rel="stylesheet">
+
+<link href="css/uploadfile.css" rel="stylesheet"> 
+<script src="js/jquery.uploadfile.js"></script>
+<script src="js/malsup.github.iojquery.form.js"></script>
+
+<script type="text/javascript" charset="utf-8" src="js/kindeditor-4.1.10/kindeditor-all-min.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/kindeditor-4.1.10/lang/zh_CN.js"></script>
+<div style="padding:10px 10px 10px 10px">
+	<form id="carSpecialEditForm" class="carSpecialForm" method="post">
+		<input type="hidden" name="carId"/>
+		<center>
+	    <table cellpadding="5" algin="center">
+	         <tr>
+	            <td width="150px">机动车证书编号:</td>
+	            <td width="200px">
+	            	<input class="easyui-textbox" type="text" name="dengjizsid" data-options="required:true"></input>
+	            </td>
+	            <td width="120px">设备编号:</td>
+	            <td>
+	            	<input class="easyui-textbox" type="text" name="shebeiid" data-options="required:true"></input>
+	            </td>
+	        </tr>
+	        <tr>
+	            <td>机动车所有人/身份证明名称/号码:</td>
+	            <td>
+	            	<input type="text" class="easyui-textbox" name="username"  data-options="required:true"/>  
+	            </td>
+	             <td>车牌号:</td> 
+    				<td><input class="easyui-textbox" type="text" name="carnumber" data-options="required:true"></input>
+    			</td>
+	        </tr>
+	        <tr>
+	             <td >使用性质:</td>
+	            <td><input class="easyui-textbox" type="text" name="usenature" data-options="required:true,editable:false" value="专用车"></input>
+	             </td>
+	            <td >登记机关:</td>
+	            <td>
+	            	<input type="text" class="easyui-textbox" name="jigan"  data-options="required:true" />
+    			</td>  
+	        </tr>
+	        <tr>
+    			<td>登记日期:</td>
+	            <td><input class="easyui-datetimebox" name="dengjitiem"     
+        			data-options="required:true,showSeconds:true" value="date.format('yyyy-MM-dd')" style="width:150px"> </td>
+        			<td>机动车登记编号:</td>
+	            <td>
+	            	<input class="easyui-textbox" type="text" name="dengjiid" data-options="required:true"></input>
+	            </td>
+	        </tr>
+	        <tr>
+	    			<td>车型名称:</td>
+		            <td>
+	            	<input class="easyui-combobox" name="typeid"   panelHeight="auto" 
+    					data-options="valueField:'typeid',textField:'typename',
+    						url:'carType/get_data', editable:false, required:true" />
+    				</td> 
+    				<td>所属部门:</td>
+	            <td>
+	            	<input class="easyui-combobox" id="departmenCombox" data-options="required:true" panelHeight="auto" size="9px" />
+	            	<input name="departmentFrist" id="departmentFrist" type="hidden"/>
+    				<input class="easyui-combobox" id="department"  panelHeight="auto" size="10px"/>  
+    				<input name="departmentId" id="departmentId" type="hidden"/>
+	            </td>
+		      </tr>
+	        <tr>
+        		<td>车身颜色:</td>
+	            <td>
+	            	<input class="easyui-textbox" type="text" name="color" data-options="required:true"></input>
+	            </td>
+    			<td>车辆识别代/车架号:</td>
+	            <td><input class="easyui-textbox" type="text" name="carcjh" data-options="required:true"> </td>
+	        </tr>
+	        <tr>
+    			<td>车辆获得方式:</td>
+	            <td><input class="easyui-textbox" type="text" name="carway" ></td>
+	             <td>车辆出厂日期:</td>
+	            <td><input class="easyui-datetimebox" name="manufacturedate"     
+        			data-options="required:true,showSeconds:true" value="date.format('yyyy-MM-dd')" style="width:150px"> </td>
+	        </tr>
+	        <tr>
+    			<td>发证机关:</td>
+	            <td><input class="easyui-textbox" type="text" name="issueorgan" ></td>
+	             <td>发证日期:</td>
+	            <td><input class="easyui-datetimebox" name="issuedate"     
+        			data-options="required:true,showSeconds:true" value="date.format('yyyy-MM-dd')" style="width:150px"> </td>
+	        </tr>
+	        <tr>
+    			<td colspan="4" style="algin:center"><font color="red">注:上述各栏均按中华人民共和国机动车登记证书所记填写</font></td>
+	        </tr>
+	         <tr>
+    			<td>购车批文:</td>
+	            <td><input class="easyui-textbox" type="text" name="buycarapproval" data-options="required:true"></td>
+        		<td>款源:</td>
+	            <td>
+	            	<input class="easyui-textbox" type="text" name="newsource" data-options="required:true"></input>
+	            </td>
+	        </tr>
+	         <tr>
+    			<td>购车价:</td>
+	            <td><input class="easyui-textbox" type="text" name="carprice" ></td>
+        		<td>组资后价值:</td>
+	            <td>
+	            	<input class="easyui-textbox" type="text" name="oldcarprice"  ></input>
+	            </td>
+	        </tr>
+	         <tr>
+    			<td>供货商:</td>
+	            <td><input class="easyui-textbox" type="text" name="supplier" ></td>
+        		<td>电话:</td>
+	            <td>
+	            	<input class="easyui-textbox" type="text" name="phone"  ></input>
+	            </td>
+	        </tr>
+	        <tr rowspan="3">
+	            <td rowspan="3">上传车辆图片:</td>
+	            <td colspan="3" rowspan="3">
+	            	 <a href="javascript:void(0)" class="easyui-linkbutton productPicFileUpload">上传图片</a>
+	                 <input type="hidden" id="image" name="image"/>
+	            </td>
+	        </tr>
+	    </table>
+	     </center>
+	</form>
+	<div style="padding:5px 0 0 55px">
+	    <a href="javascript:void(0)" class="easyui-linkbutton" onclick="submitCarSpecialEditForm()">提交</a>
+	</div>
+</div>
+<script type="text/javascript">
+	
+	function submitCarSpecialEditForm(){
+		if(!$('#carSpecialEditForm').form('validate')){
+			$.messager.alert('提示','表单还未填写完成!');
+			return ;
+		}
+		
+		$.post("carSpecial/update_all",$("#carSpecialEditForm").serialize(), function(data){
+			if(data.status == 200){
+				$.messager.alert('提示','修改车辆信息成功!','info',function(){
+					$("#carSpecialEditWindow").window('close');
+					$("#carSpecialList").datagrid("reload");
+				});
+			}else{
+				$.messager.alert('提示', data.msg);
+			}
+		});
+	}
+	 $(function(){
+	    	//创建富文本编辑器
+	    	//productAddEditor = TAOTAO.createEditor("#productAddForm [name=file]");
+	    	//productAddEditor = KindEditor.create("#productAddForm [name=note]", TT.kingEditorParams);
+	    	//初始化类目选择和图片上传器
+	    	TAOTAO.initProductPicUpload({fun:function(node){
+	    		//根据产品的分类id取产品 的规格模板，生成规格信息。第四天内容。
+	    		TAOTAO.changeItemParam(node, "carSpecialAddForm");
+	    	}});
+	    });
+	    $('#departmenCombox').combobox({  
+	        url: "department/get_data_first",  
+	        editable:false,  
+	        valueField:'departmentId',   
+	        textField:'departmentName',  
+	        panelHeight:'auto',  
+	        onSelect : function(data){  
+	            $('#departmentFrist').val(data.departmentId);  
+	            $('#departmentId').val(data.departmentId);  
+	            var fatherdep= $('#departmentFrist').val();
+	          
+	            $('#department').combobox({  
+	               
+	                url:"department/get_data_second/"+fatherdep,  
+	                valueField:'departmentId',  
+	                textField:'departmentName' ,
+	                
+	                onSelect : function(data1){  
+	                  $('#departmentId').val(data1.departmentId);  
+	                
+	                }
+	           
+	            }).combobox('clear');  
+	           
+			
+	        }  
+	    });  
+</script>

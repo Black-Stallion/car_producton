@@ -1,0 +1,149 @@
+package org.hqu.production_ms.service.impl;
+
+import java.util.List;
+
+import org.hqu.production_ms.domain.Shigu;
+import org.hqu.production_ms.domain.ShiguExample;
+import org.hqu.production_ms.domain.custom.CustomResult;
+import org.hqu.production_ms.domain.custom.EUDataGridResult;
+import org.hqu.production_ms.domain.po.ShiguPO;
+import org.hqu.production_ms.mapper.ShiguMapper;
+import org.hqu.production_ms.service.ShiguService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+
+@Service
+public class ShiguServiceImpl implements ShiguService {
+
+	@Autowired
+	ShiguMapper shiguMapper;
+	
+	@Override
+	public List<Shigu> find() throws Exception {
+		ShiguExample example = new ShiguExample();
+		return shiguMapper.selectByExample(example);
+	}
+
+	@Override
+	public EUDataGridResult getList(int page, int rows, Shigu shigu) throws Exception {
+		//分页处理
+				PageHelper.startPage(page, rows);
+				List<Shigu> list = shiguMapper.find();
+				//创建一个返回值对象
+				EUDataGridResult result = new EUDataGridResult();
+				result.setRows(list);
+				//取记录总条数
+				PageInfo<Shigu> pageInfo = new PageInfo<>(list);
+				result.setTotal(pageInfo.getTotal());
+				return result;
+	}
+	@Override
+	public List<Shigu> find1(String id) throws Exception {
+		ShiguExample example = new ShiguExample();
+		return shiguMapper.selectByExample(example);
+	}
+
+	@Override
+	public EUDataGridResult getList1(int page, int rows, Shigu shigu,String id) throws Exception {
+		//分页处理
+				PageHelper.startPage(page, rows);
+				List<Shigu> list = shiguMapper.find1(id);
+				//创建一个返回值对象
+				EUDataGridResult result = new EUDataGridResult();
+				result.setRows(list);
+				//取记录总条数
+				PageInfo<Shigu> pageInfo = new PageInfo<>(list);
+				result.setTotal(pageInfo.getTotal());
+				return result;
+	}
+
+	@Override
+	public Shigu get(int shiguId) throws Exception {
+		return shiguMapper.selectSingleShigu(shiguId);
+	}
+
+	@Override
+	public CustomResult delete(int string) throws Exception {
+		int i = shiguMapper.deleteByPrimaryKey(string);
+		if(i>0){
+			return CustomResult.ok();
+		}else{
+			return CustomResult.build(101, "删除信息失败");
+		}
+	}
+
+	@Override
+	public CustomResult deleteBatch(int[] ids) throws Exception {
+		int i = shiguMapper.deleteBatch(ids);
+		if(i>0){
+			return CustomResult.ok();
+		}else{
+			return CustomResult.build(101, "删除信息失败");
+		}
+	}
+
+	@Override
+	public CustomResult insert(ShiguPO shigu) throws Exception {
+		int i = shiguMapper.insert(shigu);
+		if(i>0){
+			return CustomResult.ok();
+		}else{
+			return CustomResult.build(101, "新增行驶里程记录记录信息失败");
+		}
+	}
+
+	@Override
+	public CustomResult updateAll(ShiguPO shigu) throws Exception {
+		int i = shiguMapper.updateByPrimaryKey(shigu);
+		if(i>0){
+			return CustomResult.ok();
+		}else{
+			return CustomResult.build(101, "修改行驶里程记录记录信息失败");
+		}
+	}
+
+	@Override
+	public CustomResult update(ShiguPO Shigu) throws Exception {
+		int i = shiguMapper.updateByPrimaryKeySelective(Shigu);
+		if(i>0){
+			return CustomResult.ok();
+		}else{
+			return CustomResult.build(101, "修改行驶里程记录记录信息失败");
+		}
+	}
+
+
+	@Override
+	public EUDataGridResult searchShiguBycode(Integer page, Integer rows, int code) throws Exception {
+			//分页处理
+			PageHelper.startPage(page, rows);
+			List<Shigu> list = shiguMapper.searchShiguBycode(code);
+			//创建一个返回值对象
+			EUDataGridResult result = new EUDataGridResult();
+			result.setRows(list);
+			//取记录总条数
+			PageInfo<Shigu> pageInfo = new PageInfo<>(list);
+			result.setTotal(pageInfo.getTotal());
+			return result;
+	}
+
+	@Override
+	public EUDataGridResult searchShiguBycarnum(Integer page, Integer rows, String carnum) throws Exception {
+		//分页处理
+		PageHelper.startPage(page, rows);
+		List<Shigu> list = shiguMapper.searchShiguBycarnum(carnum);
+		//创建一个返回值对象
+		EUDataGridResult result = new EUDataGridResult();
+		result.setRows(list);
+		//取记录总条数
+		PageInfo<Shigu> pageInfo = new PageInfo<>(list);
+		result.setTotal(pageInfo.getTotal());
+		return result;
+	}
+
+
+
+}

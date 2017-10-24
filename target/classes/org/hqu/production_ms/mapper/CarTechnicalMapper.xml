@@ -1,0 +1,549 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.hqu.production_ms.mapper.CarTechnicalMapper" >
+  <resultMap id="BaseResultMap" type="org.hqu.production_ms.domain.CarTechnical" >
+    <id column="technical_id" property="technicalId" jdbcType="INTEGER" />
+    <result column="driverFrom" property="driverfrom" jdbcType="VARCHAR" />
+    <result column="lidijianxi" property="lidijianxi" jdbcType="VARCHAR" />
+    <result column="jiejinjiao" property="jiejinjiao" jdbcType="VARCHAR" />
+    <result column="liqujiao" property="liqujiao" jdbcType="VARCHAR" />
+    <result column="highSpeed" property="highspeed" jdbcType="INTEGER" />
+    <result column="highPaPo" property="highpapo" jdbcType="VARCHAR" />
+    <result column="turnBody" property="turnbody" jdbcType="VARCHAR" />
+    <result column="turnTire" property="turntire" jdbcType="VARCHAR" />
+    <result column="dianhuoCX" property="dianhuocx" jdbcType="VARCHAR" />
+    <result column="yasuobi" property="yasuobi" jdbcType="VARCHAR" />
+    <result column="tireQY" property="tireqy" jdbcType="VARCHAR" />
+    <result column="ranyouCL" property="ranyoucl" jdbcType="VARCHAR" />
+    <result column="dianchiXH" property="dianchixh" jdbcType="VARCHAR" />
+    <result column="ranyouBH" property="ranyoubh" jdbcType="VARCHAR" />
+    <result column="hundredsFuel" property="hundredsfuel" jdbcType="VARCHAR" />
+     <association property="carType" javaType="carType">
+		<id column="typeId" property="typeid" jdbcType="INTEGER" />
+	    <result column="typename" property="typename" jdbcType="VARCHAR" />
+	</association>
+  </resultMap>
+  
+  <select id="find" parameterType="carTechnical" resultMap="BaseResultMap">
+		SELECT
+			technical_id,
+			driverFrom,
+			lidijianxi,
+			jiejinjiao,
+			liqujiao,
+			highSpeed,
+			highPaPo,
+			turnBody,
+			turnTire,
+			dianhuoCX,
+			yasuobi,
+			tireQY,
+			ranyouCL,
+			dianchiXH,
+			ranyouBH,
+			hundredsFuel,
+			c_technical.typeId,
+			typename
+		FROM 
+			c_technical
+			LEFT JOIN c_type ON c_technical.typeId = c_type.typeId
+			 ORDER BY technical_id
+	</select>
+	
+	<!-- 查询所单个记录 -->
+	<select id="selectSingleCarTechnical" parameterType="INTEGER" resultMap="BaseResultMap">
+		SELECT
+			technical_id,
+			driverFrom,
+			lidijianxi,
+			jiejinjiao,
+			liqujiao,
+			highSpeed,
+			highPaPo,
+			turnBody,
+			turnTire,
+			dianhuoCX,
+			yasuobi,
+			tireQY,
+			ranyouCL,
+			dianchiXH,
+			ranyouBH,
+			hundredsFuel,
+			c_type.typeId,
+			typename
+		FROM
+			c_technical
+			LEFT JOIN c_type ON c_technical.typeId = c_type.typeId
+		WHERE  technical_id = #{technicalId}
+	</select>
+	
+  <!-- 批量删除 -->
+	<delete id="deleteBatch">
+		DELETE
+		FROM
+			c_technical
+		WHERE
+			technical_id IN
+		<foreach collection="array" item="id" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</delete>
+	<select id="searchCarTechnicalByCarTechnicalDriverfrom" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+		    technical_id,
+			driverFrom,
+			lidijianxi,
+			jiejinjiao,
+			liqujiao,
+			highSpeed,
+			highPaPo,
+			turnBody,
+			turnTire,
+			dianhuoCX,
+			yasuobi,
+			tireQY,
+			ranyouCL,
+			dianchiXH,
+			ranyouBH,
+			hundredsFuel,
+			c_technical.typeId,
+			typename
+		FROM 
+			c_technical
+			LEFT JOIN c_type ON c_technical.typeId = c_type.typeId
+		WHERE
+			driverFrom LIKE CONCAT( '%',#{driverfrom},'%' ) 
+	</select>
+	
+	<select id="searchCarTechnicalByCarTechnicalAA" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+		    technical_id,
+			driverFrom,
+			lidijianxi,
+			jiejinjiao,
+			liqujiao,
+			highSpeed,
+			highPaPo,
+			turnBody,
+			turnTire,
+			dianhuoCX,
+			yasuobi,
+			tireQY,
+			ranyouCL,
+			dianchiXH,
+			ranyouBH,
+			hundredsFuel,
+			c_technical.typeId,
+			typename
+		FROM 
+			c_technical
+			LEFT JOIN c_type ON c_technical.typeId = c_type.typeId
+		WHERE
+			dianchiXH = CONCAT( '%',#{dianchixh},'%' )
+	</select>
+	<select id="searchCarTechnicalByCarTechnicalName" parameterType="string" resultMap="BaseResultMap">
+		SELECT
+		    technical_id,
+			driverFrom,
+			lidijianxi,
+			jiejinjiao,
+			liqujiao,
+			highSpeed,
+			highPaPo,
+			turnBody,
+			turnTire,
+			dianhuoCX,
+			yasuobi,
+			tireQY,
+			ranyouCL,
+			dianchiXH,
+			ranyouBH,
+			hundredsFuel,
+			c_technical.typeId,
+			typename
+		FROM 
+			c_technical
+			LEFT JOIN c_type ON c_technical.typeId = c_type.typeId
+		WHERE
+			c_type.typename = CONCAT( '%',#{typename},'%' ) 
+	</select>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    technical_id, driverFrom, lidijianxi, jiejinjiao, liqujiao, highSpeed, highPaPo, 
+    turnBody, turnTire, dianhuoCX, yasuobi, tireQY, ranyouCL, dianchiXH, ranyouBH, hundredsFuel, 
+    typeId
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="org.hqu.production_ms.domain.CarTechnicalExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from c_technical
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from c_technical
+    where technical_id = #{technicalId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from c_technical
+    where technical_id = #{technicalId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="org.hqu.production_ms.domain.CarTechnicalExample" >
+    delete from c_technical
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="org.hqu.production_ms.domain.CarTechnical" >
+    insert into c_technical (technical_id, driverFrom, lidijianxi, 
+      jiejinjiao, liqujiao, highSpeed, 
+      highPaPo, turnBody, turnTire, 
+      dianhuoCX, yasuobi, tireQY, 
+      ranyouCL, dianchiXH, ranyouBH, 
+      hundredsFuel, typeId)
+    values (#{technicalId,jdbcType=INTEGER}, #{driverfrom,jdbcType=VARCHAR}, #{lidijianxi,jdbcType=VARCHAR}, 
+      #{jiejinjiao,jdbcType=VARCHAR}, #{liqujiao,jdbcType=VARCHAR}, #{highspeed,jdbcType=INTEGER}, 
+      #{highpapo,jdbcType=VARCHAR}, #{turnbody,jdbcType=VARCHAR}, #{turntire,jdbcType=VARCHAR}, 
+      #{dianhuocx,jdbcType=VARCHAR}, #{yasuobi,jdbcType=VARCHAR}, #{tireqy,jdbcType=VARCHAR}, 
+      #{ranyoucl,jdbcType=VARCHAR}, #{dianchixh,jdbcType=VARCHAR}, #{ranyoubh,jdbcType=VARCHAR}, 
+      #{hundredsfuel,jdbcType=VARCHAR}, #{typeid,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="org.hqu.production_ms.domain.CarTechnical" >
+    insert into c_technical
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="technicalId != null" >
+        technical_id,
+      </if>
+      <if test="driverfrom != null" >
+        driverFrom,
+      </if>
+      <if test="lidijianxi != null" >
+        lidijianxi,
+      </if>
+      <if test="jiejinjiao != null" >
+        jiejinjiao,
+      </if>
+      <if test="liqujiao != null" >
+        liqujiao,
+      </if>
+      <if test="highspeed != null" >
+        highSpeed,
+      </if>
+      <if test="highpapo != null" >
+        highPaPo,
+      </if>
+      <if test="turnbody != null" >
+        turnBody,
+      </if>
+      <if test="turntire != null" >
+        turnTire,
+      </if>
+      <if test="dianhuocx != null" >
+        dianhuoCX,
+      </if>
+      <if test="yasuobi != null" >
+        yasuobi,
+      </if>
+      <if test="tireqy != null" >
+        tireQY,
+      </if>
+      <if test="ranyoucl != null" >
+        ranyouCL,
+      </if>
+      <if test="dianchixh != null" >
+        dianchiXH,
+      </if>
+      <if test="ranyoubh != null" >
+        ranyouBH,
+      </if>
+      <if test="hundredsfuel != null" >
+        hundredsFuel,
+      </if>
+      <if test="typeid != null" >
+        typeId,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="technicalId != null" >
+        #{technicalId,jdbcType=INTEGER},
+      </if>
+      <if test="driverfrom != null" >
+        #{driverfrom,jdbcType=VARCHAR},
+      </if>
+      <if test="lidijianxi != null" >
+        #{lidijianxi,jdbcType=VARCHAR},
+      </if>
+      <if test="jiejinjiao != null" >
+        #{jiejinjiao,jdbcType=VARCHAR},
+      </if>
+      <if test="liqujiao != null" >
+        #{liqujiao,jdbcType=VARCHAR},
+      </if>
+      <if test="highspeed != null" >
+        #{highspeed,jdbcType=INTEGER},
+      </if>
+      <if test="highpapo != null" >
+        #{highpapo,jdbcType=VARCHAR},
+      </if>
+      <if test="turnbody != null" >
+        #{turnbody,jdbcType=VARCHAR},
+      </if>
+      <if test="turntire != null" >
+        #{turntire,jdbcType=VARCHAR},
+      </if>
+      <if test="dianhuocx != null" >
+        #{dianhuocx,jdbcType=VARCHAR},
+      </if>
+      <if test="yasuobi != null" >
+        #{yasuobi,jdbcType=VARCHAR},
+      </if>
+      <if test="tireqy != null" >
+        #{tireqy,jdbcType=VARCHAR},
+      </if>
+      <if test="ranyoucl != null" >
+        #{ranyoucl,jdbcType=VARCHAR},
+      </if>
+      <if test="dianchixh != null" >
+        #{dianchixh,jdbcType=VARCHAR},
+      </if>
+      <if test="ranyoubh != null" >
+        #{ranyoubh,jdbcType=VARCHAR},
+      </if>
+      <if test="hundredsfuel != null" >
+        #{hundredsfuel,jdbcType=VARCHAR},
+      </if>
+      <if test="typeid != null" >
+        #{typeid,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="org.hqu.production_ms.domain.CarTechnicalExample" resultType="java.lang.Integer" >
+    select count(*) from c_technical
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update c_technical
+    <set >
+      <if test="record.technicalId != null" >
+        technical_id = #{record.technicalId,jdbcType=INTEGER},
+      </if>
+      <if test="record.driverfrom != null" >
+        driverFrom = #{record.driverfrom,jdbcType=VARCHAR},
+      </if>
+      <if test="record.lidijianxi != null" >
+        lidijianxi = #{record.lidijianxi,jdbcType=VARCHAR},
+      </if>
+      <if test="record.jiejinjiao != null" >
+        jiejinjiao = #{record.jiejinjiao,jdbcType=VARCHAR},
+      </if>
+      <if test="record.liqujiao != null" >
+        liqujiao = #{record.liqujiao,jdbcType=VARCHAR},
+      </if>
+      <if test="record.highspeed != null" >
+        highSpeed = #{record.highspeed,jdbcType=INTEGER},
+      </if>
+      <if test="record.highpapo != null" >
+        highPaPo = #{record.highpapo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.turnbody != null" >
+        turnBody = #{record.turnbody,jdbcType=VARCHAR},
+      </if>
+      <if test="record.turntire != null" >
+        turnTire = #{record.turntire,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dianhuocx != null" >
+        dianhuoCX = #{record.dianhuocx,jdbcType=VARCHAR},
+      </if>
+      <if test="record.yasuobi != null" >
+        yasuobi = #{record.yasuobi,jdbcType=VARCHAR},
+      </if>
+      <if test="record.tireqy != null" >
+        tireQY = #{record.tireqy,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ranyoucl != null" >
+        ranyouCL = #{record.ranyoucl,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dianchixh != null" >
+        dianchiXH = #{record.dianchixh,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ranyoubh != null" >
+        ranyouBH = #{record.ranyoubh,jdbcType=VARCHAR},
+      </if>
+      <if test="record.hundredsfuel != null" >
+        hundredsFuel = #{record.hundredsfuel,jdbcType=VARCHAR},
+      </if>
+      <if test="record.typeid != null" >
+        typeId = #{record.typeid,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update c_technical
+    set technical_id = #{record.technicalId,jdbcType=INTEGER},
+      driverFrom = #{record.driverfrom,jdbcType=VARCHAR},
+      lidijianxi = #{record.lidijianxi,jdbcType=VARCHAR},
+      jiejinjiao = #{record.jiejinjiao,jdbcType=VARCHAR},
+      liqujiao = #{record.liqujiao,jdbcType=VARCHAR},
+      highSpeed = #{record.highspeed,jdbcType=INTEGER},
+      highPaPo = #{record.highpapo,jdbcType=VARCHAR},
+      turnBody = #{record.turnbody,jdbcType=VARCHAR},
+      turnTire = #{record.turntire,jdbcType=VARCHAR},
+      dianhuoCX = #{record.dianhuocx,jdbcType=VARCHAR},
+      yasuobi = #{record.yasuobi,jdbcType=VARCHAR},
+      tireQY = #{record.tireqy,jdbcType=VARCHAR},
+      ranyouCL = #{record.ranyoucl,jdbcType=VARCHAR},
+      dianchiXH = #{record.dianchixh,jdbcType=VARCHAR},
+      ranyouBH = #{record.ranyoubh,jdbcType=VARCHAR},
+      hundredsFuel = #{record.hundredsfuel,jdbcType=VARCHAR},
+      typeId = #{record.typeid,jdbcType=INTEGER}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="org.hqu.production_ms.domain.CarTechnical" >
+    update c_technical
+    <set >
+      <if test="driverfrom != null" >
+        driverFrom = #{driverfrom,jdbcType=VARCHAR},
+      </if>
+      <if test="lidijianxi != null" >
+        lidijianxi = #{lidijianxi,jdbcType=VARCHAR},
+      </if>
+      <if test="jiejinjiao != null" >
+        jiejinjiao = #{jiejinjiao,jdbcType=VARCHAR},
+      </if>
+      <if test="liqujiao != null" >
+        liqujiao = #{liqujiao,jdbcType=VARCHAR},
+      </if>
+      <if test="highspeed != null" >
+        highSpeed = #{highspeed,jdbcType=INTEGER},
+      </if>
+      <if test="highpapo != null" >
+        highPaPo = #{highpapo,jdbcType=VARCHAR},
+      </if>
+      <if test="turnbody != null" >
+        turnBody = #{turnbody,jdbcType=VARCHAR},
+      </if>
+      <if test="turntire != null" >
+        turnTire = #{turntire,jdbcType=VARCHAR},
+      </if>
+      <if test="dianhuocx != null" >
+        dianhuoCX = #{dianhuocx,jdbcType=VARCHAR},
+      </if>
+      <if test="yasuobi != null" >
+        yasuobi = #{yasuobi,jdbcType=VARCHAR},
+      </if>
+      <if test="tireqy != null" >
+        tireQY = #{tireqy,jdbcType=VARCHAR},
+      </if>
+      <if test="ranyoucl != null" >
+        ranyouCL = #{ranyoucl,jdbcType=VARCHAR},
+      </if>
+      <if test="dianchixh != null" >
+        dianchiXH = #{dianchixh,jdbcType=VARCHAR},
+      </if>
+      <if test="ranyoubh != null" >
+        ranyouBH = #{ranyoubh,jdbcType=VARCHAR},
+      </if>
+      <if test="hundredsfuel != null" >
+        hundredsFuel = #{hundredsfuel,jdbcType=VARCHAR},
+      </if>
+      <if test="typeid != null" >
+        typeId = #{typeid,jdbcType=INTEGER},
+      </if>
+    </set>
+    where technical_id = #{technicalId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.hqu.production_ms.domain.CarTechnical" >
+    update c_technical
+    set driverFrom = #{driverfrom,jdbcType=VARCHAR},
+      lidijianxi = #{lidijianxi,jdbcType=VARCHAR},
+      jiejinjiao = #{jiejinjiao,jdbcType=VARCHAR},
+      liqujiao = #{liqujiao,jdbcType=VARCHAR},
+      highSpeed = #{highspeed,jdbcType=INTEGER},
+      highPaPo = #{highpapo,jdbcType=VARCHAR},
+      turnBody = #{turnbody,jdbcType=VARCHAR},
+      turnTire = #{turntire,jdbcType=VARCHAR},
+      dianhuoCX = #{dianhuocx,jdbcType=VARCHAR},
+      yasuobi = #{yasuobi,jdbcType=VARCHAR},
+      tireQY = #{tireqy,jdbcType=VARCHAR},
+      ranyouCL = #{ranyoucl,jdbcType=VARCHAR},
+      dianchiXH = #{dianchixh,jdbcType=VARCHAR},
+      ranyouBH = #{ranyoubh,jdbcType=VARCHAR},
+      hundredsFuel = #{hundredsfuel,jdbcType=VARCHAR},
+      typeId = #{typeid,jdbcType=INTEGER}
+    where technical_id = #{technicalId,jdbcType=INTEGER}
+  </update>
+</mapper>

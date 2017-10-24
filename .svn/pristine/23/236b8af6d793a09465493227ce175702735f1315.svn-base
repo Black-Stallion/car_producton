@@ -1,0 +1,53 @@
+package org.hqu.production_ms.domain;
+
+public class CarMaintenance {
+    private Integer maintenanceId;
+
+    private String kilometre;
+
+    private String mproject;
+
+    private CarType carType;
+
+    public CarType getCarType() {
+		return carType;
+	}
+
+	public void setCarType(CarType carType) {
+		this.carType = carType;
+	}
+
+	private String mname;
+
+    public Integer getMaintenanceId() {
+        return maintenanceId;
+    }
+
+    public void setMaintenanceId(Integer maintenanceId) {
+        this.maintenanceId = maintenanceId;
+    }
+
+    public String getKilometre() {
+        return kilometre;
+    }
+
+    public void setKilometre(String kilometre) {
+        this.kilometre = kilometre == null ? null : kilometre.trim();
+    }
+
+    public String getMproject() {
+        return mproject;
+    }
+
+    public void setMproject(String mproject) {
+        this.mproject = mproject == null ? null : mproject.trim();
+    }
+
+    public String getMname() {
+        return mname;
+    }
+
+    public void setMname(String mname) {
+        this.mname = mname == null ? null : mname.trim();
+    }
+}

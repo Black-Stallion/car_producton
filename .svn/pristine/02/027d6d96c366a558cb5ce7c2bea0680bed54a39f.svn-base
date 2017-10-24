@@ -1,0 +1,38 @@
+package org.hqu.production_ms.controller;
+
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+@RequestMapping("/device")
+public class DeviceController {
+	/*************************  Left Menu  *************************/
+	
+	@RequestMapping("/deviceList")
+	public String deviceList() throws Exception{
+		return "carRemove_list";
+	}
+	
+	@RequestMapping("/deviceType")
+	public String deviceType() throws Exception{
+		return "deviceType";
+	}
+	
+	@RequestMapping("/deviceCheck")
+	public String deviceCheck() throws Exception{
+		return "deviceCheck";
+	}
+	
+	@RequestMapping("/deviceFault")
+	public String deviceFault() throws Exception{
+		return "deviceFault";
+	}
+	
+	@RequestMapping("/deviceMaintain")
+	public String deviceMaintain() throws Exception{
+		return "deviceMaintain";
+	}
+	
+	/*************************  Left Menu  *************************/
+}
